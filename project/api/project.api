@@ -1,0 +1,21 @@
+syntax = "v1"
+
+type Project {
+	Name    string `json:"name"`
+	Desc    string `json:"desc,optional"`
+	StartAt int64  `json:"startAt"`
+	EndAt   int64  `json:"endAt"`
+}
+
+type AddProjectReq {
+	Project
+}
+
+type AddProjectResp {
+	Project
+}
+
+service project-api {
+	@handler addProject
+	post /project(AddProjectReq) returns(AddProjectResp)
+}
