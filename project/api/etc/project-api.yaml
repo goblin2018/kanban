@@ -1,3 +1,11 @@
 Name: project-api
 Host: 0.0.0.0
 Port: 8888
+DB:
+  DataSource: root:xy2089@tcp(localhost:3306)/kanban?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
+Cache:
+  - Host: localhost:6379
+
+Log:
+  Encoding: plain
+  TimeFormat: 15:04:05.000
