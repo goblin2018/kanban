@@ -1,5 +1,5 @@
 import Home from 'pages/Home'
-import Project from 'pages/project/index'
+import ProjectPage from 'pages/project/index'
 import { createBrowserRouter } from 'react-router-dom'
 
 const router = createBrowserRouter([
@@ -9,7 +9,7 @@ const router = createBrowserRouter([
   },
   {
     path: '/project',
-    element: <Project />,
+    element: <ProjectPage />,
   },
 ])
 

@@ -31,7 +31,7 @@ http.interceptors.response.use(
       if (res.data.code == 1003) {
         clearToken()
         location.href = '/login'
-        return
+        return Promise.reject()
       }
     }
     return Promise.resolve(res)

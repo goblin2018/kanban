@@ -1,42 +1,82 @@
-import Dialog from '@mui/material/Dialog'
-import DialogActions from '@mui/material/DialogActions'
-import DialogContent from '@mui/material/DialogContent'
-import DialogContentText from '@mui/material/DialogContentText'
-import Button from '@mui/material/Button'
-
-import DialogTitle from '@mui/material/DialogTitle'
 import { useState } from 'react'
+import { useAppDispatch, useAppSelector } from 'app/hooks'
+import { closeAddModal } from './slice'
+import { DatePicker, Form, Input, Modal, Radio, Select } from 'antd'
+import { addProject } from 'api/project'
+import dayjs from 'dayjs'
 
+const { Item } = Form
 const AddModal = () => {
-  const [open, setOpen] = useState(false)
+  const status = useAppSelector((s) => s.project.addModalState)
+  const dispatch = useAppDispatch()
   const handleClose = () => {
-    setOpen(false)
+    dispatch(closeAddModal())
+  }
+
+  const [aForm] = Form.useForm()
+
+  const submit = () => {
+    if (status == 'add') {
+      // 添加项目
+      let newP = aForm.getFieldsValue()
+
+      console.log(newP)
+
+      let pdate = newP.pdate
+      console.log(pdate)
+
+      if (pdate) {
+        let startAt = pdate[0] as dayjs.Dayjs
+        newP.startAt = startAt.unix()
+
+        let endAt = pdate[1] as dayjs.Dayjs
+        newP.endAt = endAt.unix()
+      }
+
+      console.log(newP)
+
+      // addProject().then((res) => {
+      //   console.log(res)
+      // })
+    }
   }
 
   return (
     <>
-      <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>Subscribe</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            To subscribe to this website, please enter your email address here.
-            We will send updates occasionally.
-          </DialogContentText>
-          {/* <TextField
-            autoFocus
-            margin="dense"
-            id="name"
-            label="Email Address"
-            type="email"
-            fullWidth
-            variant="standard"
-          /> */}
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleClose}>Subscribe</Button>
-        </DialogActions>
-      </Dialog>
+      <Modal
+        open={status != 'close'}
+        title={`创建项目`}
+        onCancel={handleClose}
+        onOk={submit}
+      >
+        <Form form={aForm}>
+          <Item label="当前状态" name={'status'}>
+            <Radio.Group>
+              <Radio.Button>未开始</Radio.Button>
+              <Radio.Button>进行中</Radio.Button>
+              <Radio.Button>已完成</Radio.Button>
+            </Radio.Group>
+          </Item>
+          <Item label="名称" name={'name'}>
+            <Input />
+          </Item>
+          <Item label="项目日期" name={'pdate'}>
+            <DatePicker.RangePicker />
+          </Item>
+          {/* <Item label="结束时间" name={'start'}>
+            <DatePicker />
+          </Item>
+          <Item name={'end'}>
+            <DatePicker />
+          </Item> */}
+          <Item label="项目描述">
+            <Input.TextArea />
+          </Item>
+          <Item label="负责人">
+            <Select></Select>
+          </Item>
+        </Form>
+      </Modal>
     </>
   )
 }

@@ -1,11 +1,22 @@
-import Button from '@mui/material/Button'
+import { Button } from 'antd'
+import { useAppDispatch } from 'app/hooks'
+import AddModal from './addModal'
+import { openAddModal } from './slice'
 
-const Project = () => {
+const ProjectPage = () => {
+  const dispatch = useAppDispatch()
   return (
     <>
-      <Button>创建项目</Button>
+      <Button
+        onClick={() => {
+          dispatch(openAddModal())
+        }}
+      >
+        创建项目
+      </Button>
+      <AddModal />
     </>
   )
 }
 
-export default Project
+export default ProjectPage

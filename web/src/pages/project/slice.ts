@@ -1,7 +1,9 @@
 import { createSlice } from '@reduxjs/toolkit'
+import { Project } from 'api/project'
 
 interface ProjectState {
-  items: []
+  items?: Project[]
+  addModalState?: 'add' | 'edit' | 'close'
 }
 
 // export const getUserInfo = createAsyncThunk('user/getUserInfo', async () => {
@@ -14,8 +16,15 @@ const initialState: ProjectState = { items: [] }
 const projectSlice = createSlice({
   name: 'project',
   initialState,
-  reducers: {},
+  reducers: {
+    openAddModal: (state) => {
+      state.addModalState = 'add'
+    },
+    closeAddModal: (state) => {
+      state.addModalState = 'close'
+    },
+  },
 })
 
-export const {} = projectSlice.actions
+export const { openAddModal, closeAddModal } = projectSlice.actions
 export default projectSlice.reducer
