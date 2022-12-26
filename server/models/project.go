@@ -7,9 +7,9 @@ import (
 
 type Project struct {
 	gorm.Model
-	Name    string
+	Name    string `gorm:"type:varchar(100);comment:项目名称"`
 	Desc    string
 	StartAt null.Time
 	EndAt   null.Time
-	Owner   int64
+	Owner   uint `gorm:"comment:项目拥有者"`
 }

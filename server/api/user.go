@@ -1,10 +1,10 @@
 package api
 
 type User struct {
-	Id     int64
-	UserId string
-	Phone  string
-	Name   string
-	Duty   string
-	Status int
+	Id     uint   `json:"id" form:"id"`
+	UserId string `json:"userId" form:"userId"`
+	Phone  string `json:"phone" form:"phone"`
+	Name   string `json:"name" form:"name"`
+	Duty   string `json:"duty" form:"duty"`
+	Status int    `json:"status" form:"status"`
 }

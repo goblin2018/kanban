@@ -1,6 +1,10 @@
 package router
 
-import "kanban/pkg/ctx"
+import (
+	"kanban/api"
+	"kanban/pkg/ctx"
+	"kanban/pkg/e"
+)
 
 type UserController struct {
 }
@@ -12,4 +16,14 @@ func (co UserController) RegisterRouters(en *ctx.RouterGroup) {
 
 func (co UserController) login(c *ctx.Context) {
 
+}
+
+func (co *UserController) register(c *ctx.Context) {
+	req := new(api.User)
+	if err := c.ShouldBind(req); err != nil {
+		c.Fail(e.InvalidParams.Add(err.Error()))
+		return
+	}
+
+	// res, err := c.
 }
