@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useAppDispatch, useAppSelector } from 'app/hooks'
-import { closeAddModal } from './slice'
-import { DatePicker, Form, Input, Modal, Radio, Select } from 'antd'
+import { closeAddModal, listProjects } from './projectSlice'
+import { DatePicker, Form, Input, message, Modal, Radio, Select } from 'antd'
 import { addProject } from 'api/project'
 import dayjs from 'dayjs'
 
@@ -27,17 +27,25 @@ const AddModal = () => {
 
       if (pdate) {
         let startAt = pdate[0] as dayjs.Dayjs
-        newP.startAt = startAt.unix()
+        newP.startAt = startAt
 
         let endAt = pdate[1] as dayjs.Dayjs
-        newP.endAt = endAt.unix()
+        newP.endAt = endAt
       }
 
       console.log(newP)
 
-      // addProject().then((res) => {
-      //   console.log(res)
-      // })
+      addProject(newP).then((res) => {
+        console.log(res)
+
+        if (res.code == 200) {
+          message.info('创建项目成功')
+          dispatch(closeAddModal())
+          dispatch(listProjects())
+        } else {
+          message.warning('创建项目失败，存在同名项目 ' + newP.name)
+        }
+      })
     }
   }
 

@@ -3,8 +3,8 @@
     "composite": true,
     "module": "ESNext",
     "moduleResolution": "Node",
-    "allowSyntheticDefaultImports": true,
-    "noImplicitAny": true
+    "allowSyntheticDefaultImports": true
+    // "noImplicitAny": true
   },
   "include": ["vite.config.ts"]
 }

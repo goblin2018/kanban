@@ -22,7 +22,7 @@ http.interceptors.request.use(
 http.interceptors.response.use(
   (res) => {
     // req.headers!['token'] = 'xxxx'
-    console.log(res)
+    // console.log(res)
 
     if (res.status == 200) {
       if (res.data.refresh_token && res.data.refresh_token !== '') {

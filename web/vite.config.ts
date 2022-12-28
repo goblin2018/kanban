@@ -13,7 +13,7 @@ export default ({ mode }) => {
       host: '0.0.0.0',
       proxy: {
         '/api': {
-          target: 'http://test.m-artx.com/api',
+          target: 'http://localhost:9000/api/v1',
           changeOrigin: true,
           rewrite: (path) => path.replace(/^\/api/, ''),
         },

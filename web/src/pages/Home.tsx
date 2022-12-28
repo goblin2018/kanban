@@ -6,9 +6,9 @@ import { Link } from 'react-router-dom'
 function Home() {
   return (
     <div>
-      <Button>
-        <Link to={'/project'}>项目</Link>
-      </Button>
+      <Link to={'/project/list'}>
+        <Button>项目</Button>
+      </Link>
     </div>
   )
 }
