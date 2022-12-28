@@ -42,9 +42,9 @@ type Redis struct {
 
 var C Config
 
-func Init() *Config {
+func init() {
 	pflag.String("env", "dev", "server runing env ")
-	pflag.Bool("logstd", false, "log to console")
+	pflag.Bool("logstd", true, "log to console")
 	pflag.Parse()
 	viper.BindPFlags(pflag.CommandLine)
 
@@ -60,7 +60,7 @@ func Init() *Config {
 	}
 	viper.Unmarshal(&C)
 	C.App.LogStd = viper.GetBool("logstd")
-	return &C
+
 }
 
 func getConfPath() string {

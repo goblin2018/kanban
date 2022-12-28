@@ -2,13 +2,12 @@ package main
 
 import (
 	"kanban/models"
-	"kanban/pkg/conf"
 	"kanban/pkg/log"
 	"kanban/pkg/mysql"
 )
 
 func main() {
-	conf.Init()
+
 	log.InitLogger()
 	mysql.Init()
 	db := mysql.GetDB()

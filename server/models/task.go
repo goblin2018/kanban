@@ -7,6 +7,7 @@ import (
 
 type Task struct {
 	gorm.Model
+	Name        string    `gorm:"type:varchar(100);comment:任务名称"`
 	Status      int       `gorm:"comment:0-未开始,1-进行中,2-已完成"`
 	Owner       uint      `gorm:"comment:任务负责人"`
 	PStartAt    null.Time `gorm:"comment:计划开始时间"`

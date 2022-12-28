@@ -17,11 +17,84 @@ func NewTaskGroupService() *TaskGroupService {
 
 func (s *TaskGroupService) AddTaskGroup(c *ctx.Context, req *api.TaskGroup) (res *api.TaskGroup, err error) {
 	res = new(api.TaskGroup)
-	err = s.dao.AddTaskGroup(&models.TaskGroup{
+
+	t := &models.TaskGroup{
 		Name:      req.Name,
 		ProjectId: req.ProjectId,
 		Serial:    0,
-	})
+	}
+	err = s.dao.AddTaskGroup(t)
+
+	res.Id = t.ID
+	res.Serial = t.Serial
+	res.Name = t.Name
+	res.ProjectId = t.ProjectId
 
 	return
+}
+
+func (s *TaskGroupService) MoveTaskGroup(c *ctx.Context, req *api.MoveTaskGroupReq) (res *api.MoveTaskGroupResp, err error) {
+	res = new(api.MoveTaskGroupResp)
+
+	var prev, next int
+	if req.Prev > 0 {
+		prev = s.dao.GetTaskGroupSerialById(req.Prev)
+	} else {
+		// 在前面插入
+		res.Serial = s.dao.InsertToFirst(req.Id, req.ProjectId)
+		return
+	}
+	if req.Next > 0 {
+		next = s.dao.GetTaskGroupSerialById(req.Next)
+	} else {
+		res.Serial = s.dao.InsertToLast(req.Id, req.ProjectId)
+		return
+	}
+
+	if (next - prev) >= 2 {
+		serial := (prev + next) / 2
+		s.dao.UpdateSerial(req.Id, serial)
+		res.Serial = serial
+		return
+	}
+
+	// 重排
+	tgs := s.dao.GetSerialsByProjectId(req.ProjectId)
+	idx := findIndex(tgs, req.Id)
+	me := tgs[idx]
+
+	if idx == len(tgs)-1 {
+		tgs = tgs[0:idx]
+	} else {
+		tgs = append(tgs[0:idx], tgs[idx+1:]...)
+	}
+
+	pidx := findIndex(tgs, req.Prev)
+
+	p := make([]*models.TaskGroup, pidx+1)
+	copy(p, tgs[0:pidx+1])
+	end := make([]*models.TaskGroup, len(tgs)-pidx-1)
+	copy(end, tgs[pidx+1:])
+
+	ntgs := append(p, me)
+	ntgs = append(ntgs, end...)
+
+	for i, ntg := range ntgs {
+		ntg.Serial = i * dao.SerialGap
+		s.dao.UpdateSerial(ntg.ID, ntg.Serial)
+		res.AllSerials = append(res.AllSerials, ntg.Serial)
+	}
+
+	res.UpdateAll = true
+
+	return
+}
+
+func findIndex(tgs []*models.TaskGroup, id uint) int {
+	for idx, tg := range tgs {
+		if tg.ID == id {
+			return idx
+		}
+	}
+	return -1
 }

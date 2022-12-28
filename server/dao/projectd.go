@@ -60,5 +60,7 @@ func (d *ProjectDao) GetProjectDetail(id uint) (p *api.Project, err error) {
 		tgs[idx%len(tgs)].Tasks = append(tgs[idx%len(tgs)].Tasks, task)
 	}
 
+	p.TaskGroups = append(p.TaskGroups, tgs...)
+
 	return
 }

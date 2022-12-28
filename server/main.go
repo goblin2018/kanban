@@ -9,7 +9,6 @@ import (
 )
 
 func main() {
-	conf.Init()
 	log.InitLogger()
 	redis.Init()
 	mysql.Init()
