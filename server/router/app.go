@@ -9,6 +9,7 @@ func InitRouter() *ctx.Engine {
 	v1 := app.Group("/api/v1")
 	NewProjectController().RegisterRouters(v1)
 	NewTaskGroupController().RegisterRouters(v1)
+	NewTaskController().RegisterRouters(v1)
 
 	return app
 }

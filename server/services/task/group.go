@@ -5,6 +5,7 @@ import (
 	"kanban/dao"
 	"kanban/models"
 	"kanban/pkg/ctx"
+	"kanban/pkg/utils"
 )
 
 type TaskGroupService struct {
@@ -60,26 +61,16 @@ func (s *TaskGroupService) MoveTaskGroup(c *ctx.Context, req *api.MoveTaskGroupR
 
 	// 重排
 	tgs := s.dao.GetSerialsByProjectId(req.ProjectId)
+
 	idx := findIndex(tgs, req.Id)
 	me := tgs[idx]
+	// 删除
+	tgs = utils.DeleteItem(tgs, idx)
+	// 插入
+	insertIdx := findIndex(tgs, req.Next)
+	tgs = utils.InsertItem(tgs, insertIdx, me)
 
-	if idx == len(tgs)-1 {
-		tgs = tgs[0:idx]
-	} else {
-		tgs = append(tgs[0:idx], tgs[idx+1:]...)
-	}
-
-	pidx := findIndex(tgs, req.Prev)
-
-	p := make([]*models.TaskGroup, pidx+1)
-	copy(p, tgs[0:pidx+1])
-	end := make([]*models.TaskGroup, len(tgs)-pidx-1)
-	copy(end, tgs[pidx+1:])
-
-	ntgs := append(p, me)
-	ntgs = append(ntgs, end...)
-
-	for i, ntg := range ntgs {
+	for i, ntg := range tgs {
 		ntg.Serial = i * dao.SerialGap
 		s.dao.UpdateSerial(ntg.ID, ntg.Serial)
 		res.AllSerials = append(res.AllSerials, ntg.Serial)

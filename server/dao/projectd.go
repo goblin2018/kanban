@@ -45,7 +45,7 @@ func (d *ProjectDao) GetProjectDetail(id uint) (p *api.Project, err error) {
 	var tgs []*api.TaskGroup
 	d.Model(&models.TaskGroup{}).Where("project_id = ?", id).Order("serial ASC").Find(&tgs)
 	var ts []*api.Task
-	d.Model(&models.Task{}).Where("project_id = ?", id).Order("task_group_id ASC, serial DESC").Find(&ts)
+	d.Model(&models.Task{}).Where("project_id = ?", id).Order("task_group_id ASC, serial ASC").Find(&ts)
 
 	idx := 0
 	for _, task := range ts {
