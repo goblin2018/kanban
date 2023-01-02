@@ -32,10 +32,13 @@ const ProjectDetailPage = () => {
         </Button>
         <TaskGroupModal />
       </div>
-      <div className="flex">
-        {project?.taskGroups?.map((tg, idx) => (
-          <TaskGroupItem taskgroup={tg} key={`taskgroup${idx}`} />
-        ))}
+      <div>
+        <div id="groups-dragging-container"></div>
+        <div className="flex" id="groups-container">
+          {project?.taskGroups?.map((tg, idx) => (
+            <TaskGroupItem taskgroup={tg} key={`taskgroup${idx}`} idx={idx} />
+          ))}
+        </div>
       </div>
     </div>
   )

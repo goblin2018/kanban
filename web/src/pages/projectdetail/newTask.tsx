@@ -4,14 +4,19 @@ import { useState } from 'react'
 import { ReactComponent as Right } from 'assets/right.svg'
 import { addTask } from 'api/task'
 import { TaskGroup } from 'api/taskgroup'
+import { useAppDispatch, useAppSelector } from 'app/hooks'
+import { setCurrentProject } from 'pages/project/projectSlice'
 
 interface Props {
   taskgroup: TaskGroup
+  groupIdx: number
 }
 
-const NewTaskItem: React.FC<Props> = ({ taskgroup }) => {
+const NewTaskItem: React.FC<Props> = ({ taskgroup, groupIdx }) => {
   const [title, setTitle] = useState('')
   const [showAdd, setShowAdd] = useState(false)
+  const project = useAppSelector((s) => s.project.current)
+  const dispatch = useAppDispatch()
   const cancel = () => {
     setShowAdd(false)
     setTitle('')
@@ -27,11 +32,34 @@ const NewTaskItem: React.FC<Props> = ({ taskgroup }) => {
       projectId: taskgroup.projectId,
       taskGroupId: taskgroup.id,
     }).then((res) => {
+      // 处理新增task
+
+      let nt = res.data
+
+      let p = { ...project }
+      let groups = [...p.taskGroups!]
+      let g = { ...groups[groupIdx] }
+      let tasks = [...g.tasks!]
+
+      tasks.push({
+        id: nt.id,
+        serial: nt.serial,
+        name: title,
+        projectId: taskgroup.projectId,
+        taskGroupId: taskgroup.id,
+        status: 0,
+      })
+
+      g.tasks = tasks
+      groups[groupIdx] = g
+      p.taskGroups = groups
+      dispatch(setCurrentProject(p))
+
       console.log(res.data)
     })
   }
   return (
-    <>
+    <div className="mt-4">
       {showAdd ? (
         <div className="my-2">
           <Input.TextArea
@@ -68,7 +96,7 @@ const NewTaskItem: React.FC<Props> = ({ taskgroup }) => {
           }}
         ></Button>
       )}
-    </>
+    </div>
   )
 }
 

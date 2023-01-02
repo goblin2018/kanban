@@ -9,6 +9,7 @@ import NewTaskItem from './newTask'
 
 interface Props {
   taskgroup: TaskGroup
+  idx: number
 }
 
 let hold = document.createElement('div')
@@ -16,7 +17,7 @@ hold.id = 'hold'
 hold.style.width = '220px'
 hold.style.background = '#1f66ba'
 
-const TaskGroupItem: React.FC<Props> = ({ taskgroup }) => {
+const TaskGroupItem: React.FC<Props> = ({ taskgroup, idx }) => {
   const [diff, setDiff] = useState({ x: 0, y: 0 })
 
   const [currentIdx, setCurrentIdx] = useState(0)
@@ -28,14 +29,8 @@ const TaskGroupItem: React.FC<Props> = ({ taskgroup }) => {
   const dispatch = useAppDispatch()
 
   const [draggable, setDraggable] = useState(false)
-  const item = useRef<HTMLDivElement>(null)
-
-  const [parent, setParent] = useState<HTMLElement | null>(null)
-
-  useEffect(() => {
-    let p = item.current!
-    setParent(p.parentElement)
-  }, [])
+  const parent = document.getElementById('groups-container')!
+  const item = document.getElementById(`taskgroup-${idx}`)!
 
   return (
     <div
@@ -46,27 +41,24 @@ const TaskGroupItem: React.FC<Props> = ({ taskgroup }) => {
         top: position.y,
         position: 'relative',
       }}
-      ref={item}
+      id={`taskgroup-${idx}`}
       onDragStart={(e) => {
         // console.log(e)
-        if (parent!.lastChild == item.current!) {
-          parent!.appendChild(hold)
+        if (parent.lastChild == item) {
+          parent.appendChild(hold)
         } else {
-          parent!.insertBefore(hold, item.current!.nextSibling)
+          parent.insertBefore(hold, item.nextSibling)
         }
 
-        setPosition({ x: item.current!.offsetLeft, y: item.current!.offsetTop })
-        console.log(
-          'start position ',
-          item.current!.offsetLeft,
-          item.current!.offsetHeight
-        )
+        setPosition({ x: item.offsetLeft, y: item.offsetTop })
+        console.log('start position ', item.offsetLeft, item.offsetHeight)
 
         setDiff({
-          x: e.clientX - item.current!.offsetLeft,
-          y: e.clientY - item.current!.offsetTop,
+          x: e.clientX - item.offsetLeft,
+          y: e.clientY - item.offsetTop,
         })
-        item.current!.style.position = 'absolute'
+
+        item.style.position = 'absolute'
         // t.style.background = '#aa0000'
 
         // t.parentElement.ap
@@ -115,12 +107,12 @@ const TaskGroupItem: React.FC<Props> = ({ taskgroup }) => {
       onDragOver={(e) => {
         e.preventDefault()
       }}
-      onDrop={(e) => {
-        console.log('on drop origin, ', originIdx, 'current, ', currentIdx)
+      onDragEnd={(e) => {
+        console.log('get drag end ', e.target)
         console.log(e.target)
 
         setPosition({ x: 0, y: 0 })
-        item.current!.style.position = 'relative'
+        item.style.position = 'relative'
         parent?.removeChild(hold)
 
         if (originIdx == currentIdx) {
@@ -174,13 +166,18 @@ const TaskGroupItem: React.FC<Props> = ({ taskgroup }) => {
       >
         {taskgroup.name}
       </div>
-      <div>
-        {taskgroup.tasks?.map((t, idx) => (
-          <TaskItem task={t} key={`task-${taskgroup.id}-${idx}`} />
+      <div id={`task-container-${idx}`}>
+        {taskgroup.tasks?.map((t, i) => (
+          <TaskItem
+            task={t}
+            key={`task-${taskgroup.id}-${i}`}
+            groupIdx={idx}
+            idx={i}
+          />
         ))}
       </div>
       <div>
-        <NewTaskItem />
+        <NewTaskItem taskgroup={taskgroup} groupIdx={idx} />
       </div>
     </div>
   )
