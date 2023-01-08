@@ -7,6 +7,8 @@ export interface Task {
   name?: string
   serial?: number
   status?: number
+  startAt?: string
+  endAt?: string
 }
 
 const url = '/api/task'
@@ -36,5 +38,13 @@ export const moveTask = (opt: {
     method: 'POST',
     url: url + '/move',
     data: opt,
+  }).then((res) => res.data)
+}
+
+export const updateTask = (t: Task) => {
+  return http({
+    method: 'PUT',
+    url: url,
+    data: t,
   }).then((res) => res.data)
 }

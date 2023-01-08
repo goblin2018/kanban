@@ -1,7 +1,8 @@
 import storage from 'redux-persist/lib/storage'
 import { persistStore, persistReducer } from 'redux-persist'
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
-import projectSlice from 'pages/project/projectSlice'
+import projectSlice from 'pages/projects/projectSlice'
+import taskSlice from 'pages/project/task/taskSlice'
 
 const persistConfig = {
   key: 'root',
@@ -12,6 +13,7 @@ const persistConfig = {
 
 const reducer = combineReducers({
   project: projectSlice,
+  task: taskSlice,
 })
 
 const persistedReducer = persistReducer(persistConfig, reducer)

@@ -4,7 +4,7 @@ import { useAppDispatch, useAppSelector } from 'app/hooks'
 import {
   closeTaskGroupModal,
   setCurrentProject,
-} from 'pages/project/projectSlice'
+} from 'pages/projects/projectSlice'
 import { useState } from 'react'
 
 const TaskGroupModal = () => {
@@ -16,6 +16,9 @@ const TaskGroupModal = () => {
     dispatch(closeTaskGroupModal())
   }
   const submit = () => {
+    if (name == '') {
+      return
+    }
     addTaskGroup({ projectId: project?.id, name: name }).then((res) => {
       // 获取任务列表
 

@@ -34,6 +34,14 @@ func (d *TaskDao) UpdateTask(t *models.Task) error {
 	return d.Model(&models.Task{}).Where("id = ?", t.ID).Omit("id, deleted_at").Updates(t).Error
 }
 
+func (d *TaskDao) UpdateTaskInfo(t *models.Task) error {
+	return d.Model(&models.Task{}).Where("id = ?", t.ID).Updates(map[string]interface{}{
+		"name":     t.Name,
+		"start_at": t.StartAt,
+		"end_at":   t.EndAt,
+	}).Error
+}
+
 func (d *TaskDao) UpdateTaskStatus(t *models.Task) error {
 	return d.Model(&models.Task{}).Where("id = ?", t.ID).Update("status", t.Status).Error
 }

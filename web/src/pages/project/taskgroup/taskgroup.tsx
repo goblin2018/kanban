@@ -3,9 +3,9 @@ import { moveTaskGroup, TaskGroup } from 'api/taskgroup'
 import { PlusOutlined } from '@ant-design/icons'
 import { useEffect, useRef, useState } from 'react'
 import { useAppDispatch, useAppSelector } from 'app/hooks'
-import { setCurrentProject } from 'pages/project/projectSlice'
-import TaskItem from './task'
-import NewTaskItem from './newTask'
+import { setCurrentProject } from 'pages/projects/projectSlice'
+import TaskItem from '../task/taskCard'
+import NewTaskItem from '../task/newTask'
 
 interface Props {
   taskgroup: TaskGroup

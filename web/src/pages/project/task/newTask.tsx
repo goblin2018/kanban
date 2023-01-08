@@ -5,7 +5,7 @@ import { ReactComponent as Right } from 'assets/right.svg'
 import { addTask } from 'api/task'
 import { TaskGroup } from 'api/taskgroup'
 import { useAppDispatch, useAppSelector } from 'app/hooks'
-import { setCurrentProject } from 'pages/project/projectSlice'
+import { setCurrentProject } from 'pages/projects/projectSlice'
 
 interface Props {
   taskgroup: TaskGroup
@@ -54,6 +54,7 @@ const NewTaskItem: React.FC<Props> = ({ taskgroup, groupIdx }) => {
       groups[groupIdx] = g
       p.taskGroups = groups
       dispatch(setCurrentProject(p))
+      setShowAdd(false)
 
       console.log(res.data)
     })

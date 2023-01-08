@@ -114,3 +114,16 @@ func findTaskIndex(tgs []*models.Task, id uint) int {
 	}
 	return -1
 }
+
+func (s *TaskService) UpdateTask(c *ctx.Context, req *api.Task) (resp *api.Task, err error) {
+	resp = new(api.Task)
+
+	t := &models.Task{
+		Name:    req.Name,
+		StartAt: req.StartAt,
+		EndAt:   req.EndAt,
+	}
+	t.ID = req.Id
+	s.dao.UpdateTaskInfo(t)
+	return
+}
