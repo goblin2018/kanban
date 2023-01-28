@@ -5,9 +5,12 @@ import { Link } from 'react-router-dom'
 
 function Home() {
   return (
-    <div>
-      <Link to={'/project/list'}>
+    <div className="p-12">
+      <Link to={'/project/list'} className="mr-8">
         <Button>项目</Button>
+      </Link>
+      <Link to={'/kanban'}>
+        <Button>测试甘特图</Button>
       </Link>
     </div>
   )

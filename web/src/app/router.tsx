@@ -15,6 +15,10 @@ const router = createBrowserRouter([
     element: <ProjectPage />,
   },
   {
+    path: '/gantt',
+    element: <Kanban />,
+  },
+  {
     path: '/project',
     element: <ProjectDetailPage />,
     children: [

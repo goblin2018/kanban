@@ -1,8 +1,22 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Calendar from './calendar'
-import { ViewMode } from './types'
+import { removeHiddenTasks, sortTask } from './task'
+import { Task, ViewMode } from './types'
+
+let tasks: Task[] = []
 
 const Gantt = () => {
+  const [onExpanderClick, setOnExpanderClick] = useState(false)
+  useEffect(() => {
+    let filteredTasks: Task[]
+    if (onExpanderClick) {
+      filteredTasks = removeHiddenTasks(tasks)
+    } else {
+      filteredTasks = tasks
+    }
+    filteredTasks = filteredTasks.sort(sortTask)
+  }, [])
+
   return (
     <>
       this is gantt
@@ -15,7 +29,7 @@ const Gantt = () => {
         >
           <Calendar
             viewMode={ViewMode.Day}
-            dateSetup={undefined}
+            // dateSetup={undefined}
             locale={''}
             headerHeight={0}
             columnWidth={50}
