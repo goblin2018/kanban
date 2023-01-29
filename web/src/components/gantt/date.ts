@@ -139,3 +139,30 @@ const getMonday = (d: Date) => {
   const mon = d.getDate() - day + 1
   return new Date(d.setDate(mon))
 }
+
+export const seedDates = (
+  startDate: Date,
+  endDate: Date,
+  viewMode: ViewMode
+) => {
+  let currentDate: Date = new Date(startDate)
+  const dates: Date[] = [currentDate]
+  while (currentDate < endDate) {
+    switch (viewMode) {
+      case ViewMode.Year:
+        currentDate = addToDate(currentDate, 1, 'year')
+        break
+      case ViewMode.Month:
+        currentDate = addToDate(currentDate, 1, 'month')
+        break
+      case ViewMode.Week:
+        currentDate = addToDate(currentDate, 7, 'day')
+        break
+      case ViewMode.Day:
+        currentDate = addToDate(currentDate, 1, 'day')
+        break
+    }
+    dates.push(currentDate)
+  }
+  return dates
+}

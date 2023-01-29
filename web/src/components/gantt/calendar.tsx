@@ -29,7 +29,7 @@ const Calendar: React.FC<Props> = ({
     const topDefaultHeight = headerHeight * 0.5
     const dates = dateSetup.dates
     dates.map((d, i) => {
-      const bottomValue = `${getLocalDayOfWeek(d, locale, 'short')}, ${d
+      const bottomValue = `${getLocalDayOfWeek(d, locale, 'short')}  ${d
         .getDate()
         .toString()}`
       bottomValues.push(
@@ -74,21 +74,16 @@ const Calendar: React.FC<Props> = ({
   }
 
   return (
-    <div>
-      <div>calendar</div>
-      <g className="calendar">
-        <rect
-          x={0}
-          y={0}
-          width={columnWidth * dateSetup.dates.length}
-          // width={100 * 10}
-          height={headerHeight}
-          // height={80}
-          className={styles.calendarHeader}
-        />
-        {bottomValues} {topValues}
-      </g>
-    </div>
+    <g className="calendar">
+      <rect
+        x={0}
+        y={0}
+        width={columnWidth * dateSetup.dates.length}
+        height={headerHeight}
+        className={styles.calendarHeader}
+      />
+      {bottomValues} {topValues}
+    </g>
   )
 }
 

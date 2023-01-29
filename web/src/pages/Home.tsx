@@ -9,7 +9,7 @@ function Home() {
       <Link to={'/project/list'} className="mr-8">
         <Button>项目</Button>
       </Link>
-      <Link to={'/kanban'}>
+      <Link to={'/gantt'}>
         <Button>测试甘特图</Button>
       </Link>
     </div>
