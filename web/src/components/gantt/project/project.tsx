@@ -1,4 +1,4 @@
-import { BarTask } from './types'
+import { BarTask } from '../types'
 import styles from './project.module.css'
 
 interface Props {

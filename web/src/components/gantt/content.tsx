@@ -1,4 +1,4 @@
-import TaskItem from './taskItem'
+import TaskItem from './task-item'
 import { useEffect, useState } from 'react'
 import { BarTask } from './types'
 
@@ -31,9 +31,11 @@ const Content: React.FC<Props> = ({
     <g className="content">
       <g className="bar">
         {tasks.map((task) => {
-          return <TaskItem task={undefined} />
+          return <TaskItem task={task} />
         })}
       </g>
     </g>
   )
 }
+
+export default Content

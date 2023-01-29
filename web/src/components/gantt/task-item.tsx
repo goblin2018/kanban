@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 import { BarTask } from './types'
 import styles from './task.module.css'
-import Project from './project'
+import Project from './project/project'
+import Bar from './bar/bar'
 
 interface Props {
   task: BarTask
@@ -18,7 +19,7 @@ const TaskItem: React.FC<Props> = ({ task }) => {
         return <Project task={task} isSeleceted={false} />
 
       default:
-        return <Bar {...props} />
+        return <Bar task={task} isSelected={false} />
     }
   }
 

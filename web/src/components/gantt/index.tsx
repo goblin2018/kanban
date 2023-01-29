@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react'
-import Calendar from './calendar'
+import Calendar from './calendar/calendar'
+import Content from './content'
 import { ganttDateRange, seedDates } from './date'
-import Grid from './grid'
+import Grid from './grid/grid'
 import { removeHiddenTasks, sortTask } from './task'
 import { DateSetup, Task, ViewMode } from './types'
 
@@ -57,6 +58,7 @@ const Gantt: React.FC<Props> = ({
     dates: [],
     viewMode: viewMode,
   })
+  // TODO: tasks => barTasks
 
   return (
     <>
@@ -99,6 +101,14 @@ const Gantt: React.FC<Props> = ({
                 rowHeight={40}
                 columnWidth={50}
                 todayColor={'rgba(252, 248, 227, 0.5)'}
+              />
+
+              <Content
+                dates={dateSetup.dates}
+                timeStep={0}
+                columnWidth={50}
+                arrowColor={''}
+                tasks={tasks}
               />
             </svg>
           </div>
