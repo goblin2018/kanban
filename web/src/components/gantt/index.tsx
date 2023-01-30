@@ -1,12 +1,18 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import Calendar from './calendar/calendar'
-import { headerHeight, preStepsCount, rowHeight, taskHeight } from './conf'
+import {
+  headerHeight,
+  preStepsCount,
+  rowHeight,
+  taskHeight,
+} from './utils/conf'
 import Content from './content'
-import { ganttDateRange, seedDates } from './date'
+import { ganttDateRange, seedDates } from './utils/date'
 import Grid from './grid/grid'
 import HorizontalScroll from './scrollbar/scroll'
-import { convertToBarTasks, removeHiddenTasks, sortTask } from './task'
-import { BarTask, DateSetup, Task, ViewMode } from './types'
+import { convertToBarTasks, removeHiddenTasks, sortTask } from './utils/task'
+import { BarTask, DateSetup, Task, ViewMode } from './utils/types'
+import TaskItem from './taskbar/taskbar'
 
 let tasks: Task[] = [
   {
@@ -89,6 +95,16 @@ const Gantt: React.FC<Props> = ({}) => {
   const svgWidth = dateSetup.dates.length * columnWidth
   const svgHeight = tasks.length * rowHeight
 
+  const ganttContainerRef = useRef<HTMLDivElement>(null)
+  const [scrollLeft, setScrollLeft] = useState(0)
+  useEffect(() => {
+    console.log('scrollLeft is ', scrollLeft)
+
+    if (ganttContainerRef.current) {
+      ganttContainerRef.current.scrollLeft = scrollLeft
+    }
+  }, [scrollLeft])
+
   return (
     <div className="mx-4 my-8">
       this is gantt
@@ -115,7 +131,23 @@ const Gantt: React.FC<Props> = ({}) => {
           ))}
         </div>
 
-        <div className="flex-1 overflow-x-scroll">
+        <div
+          className="flex-1 overflow-hidden"
+          ref={ganttContainerRef}
+          onWheel={(e) => {
+            console.log(e.deltaY)
+            let nl = scrollLeft + e.deltaY
+            if (nl <= 0) {
+              nl = 0
+            } else if (
+              nl + ganttContainerRef.current!.clientWidth >=
+              svgWidth
+            ) {
+              nl = svgWidth - ganttContainerRef.current!.clientWidth
+            }
+            setScrollLeft(nl)
+          }}
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width={svgWidth}
@@ -147,27 +179,25 @@ const Gantt: React.FC<Props> = ({}) => {
                 todayColor={'rgba(252, 248, 227, 0.5)'}
               />
               {dateSetup.dates.length > 0 ? (
-                <Content
-                  dates={dateSetup.dates}
-                  timeStep={0}
-                  columnWidth={columnWidth}
-                  tasks={barTasks}
-                />
+                <g className="bar">
+                  {barTasks.map((task) => {
+                    return <TaskItem key={`taskItem-${task.id}`} task={task} />
+                  })}
+                </g>
               ) : null}
             </svg>
           </div>
         </div>
       </div>
-      <HorizontalScroll
-        svgWidth={svgWidth}
-        scroll={0}
-        taskListWidth={300}
-        onScroll={function (
-          event: React.SyntheticEvent<HTMLDivElement, Event>
-        ): void {
-          console.log(event)
-        }}
-      />
+      {ganttContainerRef.current && (
+        <HorizontalScroll
+          svgWidth={svgWidth}
+          scroll={scrollLeft}
+          taskListWidth={300}
+          width={ganttContainerRef.current?.clientWidth}
+          setScroll={setScrollLeft}
+        />
+      )}
     </div>
   )
 }

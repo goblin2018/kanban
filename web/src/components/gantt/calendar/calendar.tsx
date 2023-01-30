@@ -1,5 +1,5 @@
-import { getDaysInMonth, getLocalDayOfWeek, getLocaleMonth } from '../date'
-import { DateSetup, ViewMode } from '../types'
+import { getDaysInMonth, getLocalDayOfWeek, getLocaleMonth } from '../utils/date'
+import { DateSetup, ViewMode } from '../utils/types'
 
 import styles from './calendar.module.css'
 import TopPartOfCalendar from './calendar-top'

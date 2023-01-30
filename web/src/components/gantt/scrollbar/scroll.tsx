@@ -1,18 +1,20 @@
-import { SyntheticEvent, useEffect, useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import styles from './scroll.module.css'
 
 interface Props {
   scroll: number
+  setScroll: (scroll: number) => void
   svgWidth: number
   taskListWidth: number
-  onScroll: (event: SyntheticEvent<HTMLDivElement>) => void
+  width: number
 }
 
 const HorizontalScroll: React.FC<Props> = ({
   scroll,
+  setScroll,
   svgWidth,
   taskListWidth,
-  onScroll,
+  width,
 }) => {
   const scrollRef = useRef<HTMLDivElement>(null)
 
@@ -24,9 +26,11 @@ const HorizontalScroll: React.FC<Props> = ({
 
   return (
     <div
-      style={{ margin: `0 0 0 ${taskListWidth}px` }}
-      className={styles.scrollWrapper}
-      onScroll={onScroll}
+      style={{ left: taskListWidth, width: width }}
+      className={`${styles.scrollWrapper} fixed bottom-4`}
+      onScroll={(e) => {
+        setScroll(scrollRef.current!.scrollLeft)
+      }}
       ref={scrollRef}
     >
       <div style={{ width: svgWidth }} className={styles.scroll}></div>

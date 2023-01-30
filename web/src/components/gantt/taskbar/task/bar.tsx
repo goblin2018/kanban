@@ -1,6 +1,11 @@
-import { barBackgroundColor, barBackgroundSelectedColor, barCornerRadius, taskHeight } from '../conf'
-import { BarTask } from '../types'
-import BarDisplay from './bar-display'
+import { BarTask } from 'components/gantt/utils/types'
+import {
+  barBackgroundColor,
+  barBackgroundSelectedColor,
+  barCornerRadius,
+  taskHeight,
+} from 'components/gantt/utils/conf'
+
 import styles from './bar.module.css'
 import DateHandle from './date-handle'
 interface Props {

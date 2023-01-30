@@ -1,6 +1,6 @@
-import TaskItem from './task-item'
+import TaskItem from './taskbar/taskbar'
 import { useEffect, useState } from 'react'
-import { BarTask } from './types'
+import { BarTask } from './utils/types'
 
 interface Props {
   dates: Date[]

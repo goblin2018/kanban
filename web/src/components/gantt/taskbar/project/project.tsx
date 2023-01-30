@@ -3,8 +3,8 @@ import {
   projectBackgroundColor,
   projectBackgroundSelectedColor,
   taskHeight,
-} from '../conf'
-import { BarTask } from '../types'
+} from 'components/gantt/utils/conf'
+import { BarTask } from 'components/gantt/utils/types'
 import styles from './project.module.css'
 
 interface Props {

@@ -1,6 +1,6 @@
-import { Task } from '../types'
+import { Task } from '../utils/types'
 import styles from './grid.module.css'
-import { addToDate } from '../date'
+import { addToDate } from '../utils/date'
 
 interface Props {
   tasks: Task[]

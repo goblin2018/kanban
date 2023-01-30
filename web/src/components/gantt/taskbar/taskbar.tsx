@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
-import { BarTask } from './types'
+import { BarTask } from '../utils/types'
 import styles from './task.module.css'
 import Project from './project/project'
-import Bar from './bar/bar'
+import Bar from './task/bar'
 
 interface Props {
   task: BarTask
