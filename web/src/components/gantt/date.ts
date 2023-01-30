@@ -1,3 +1,4 @@
+import { preStepsCount } from './conf'
 import { Task, ViewMode } from './types'
 import DateTimeFormatOptions = Intl.DateTimeFormatOptions
 import DateTimeFormat = Intl.DateTimeFormat
@@ -41,15 +42,8 @@ export const getCachedDateTimeFormat = (
   return dtf
 }
 
-export const getLocaleMonth = (date: Date, locale: string) => {
-  let bottomValue = getCachedDateTimeFormat(locale, { month: 'long' }).format(
-    date
-  )
-  bottomValue = bottomValue.replace(
-    bottomValue[0],
-    bottomValue[0].toLocaleUpperCase()
-  )
-  return bottomValue
+export const getLocaleMonth = (date: Date) => {
+  return `${date.getFullYear()}年${date.getMonth()+1}月`
 }
 
 export const getDaysInMonth = (month: number, year: number) => {
@@ -84,11 +78,7 @@ export const startOfDate = (date: Date, scale: DateHelperScales) => {
   }
 }
 
-export const ganttDateRange = (
-  tasks: Task[],
-  viewMode: ViewMode,
-  preStepsCount: number
-) => {
+export const ganttDateRange = (tasks: Task[], viewMode: ViewMode) => {
   let newStartDate: Date = tasks[0].start
   let newEndDate: Date = tasks[0].end
   for (const t of tasks) {

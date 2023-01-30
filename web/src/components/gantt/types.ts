@@ -12,7 +12,7 @@ export interface DateSetup {
   viewMode: ViewMode
 }
 
-export type TaskType = 'task' | 'milestone' | 'project'
+export type TaskType = 'task' | 'milestone' | 'project' | 'smalltask'
 
 export interface Task {
   id: string

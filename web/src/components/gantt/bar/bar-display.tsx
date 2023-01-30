@@ -1,3 +1,4 @@
+import { barBackgroundColor, barBackgroundSelectedColor } from '../conf'
 import style from './bar.module.css'
 interface Props {
   onMouseDown: () => void
@@ -33,7 +34,8 @@ const BarDisplay: React.FC<Props> = ({
   }
 
   const getBarColor = () => {
-    return isSelected ? styles.backgroundSelectedColor : styles.backgroundColor
+    
+    return isSelected ? barBackgroundSelectedColor : barBackgroundColor
   }
 
   return (
@@ -41,13 +43,14 @@ const BarDisplay: React.FC<Props> = ({
       <rect
         x={x}
         y={y}
+        width={width}
         height={height}
         ry={barCornerRadius}
         rx={barCornerRadius}
         fill={getBarColor()}
         className={style.background}
       />
-      <rect
+      {/* <rect
         x={progressX}
         width={progressWidth}
         y={y}
@@ -55,7 +58,7 @@ const BarDisplay: React.FC<Props> = ({
         ry={barCornerRadius}
         rx={barCornerRadius}
         fill={getProgressColor()}
-      />
+      /> */}
     </g>
   )
 }

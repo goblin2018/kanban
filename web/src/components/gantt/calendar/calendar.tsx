@@ -29,7 +29,7 @@ const Calendar: React.FC<Props> = ({
     const topDefaultHeight = headerHeight * 0.5
     const dates = dateSetup.dates
     dates.map((d, i) => {
-      const bottomValue = `${getLocalDayOfWeek(d, locale, 'short')}  ${d
+      const bottomValue = `${getLocalDayOfWeek(d, locale, 'narrow')}  ${d
         .getDate()
         .toString()}`
       bottomValues.push(
@@ -44,7 +44,8 @@ const Calendar: React.FC<Props> = ({
       )
 
       if (i + 1 !== dates.length && d.getMonth() !== dates[i + 1].getMonth()) {
-        const topValue = getLocaleMonth(d, locale)
+        const topValue = getLocaleMonth(d)
+        
         topValues.push(
           <TopPartOfCalendar
             key={topValue + d.getFullYear()}

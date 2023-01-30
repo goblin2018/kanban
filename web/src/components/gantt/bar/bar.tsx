@@ -1,3 +1,4 @@
+import { barBackgroundColor, barBackgroundSelectedColor, barCornerRadius, taskHeight } from '../conf'
 import { BarTask } from '../types'
 import BarDisplay from './bar-display'
 import styles from './bar.module.css'
@@ -16,19 +17,21 @@ const Bar: React.FC<Props> = ({ task, isSelected }) => {
 
   const handleHeight = task.height - 2
 
+  const getBarColor = () => {
+    return isSelected ? barBackgroundSelectedColor : barBackgroundColor
+  }
+
   return (
     <g className={styles.barWrapper} tabIndex={0}>
-      <BarDisplay
+      <rect
         x={task.x1}
         y={task.y}
         width={task.x2 - task.x1}
-        height={task.height}
-        progressX={task.progressX}
-        progressWidth={task.progressWidth}
-        onMouseDown={() => {}}
-        isSelected={isSelected}
-        barCornerRadius={task.barCornerRadius}
-        styles={task.styles}
+        height={taskHeight}
+        ry={barCornerRadius}
+        rx={barCornerRadius}
+        fill={getBarColor()}
+        className={styles.barBackground}
       />
 
       <g className="hanldeGroup">

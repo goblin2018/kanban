@@ -6,17 +6,15 @@ interface Props {
   dates: Date[]
   timeStep: number
   columnWidth: number
-  arrowColor: string
   tasks: BarTask[]
 }
 const Content: React.FC<Props> = ({
   dates,
   timeStep,
   columnWidth,
-  arrowColor,
   tasks,
 }) => {
-  const [xStep, setXStep] = useState(0)
+  const [xStep, setXStep] = useState(10)
 
   useEffect(() => {
     const dateDeleta =
@@ -31,7 +29,7 @@ const Content: React.FC<Props> = ({
     <g className="content">
       <g className="bar">
         {tasks.map((task) => {
-          return <TaskItem task={task} />
+          return <TaskItem key={`taskItem-${task.id}`} task={task} />
         })}
       </g>
     </g>

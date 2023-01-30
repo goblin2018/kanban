@@ -17,7 +17,7 @@ const router = createBrowserRouter([
   // },
   {
     path: '/gantt',
-    element: <Gantt />,
+    element: <Gantt  />,
   },
   // {
   //   path: '/project',

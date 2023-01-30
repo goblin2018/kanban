@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client'
 import { RouterProvider } from 'react-router-dom'
 import { Provider } from 'react-redux'
 import { PersistGate } from 'redux-persist/integration/react'
+import '@fontsource/roboto' // Defaults to weight 400.
 
 import 'antd/dist/reset.css'
 import './index.css'
