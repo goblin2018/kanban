@@ -1,5 +1,3 @@
-import { exitCode } from 'process'
-
 export enum ViewMode {
   Day = 'Day',
   Week = 'Week',
@@ -21,14 +19,6 @@ export interface Task {
   start: Date
   end: Date
   // 0-100
-  progress: number
-  styles?: {
-    backgroundColor?: string
-    backgroundSelectedColor?: string
-    progressColor?: string
-    progressSelectedColor?: string
-  }
-
   isDisabled?: boolean
   project?: string
   dependencies?: string[]
@@ -43,9 +33,7 @@ export interface BarTask extends Task {
   x2: number
   y: number
   height: number
-  progressX: number
-  progressWidth: number
-  barCornerRadius: number
+
   handleWidth: number
   barChildren: BarTask[]
   styles: {

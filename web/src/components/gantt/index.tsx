@@ -6,13 +6,13 @@ import {
   rowHeight,
   taskHeight,
 } from './utils/conf'
-import Content from './content'
 import { ganttDateRange, seedDates } from './utils/date'
 import Grid from './grid/grid'
 import HorizontalScroll from './scrollbar/scroll'
 import { convertToBarTasks, removeHiddenTasks, sortTask } from './utils/task'
 import { BarTask, DateSetup, Task, ViewMode } from './utils/types'
 import TaskItem from './taskbar/taskbar'
+import ViewModeSwither from './viewmodeSwitcher'
 
 let tasks: Task[] = [
   {
@@ -21,7 +21,6 @@ let tasks: Task[] = [
     name: 'p1',
     start: new Date(2023, 0, 1),
     end: new Date(2023, 0, 10),
-    progress: 10,
   },
   {
     id: '4',
@@ -29,7 +28,6 @@ let tasks: Task[] = [
     name: 't4这个任务很长啊',
     start: new Date(2023, 0, 2),
     end: new Date(2023, 0, 3),
-    progress: 10,
   },
   {
     id: '3',
@@ -37,7 +35,6 @@ let tasks: Task[] = [
     name: 't3',
     start: new Date(2023, 0, 1),
     end: new Date(2023, 0, 10),
-    progress: 10,
   },
   {
     id: '2',
@@ -45,7 +42,6 @@ let tasks: Task[] = [
     name: 'p2',
     start: new Date(2023, 1, 1),
     end: new Date(2023, 1, 10),
-    progress: 10,
   },
 ]
 
@@ -135,7 +131,9 @@ const Gantt: React.FC<Props> = ({}) => {
           className="flex-1 overflow-hidden"
           ref={ganttContainerRef}
           onWheel={(e) => {
-            console.log(e.deltaY)
+            if (!e.shiftKey) {
+              return
+            }
             let nl = scrollLeft + e.deltaY
             if (nl <= 0) {
               nl = 0
@@ -148,6 +146,7 @@ const Gantt: React.FC<Props> = ({}) => {
             setScrollLeft(nl)
           }}
         >
+          <ViewModeSwither viewMode={viewMode} setViewMode={setViewMode} />
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width={svgWidth}

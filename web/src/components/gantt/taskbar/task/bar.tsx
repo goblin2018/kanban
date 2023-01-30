@@ -14,12 +14,6 @@ interface Props {
 }
 
 const Bar: React.FC<Props> = ({ task, isSelected }) => {
-  const progressPoint = getProgressPoint(
-    task.progressWidth + task.progressX,
-    task.y,
-    task.height
-  )
-
   const handleHeight = task.height - 2
 
   const getBarColor = () => {
@@ -64,19 +58,3 @@ const Bar: React.FC<Props> = ({ task, isSelected }) => {
 }
 
 export default Bar
-
-const getProgressPoint = (
-  progressX: number,
-  taskY: number,
-  taskHeight: number
-) => {
-  const point = [
-    progressX - 5,
-    taskY + taskHeight,
-    progressX + 5,
-    taskY + taskHeight,
-    progressX,
-    taskY + taskHeight - 8.66,
-  ]
-  return point.join(',')
-}

@@ -32,9 +32,16 @@ const TaskItem: React.FC<Props> = ({ task }) => {
   const getX = () => {
     const width = task.x2 - task.x1
     if (isTextInside) {
-      return task.x1 + width * 0.5
+      return task.x1 + 20
     }
-    return task.x1 + width
+    return task.x1 + width + 10
+  }
+
+  const getY = () => {
+    if (isTextInside) {
+      return task.y + task.height * 0.5
+    }
+    return task.y + task.height * 0.65
   }
 
   return (
@@ -54,7 +61,7 @@ const TaskItem: React.FC<Props> = ({ task }) => {
       {getTaskItem()}
       <text
         x={getX()}
-        y={task.y + task.height * 0.5}
+        y={getY()}
         className={
           isTextInside
             ? styles.barLabel
