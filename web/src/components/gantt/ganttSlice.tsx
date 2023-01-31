@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { ColumnWidthConf } from './utils/conf'
 import { GanttTask, ViewMode } from './utils/types'
 
-interface GanttState {
+export interface GanttState {
   viewMode: ViewMode
   tasks: GanttTask[]
   dates: Date[]

@@ -54,9 +54,6 @@ const Grid: React.FC<Props> = ({ todayColor = 'rgba(252, 248, 227, 0.5)' }) => {
   for (let i = 0; i < dates.length; i++) {
     const date = dates[i]
 
-    console.log('date i', date)
-    console.log('ddddd', date.getDate())
-
     ticks.push(
       <line
         key={date.getTime()}

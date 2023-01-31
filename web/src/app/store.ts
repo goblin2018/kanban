@@ -1,40 +1,61 @@
 import storage from 'redux-persist/lib/storage'
 import { persistStore, persistReducer, createTransform } from 'redux-persist'
-import {
-  CombinedState,
-  combineReducers,
-  configureStore,
-} from '@reduxjs/toolkit'
+import { combineReducers, configureStore } from '@reduxjs/toolkit'
 import projectSlice from 'pages/projects/projectSlice'
 import taskSlice from 'pages/project/task/taskSlice'
-import ganttSlice from 'components/gantt/ganttSlice'
+import ganttSlice, { GanttState } from 'components/gantt/ganttSlice'
 
 const persistConfig = {
   key: 'root',
   storage,
   // whiteList: [],
-  blackList: [],
-  transforms: [
-    createTransform(JSON.stringify, (toRehydrate) =>
-      JSON.parse(toRehydrate, (key, value) =>
-        typeof value === 'string' &&
-        value.match(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/)
-          ? new Date(value)
-          : value
-      )
-    ),
-  ],
 }
+
+let ganttReducer = persistReducer(
+  {
+    key: 'gantt',
+    storage,
+    // whiteList: [],
+    transforms: [
+      createTransform(
+        (state) => {
+          return state
+        },
+
+        (outboundState, key) => {
+          switch (key) {
+            case 'hold':
+              return -1
+            case 'diffX':
+              return 0
+            case 'dates':
+              return outboundState.map((t: string) => new Date(t))
+            case 'tasks':
+              return outboundState.map((t: any) => ({
+                ...t,
+                start: new Date(t.start),
+                end: new Date(t.end),
+              }))
+            default:
+              return outboundState
+          }
+        }
+      ),
+    ],
+  },
+  ganttSlice
+) as unknown as typeof ganttSlice
 
 const reducer = combineReducers({
   project: projectSlice,
   task: taskSlice,
-  gantt: ganttSlice,
+  gantt: ganttReducer,
 })
 
-const persistedReducer = persistReducer<CombinedState<{ project: 
-
-}>>(persistConfig, reducer)
+const persistedReducer = persistReducer<any>(
+  persistConfig,
+  reducer
+) as typeof reducer
 
 const store = configureStore({
   reducer: persistedReducer,

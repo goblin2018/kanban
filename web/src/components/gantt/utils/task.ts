@@ -1,4 +1,3 @@
-import Col from 'antd/lib/grid/col'
 import {
   barBackgroundColor,
   ColumnWidthConf,
@@ -15,7 +14,7 @@ export const loadBarInfo = (
   dates: Date[],
   viewMode: ViewMode
 ) => {
-  let ts = [...tasks]
+  let ts = tasks.map((t) => ({ ...t }))
   let index = 0
   ts.forEach((t, i) => {
     t.index = index
@@ -23,6 +22,7 @@ export const loadBarInfo = (
 
     loadBarInfoImpl(t, dates, viewMode)
     if (t.type == 'project') {
+      t.children = t.children?.map((tc) => ({ ...tc }))
       t.children?.forEach((tc, j) => {
         tc.index = index
         index += 1

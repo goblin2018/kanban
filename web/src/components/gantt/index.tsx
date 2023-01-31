@@ -76,22 +76,7 @@ const Gantt: React.FC<Props> = ({}) => {
         >
           <ViewModeSwither />
           <Calendar />
-
-          <div>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width={totalWidth}
-              height={rowCount * rowHeight}
-              // fontFamily={barProps.fontFamily}
-
-              onMouseMove={(e) => {
-                // console.log('move ', e.clientX)
-              }}
-            >
-              <Grid />
-              <Bars />
-            </svg>
-          </div>
+          <Bars />
         </div>
       </div>
       {ganttContainerRef.current && (
