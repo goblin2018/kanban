@@ -1,10 +1,10 @@
+import { useAppSelector } from 'app/hooks'
 import { useEffect, useRef } from 'react'
 import styles from './scroll.module.css'
 
 interface Props {
   scroll: number
   setScroll: (scroll: number) => void
-  svgWidth: number
   taskListWidth: number
   width: number
 }
@@ -12,10 +12,10 @@ interface Props {
 const HorizontalScroll: React.FC<Props> = ({
   scroll,
   setScroll,
-  svgWidth,
   taskListWidth,
   width,
 }) => {
+  const totalWidth = useAppSelector((s) => s.gantt.totalWidth)
   const scrollRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -33,7 +33,7 @@ const HorizontalScroll: React.FC<Props> = ({
       }}
       ref={scrollRef}
     >
-      <div style={{ width: svgWidth }} className={styles.scroll}></div>
+      <div style={{ width: totalWidth }} className={styles.scroll}></div>
     </div>
   )
 }

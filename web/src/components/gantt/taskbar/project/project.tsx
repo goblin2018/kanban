@@ -4,11 +4,11 @@ import {
   projectBackgroundSelectedColor,
   taskHeight,
 } from 'components/gantt/utils/conf'
-import { BarTask } from 'components/gantt/utils/types'
+import { GanttTask } from 'components/gantt/utils/types'
 import styles from './project.module.css'
 
 interface Props {
-  task: BarTask
+  task: GanttTask
   isSeleceted: boolean
 }
 const Project: React.FC<Props> = ({ task, isSeleceted }) => {
@@ -16,15 +16,15 @@ const Project: React.FC<Props> = ({ task, isSeleceted }) => {
     ? projectBackgroundSelectedColor
     : projectBackgroundColor
 
-  const projectWidth = task.x2 - task.x1
+  const projectWidth = task.barInfo!.x2! - task.barInfo!.x1!
 
   return (
     <g tabIndex={0} className={styles.projectWrapper}>
       <rect
         fill={barColor}
-        x={task.x1}
+        x={task.barInfo!.x1!}
         width={projectWidth}
-        y={task.y}
+        y={task.barInfo!.y!}
         height={taskHeight}
         rx={barCornerRadius}
         ry={barCornerRadius}

@@ -7,6 +7,7 @@ export interface TaskGroup {
   name?: string
   serial?: number
   tasks?: Task[]
+  color?: string
 }
 
 const url = '/api/taskgroup'

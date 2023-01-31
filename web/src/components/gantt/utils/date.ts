@@ -1,7 +1,5 @@
 import { preStepsCount } from './conf'
-import { Task, ViewMode } from './types'
-import DateTimeFormatOptions = Intl.DateTimeFormatOptions
-import DateTimeFormat = Intl.DateTimeFormat
+import { GanttTask, ViewMode } from './types'
 
 type DateHelperScales =
   | 'year'
@@ -12,41 +10,16 @@ type DateHelperScales =
   | 'second'
   | 'millisecond'
 
-const intlDTCache: any = {}
-
-export const getLocalDayOfWeek = (
-  date: Date,
-  locale: string,
-  format?: 'long' | 'short' | 'narrow'
-) => {
-  let bottomValue = getCachedDateTimeFormat(locale, { weekday: format }).format(
-    date
-  )
-  bottomValue = bottomValue.replace(
-    bottomValue[0],
-    bottomValue[0].toLocaleUpperCase()
-  )
-  return bottomValue
+export const getWeekDay = (date: Date) => {
+  let arr = ['日', '一', '二', '三', '四', '五', '六']
+  return arr[date.getDay()]
 }
 
-export const getCachedDateTimeFormat = (
-  locString: string | string[],
-  opts: DateTimeFormatOptions = {}
-): DateTimeFormat => {
-  const key = JSON.stringify([locString, opts])
-  let dtf = intlDTCache[key]
-  if (!dtf) {
-    dtf = new Intl.DateTimeFormat(locString, opts)
-    intlDTCache[key] = dtf
-  }
-  return dtf
+export const getMonth = (date: Date) => {
+  return `${date.getFullYear()}年${date.getMonth() + 1}月`
 }
 
-export const getLocaleMonth = (date: Date) => {
-  return `${date.getFullYear()}年${date.getMonth()+1}月`
-}
-
-export const getDaysInMonth = (month: number, year: number) => {
+export const getDaysInMonth = (year: number, month: number) => {
   return new Date(year, month + 1, 0).getDate()
 }
 export const addToDate = (
@@ -78,15 +51,16 @@ export const startOfDate = (date: Date, scale: DateHelperScales) => {
   }
 }
 
-export const ganttDateRange = (tasks: Task[], viewMode: ViewMode) => {
-  let newStartDate: Date = tasks[0].start
-  let newEndDate: Date = tasks[0].end
+export const ganttDateRange = (tasks: GanttTask[], viewMode: ViewMode) => {
+  // TODO 处理task中没有时间的问题
+  let newStartDate: Date = tasks[0].start!
+  let newEndDate: Date = tasks[0].end!
   for (const t of tasks) {
-    if (t.start < newStartDate) {
-      newStartDate = t.start
+    if (t.start! < newStartDate) {
+      newStartDate = t.start!
     }
-    if (t.end > newEndDate) {
-      newEndDate = t.end
+    if (t.end! > newEndDate) {
+      newEndDate = t.end!
     }
   }
 
@@ -117,7 +91,7 @@ export const ganttDateRange = (tasks: Task[], viewMode: ViewMode) => {
       newStartDate = startOfDate(newStartDate, 'day')
       newStartDate = addToDate(newStartDate, -1 * preStepsCount, 'day')
       newEndDate = startOfDate(newEndDate, 'day')
-      newEndDate = addToDate(newEndDate, 66, 'hour')
+      newEndDate = addToDate(newEndDate, 3, 'day')
       break
   }
   return [newStartDate, newEndDate]

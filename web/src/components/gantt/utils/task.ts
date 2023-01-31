@@ -1,117 +1,102 @@
+import Col from 'antd/lib/grid/col'
 import {
   barBackgroundColor,
-  barBackgroundSelectedColor,
-  barCornerRadius,
-  barProgressColor,
-  barProgressSelectedColor,
-  handleWidth,
+  ColumnWidthConf,
+  projectBackgroundColor,
   rowHeight,
+  StepWidth,
   taskHeight,
 } from './conf'
-import { Task } from './types'
+import { addToDate, getDaysInMonth } from './date'
+import { GanttTask, ViewMode } from './types'
 
-export const sortTask = (a: Task, b: Task) => {
-  let oa = a.displayOrder || Number.MAX_VALUE
-  let ob = b.displayOrder || Number.MAX_VALUE
-  if (oa > ob) {
-    return 1
-  } else if (oa == ob) {
-    return 0
-  } else {
-    return -1
-  }
-}
+export const loadBarInfo = (
+  tasks: GanttTask[],
+  dates: Date[],
+  viewMode: ViewMode
+) => {
+  let ts = [...tasks]
+  let index = 0
+  ts.forEach((t, i) => {
+    t.index = index
+    index += 1
 
-export const removeHiddenTasks = (tasks: Task[]) => {
-  const groupedTasks = tasks.filter(
-    (t) => t.hideChildren && t.type == 'project'
-  )
-
-  if (groupedTasks.length > 0) {
-    for (let i = 0; i < groupedTasks.length; i++) {
-      const gt = groupedTasks[i]
-      const children = getChildren(tasks, gt)
-      tasks = tasks.filter((t) => children.indexOf(t) == -1)
+    loadBarInfoImpl(t, dates, viewMode)
+    if (t.type == 'project') {
+      t.children?.forEach((tc, j) => {
+        tc.index = index
+        index += 1
+        loadBarInfoImpl(tc, dates, viewMode)
+      })
     }
-  }
-  return tasks
-}
-
-const getChildren = (taskList: Task[], task: Task) => {
-  let tasks: Task[] = []
-  if (task.type == 'project') {
-    tasks = taskList.filter(
-      (t) => t.dependencies && t.dependencies.indexOf(task.id) !== -1
-    )
-  } else {
-    tasks = taskList.filter((t) => t.project && t.project == task.id)
-  }
-  let taskChildren: Task[] = []
-  tasks.forEach((t) => taskChildren.push(...taskList, t))
-  tasks = tasks.concat(tasks, taskChildren)
-  return tasks
-}
-
-export const convertToBarTasks = (
-  tasks: Task[],
-  dates: Date[],
-  columnWidth: number
-) => {
-  let barTasks = tasks.map((t, i) => {
-    return convertToBarTask(t, i, dates, columnWidth)
   })
-  return barTasks
+
+  return { tasks: ts, rowCount: index }
 }
 
-const convertToBarTask = (
-  task: Task,
-  index: number,
+const isRun = (year: number) => {
+  return (year % 100 != 0 && year % 4 == 0) || year % 400 == 0
+}
+
+const loadBarInfoImpl = (
+  task: GanttTask,
   dates: Date[],
-  columnWidth: number
+  viewMode: ViewMode
 ) => {
-  let x1 = taskXCoordinate(task.start, dates, columnWidth)
-  let x2 = taskXCoordinate(task.end, dates, columnWidth)
-
-  let typeInternal = task.type
-  if (typeInternal == 'task' && x2 - x1 < handleWidth * 2) {
-    typeInternal = 'smalltask'
-    x2 = x1 + handleWidth * 2
+  let barInfo = task.barInfo
+  barInfo = {
+    color: task.type == 'project' ? projectBackgroundColor : barBackgroundColor,
   }
-  const y = taskYCoordinate(index)
-  const hideChildren = task.type == 'project' ? task.hideChildren : undefined
-
-  const styles = {
-    backgroundColor: barBackgroundColor,
-    backgroundSelectedColor: barBackgroundSelectedColor,
-    progressColor: barProgressColor,
-    progressSelectedColor: barProgressSelectedColor,
-  }
-
-  return {
-    ...task,
-    typeInternal,
-    x1,
-    x2,
-    y,
-    index,
-
-    barCornerRadius,
-    handleWidth,
-    hideChildren,
-    height: taskHeight,
-    barChildren: [],
-    styles,
-  }
+  barInfo.x1 = taskXCoordinate(task.start!, dates, viewMode)
+  barInfo.x2 = taskXCoordinate(task.end!, dates, viewMode, true)
+  barInfo.y = taskYCoordinate(task.index)
+  task.barInfo = barInfo
 }
 
-const taskXCoordinate = (xDate: Date, dates: Date[], columnWidth: number) => {
-  const index = dates.findIndex((d) => d.getTime() >= xDate.getTime()) - 1
+const taskXCoordinate = (
+  d: Date,
+  dates: Date[],
+  viewMode: ViewMode,
+  isEnd: boolean = false
+) => {
+  if (isEnd) {
+    d = addToDate(d, 1, 'day')
+  }
+  let start = dates[0]
+  if (viewMode == ViewMode.Day || viewMode == ViewMode.Week) {
+    let step = StepWidth[viewMode]
+    return ((d.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) * step
+  }
 
-  const remainderMillis = xDate.getTime() - dates[index].getTime()
-  const percentOfInterval =
-    remainderMillis / (dates[index + 1].getTime() - dates[index].getTime())
-  const x = index * columnWidth + percentOfInterval * columnWidth
-  return x
+  if (viewMode == ViewMode.Month) {
+    let dm =
+      (d.getFullYear() - start.getFullYear()) * 12 +
+      (d.getMonth() - start.getMonth())
+
+    let dday = d.getDate() / getDaysInMonth(d.getFullYear(), d.getMonth())
+    return (dm + dday) * ColumnWidthConf[ViewMode.Month]
+  }
+
+  // viewMode year
+
+  let dy = d.getFullYear() - start.getFullYear()
+
+  let days = d.getDate()
+  for (let index = 0; index < d.getMonth(); index++) {
+    days += getDaysInMonth(d.getFullYear(), index)
+  }
+  let totalDays = isRun(d.getFullYear()) ? 366 : 365
+
+  return (dy + days / totalDays) * ColumnWidthConf[ViewMode.Year]
+
+  // let columnWidth = ColumnWidthConf[viewMode]
+  // const index = dates.findIndex((d) => d.getTime() >= d.getTime()) - 1
+
+  // const remainderMillis = d.getTime() - dates[index].getTime()
+  // const percentOfInterval =
+  //   remainderMillis / (dates[index + 1].getTime() - dates[index].getTime())
+  // const x = index * columnWidth + percentOfInterval * columnWidth
+  // return x
 }
 
 const taskYCoordinate = (index: number) => {

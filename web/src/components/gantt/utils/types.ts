@@ -10,38 +10,23 @@ export interface DateSetup {
   viewMode: ViewMode
 }
 
-export type TaskType = 'task' | 'milestone' | 'project' | 'smalltask'
+export type TaskType = 'task' | 'project'
 
-export interface Task {
-  id: string
-  type: TaskType
+export interface GanttTask {
+  id: number
   name: string
-  start: Date
-  end: Date
-  // 0-100
-  isDisabled?: boolean
-  project?: string
-  dependencies?: string[]
-  hideChildren?: boolean
-  displayOrder?: number
-}
-
-export interface BarTask extends Task {
+  pIndex: number
   index: number
-  typeInternal: TaskTypeInternal
-  x1: number
-  x2: number
-  y: number
-  height: number
+  type: TaskType
+  start?: Date
+  end?: Date
+  hideChildren?: boolean
+  children?: GanttTask[]
 
-  handleWidth: number
-  barChildren: BarTask[]
-  styles: {
-    backgroundColor: string
-    backgroundSelectedColor: string
-    progressColor: string
-    progressSelectedColor: string
+  barInfo?: {
+    color: string
+    x1?: number
+    x2?: number
+    y?: number
   }
 }
-
-export type TaskTypeInternal = TaskType | 'smalltask'

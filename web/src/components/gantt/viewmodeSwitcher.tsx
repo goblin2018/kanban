@@ -1,13 +1,14 @@
 import { Radio } from 'antd'
+import { useAppDispatch, useAppSelector } from 'app/hooks'
 import React from 'react'
+import { setViewMode } from './ganttSlice'
 import { ViewMode } from './utils/types'
 
-interface Props {
-  viewMode: ViewMode
-  setViewMode: (mode: ViewMode) => void
-}
+interface Props {}
 
-const ViewModeSwither: React.FC<Props> = ({ viewMode, setViewMode }) => {
+const ViewModeSwither: React.FC<Props> = () => {
+  const viewMode = useAppSelector((s) => s.gantt.viewMode)
+  const dispatch = useAppDispatch()
   return (
     <div className="absolute right-4">
       <Radio.Group
@@ -15,7 +16,7 @@ const ViewModeSwither: React.FC<Props> = ({ viewMode, setViewMode }) => {
         buttonStyle="solid"
         value={viewMode}
         onChange={(e) => {
-          setViewMode(e.target.value)
+          dispatch(setViewMode(e.target.value))
         }}
       >
         <Radio.Button value={ViewMode.Day}>日</Radio.Button>

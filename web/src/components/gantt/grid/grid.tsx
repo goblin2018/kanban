@@ -1,23 +1,15 @@
-import { Task } from '../utils/types'
 import styles from './grid.module.css'
 import { addToDate } from '../utils/date'
+import { rowHeight } from '../utils/conf'
+import { useAppSelector } from 'app/hooks'
 
 interface Props {
-  tasks: Task[]
-  dates: Date[]
-  svgWidth: number
-  rowHeight: number
-  columnWidth: number
-  todayColor: string
+  todayColor?: string
 }
-const Grid: React.FC<Props> = ({
-  tasks,
-  dates,
-  svgWidth,
-  rowHeight,
-  columnWidth,
-  todayColor,
-}) => {
+const Grid: React.FC<Props> = ({ todayColor = 'rgba(252, 248, 227, 0.5)' }) => {
+  const { totalWidth, rowCount, dates, columnWidth } = useAppSelector(
+    (s) => s.gantt
+  )
   let y = 0
   let gridRows = []
   const rowLines = [
@@ -25,29 +17,29 @@ const Grid: React.FC<Props> = ({
       key="RowLineFirst"
       x="0"
       y1={0}
-      x2={svgWidth}
+      x2={totalWidth}
       y2={0}
       className={styles.gridRowLine}
     />,
   ]
 
-  for (const t of tasks) {
+  for (let i = 0; i < rowCount; i++) {
     gridRows.push(
       <rect
-        key={`row${t.id}`}
+        key={`row${i}`}
         x="0"
         y={y}
-        width={svgWidth}
+        width={totalWidth}
         height={rowHeight}
         className={styles.gridRow}
       />
     )
     rowLines.push(
       <line
-        key={`RowLine` + t.id}
+        key={`RowLine` + i}
         x="0"
         y1={y + rowHeight}
-        x2={svgWidth}
+        x2={totalWidth}
         y2={y + rowHeight}
         className={styles.gridRowLine}
       />
@@ -61,6 +53,10 @@ const Grid: React.FC<Props> = ({
   let today = <rect />
   for (let i = 0; i < dates.length; i++) {
     const date = dates[i]
+
+    console.log('date i', date)
+    console.log('ddddd', date.getDate())
+
     ticks.push(
       <line
         key={date.getTime()}

@@ -1,11 +1,12 @@
 import { useEffect, useRef, useState } from 'react'
-import { BarTask } from '../utils/types'
+import { GanttTask } from '../utils/types'
 import styles from './task.module.css'
 import Project from './project/project'
 import Bar from './task/bar'
+import { taskHeight } from '../utils/conf'
 
 interface Props {
-  task: BarTask
+  task: GanttTask
 }
 const TaskItem: React.FC<Props> = ({ task }) => {
   const [isTextInside, setIsTextInside] = useState(true)
@@ -14,7 +15,7 @@ const TaskItem: React.FC<Props> = ({ task }) => {
   const getTaskItem = () => {
     console.log('invoke getTaskItem')
 
-    switch (task.typeInternal) {
+    switch (task.type) {
       case 'project':
         return <Project task={task} isSeleceted={false} />
 
@@ -25,23 +26,25 @@ const TaskItem: React.FC<Props> = ({ task }) => {
 
   useEffect(() => {
     if (textRef.current) {
-      setIsTextInside(textRef.current.getBBox().width < task.x2 - task.x1)
+      setIsTextInside(
+        textRef.current.getBBox().width < task.barInfo!.x2! - task.barInfo!.x1!
+      )
     }
   }, [textRef, task])
 
   const getX = () => {
-    const width = task.x2 - task.x1
+    const width = task.barInfo!.x2! - task.barInfo!.x1!
     if (isTextInside) {
-      return task.x1 + 20
+      return task.barInfo!.x1! + 20
     }
-    return task.x1 + width + 10
+    return task.barInfo!.x1! + width + 10
   }
 
   const getY = () => {
     if (isTextInside) {
-      return task.y + task.height * 0.5
+      return task.barInfo!.y! + taskHeight * 0.5
     }
-    return task.y + task.height * 0.65
+    return task.barInfo!.y! + taskHeight * 0.65
   }
 
   return (
@@ -56,9 +59,16 @@ const TaskItem: React.FC<Props> = ({ task }) => {
       }}
       onMouseEnter={(e) => {}}
       onMouseLeave={(e) => {}}
-      onClick={(e) => {}}
+      onClick={(e) => {
+        // TODO 增加点击逻辑
+        console.log('click item ', task.name)
+      }}
     >
-      {getTaskItem()}
+      {task.type == 'project' ? (
+        <Project task={task} isSeleceted={false} />
+      ) : (
+        <Bar task={task} isSelected={false} />
+      )}
       <text
         x={getX()}
         y={getY()}
