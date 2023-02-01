@@ -19,6 +19,14 @@ export const addTaskGroup = (t: TaskGroup) => {
   }).then((res) => res.data)
 }
 
+export const updateTaskGroup = (t: TaskGroup) => {
+  return http({
+    method: 'PUT',
+    url: url,
+    data: t,
+  }).then((res) => res.data)
+}
+
 export const delTaskGroup = (t: TaskGroup) => {
   return http({
     method: 'DELETE',

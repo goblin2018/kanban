@@ -1,4 +1,4 @@
-import { DatePicker, Form, Input, Modal, Radio } from 'antd'
+import { DatePicker, Form, Input, Drawer, Radio, Divider, Button } from 'antd'
 import { useAppDispatch, useAppSelector } from 'app/hooks'
 import { useEffect, useState } from 'react'
 import { closeEditModal, setCurrentTask } from './taskSlice'
@@ -68,25 +68,41 @@ const EditTaskModal = () => {
   }
 
   return (
-    <Modal
+    <Drawer
       title={'编辑任务'}
       open={open}
-      onCancel={cancel}
-      maskClosable={false}
-      onOk={submit}
+      onClose={cancel}
+      width={768}
+      footer={
+        <div>
+          <Button type="primary" className="mr-4">
+            确认
+          </Button>
+          <Button>取消</Button>
+        </div>
+      }
     >
-      <Form form={tForm}>
-        <Item label={'项目名称'} name="name">
-          <Input />
-        </Item>
-        <Item label="开始时间" name="startAt">
-          <DatePicker></DatePicker>
-        </Item>
-        <Item label="结束时间" name="endAt">
-          <DatePicker></DatePicker>
-        </Item>
-      </Form>
-    </Modal>
+      <div className="flex">
+        <div className='w-[300px]'>
+          <div className="mb-4">任务详情</div>
+          <Form form={tForm}>
+            <Item label={'项目名称'} name="name">
+              <Input />
+            </Item>
+            <Item label="开始时间" name="startAt">
+              <DatePicker></DatePicker>
+            </Item>
+            <Item label="结束时间" name="endAt">
+              <DatePicker></DatePicker>
+            </Item>
+          </Form>
+        </div>
+        <div className='bg-slate-300 w-px mx-2'></div>
+        <div className="flex-1">
+          <div className="mb-4">评论</div>
+        </div>
+      </div>
+    </Drawer>
   )
 }
 

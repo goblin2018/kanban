@@ -11,28 +11,28 @@ const router = createBrowserRouter([
     path: '/',
     element: <Home />,
   },
-  // {
-  //   path: '/project/list',
-  //   element: <ProjectPage />,
-  // },
+  {
+    path: '/project/list',
+    element: <ProjectPage />,
+  },
   {
     path: '/gantt',
-    element: <Gantt  />,
+    element: <Gantt />,
   },
-  // {
-  //   path: '/project',
-  //   element: <ProjectDetailPage />,
-  //   children: [
-  //     {
-  //       path: 'kanban',
-  //       element: <Kanban />,
-  //     },
-  //     {
-  //       path: 'gantt',
-  //       element: <GanttPage />,
-  //     },
-  //   ],
-  // },
+  {
+    path: '/project',
+    element: <ProjectDetailPage />,
+    children: [
+      {
+        path: 'kanban',
+        element: <Kanban />,
+      },
+      {
+        path: 'gantt',
+        element: <GanttPage />,
+      },
+    ],
+  },
 ])
 
 export default router
