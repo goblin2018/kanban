@@ -89,3 +89,15 @@ func findIndex(tgs []*models.TaskGroup, id uint) int {
 	}
 	return -1
 }
+
+func (s *TaskGroupService) UpdateTaskGroup(c *ctx.Context, req *api.TaskGroup) (res *api.TaskGroup, err error) {
+	res = new(api.TaskGroup)
+
+	t := &models.TaskGroup{
+		Name:  req.Name,
+		Color: req.Color,
+	}
+	t.ID = req.Id
+	err = s.dao.UpdateTaskGroup(t)
+	return
+}

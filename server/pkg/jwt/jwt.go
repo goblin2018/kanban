@@ -12,14 +12,15 @@ import (
 const issuer = "matrix-is-best"
 
 type Claims struct {
-	UserID    string `json:"uid,omitempty"`
+	Id        uint   `json:"idd,omitempty"`
 	Phone     string `json:"pho,omitempty"`
+	Level     int    `json:"lev,omitempty"`
 	ExpiresAt int64  `json:"exp,omitempty"`
 	Issuer    string `json:"iss,omitempty"`
 }
 
 func (c Claims) Valid() error {
-	if c.UserID == "" || c.Issuer != issuer {
+	if c.Id == 0 || c.Issuer != issuer {
 		return e.TokenError
 	}
 	return nil
@@ -27,8 +28,9 @@ func (c Claims) Valid() error {
 
 func GenToken(user *api.User, expiration time.Duration) string {
 	c := Claims{
-		UserID:    user.UserId,
+		Id:        user.Id,
 		Phone:     user.Phone,
+		Level:     user.Level,
 		ExpiresAt: time.Now().Add(expiration).Unix(),
 		Issuer:    issuer,
 	}

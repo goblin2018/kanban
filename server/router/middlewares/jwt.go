@@ -36,11 +36,11 @@ func JWT() ctx.HandlerFunc {
 		}
 		// ok set user id  and phone
 		c.SetPhone(claims.Phone)
-		c.SetUserID(claims.UserID)
+		c.SetUserID(claims.Id)
 
 		if claims.ExpiresAt < time.Now().Unix() {
 			// TODO token timeout
-			c.Set("refresh_token", jwt.GenToken(&api.User{UserId: claims.UserID, Phone: claims.Phone}, time.Hour*2))
+			c.Set("refresh_token", jwt.GenToken(&api.User{Id: claims.Id, Phone: claims.Phone}, time.Hour*2))
 		}
 
 		c.Set("request_id", uuid.NewV4().String())
