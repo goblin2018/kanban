@@ -21,7 +21,6 @@ export interface GanttTask {
   start?: Date
   end?: Date
   hideChildren?: boolean
-  children?: GanttTask[]
 
   barInfo?: {
     color: string

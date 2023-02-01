@@ -1,24 +1,15 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import Calendar from './calendar/calendar'
-import {
-  ColumnWidthConf,
-  headerHeight,
-  preStepsCount,
-  rowHeight,
-  taskHeight,
-} from './utils/conf'
+
 import { ganttDateRange, seedDates } from './utils/date'
-import Grid from './grid/grid'
 import HorizontalScroll from './scrollbar/scroll'
 import { loadBarInfo } from './utils/task'
-import { GanttTask, DateSetup, ViewMode } from './utils/types'
-import TaskItem from './taskbar/taskbar'
 import ViewModeSwither from './viewmodeSwitcher'
 import { tasks } from './data'
 import Bars from './taskbar/bars'
 import { useAppDispatch, useAppSelector } from 'app/hooks'
 import TaskTable from './task-table'
-import { setDates, setRowCount, setTasks } from './ganttSlice'
+import { setDates, setTasks } from './ganttSlice'
 
 interface Props {}
 
@@ -33,10 +24,9 @@ const Gantt: React.FC<Props> = ({}) => {
     let dates = seedDates(startDate, endDate, viewMode)
     dispatch(setDates(dates))
 
-    let { tasks: ts, rowCount } = loadBarInfo(tasks, dates, viewMode)
+    let ts = loadBarInfo(tasks, dates, viewMode)
 
     dispatch(setTasks(ts))
-    dispatch(setRowCount(rowCount))
   }, [viewMode])
 
   const ganttContainerRef = useRef<HTMLDivElement>(null)

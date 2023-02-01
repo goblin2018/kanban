@@ -15,26 +15,16 @@ export const loadBarInfo = (
   viewMode: ViewMode
 ) => {
   let ts = tasks.map((t) => ({ ...t }))
-  let index = 0
-  ts.forEach((t, i) => {
-    t.index = index
-    index += 1
 
+  ts.forEach((t, i) => {
+    t.index = i
     loadBarInfoImpl(t, dates, viewMode)
-    if (t.type == 'project') {
-      t.children = t.children?.map((tc) => ({ ...tc }))
-      t.children?.forEach((tc, j) => {
-        tc.index = index
-        index += 1
-        loadBarInfoImpl(tc, dates, viewMode)
-      })
-    }
   })
 
-  return { tasks: ts, rowCount: index }
+  return ts
 }
 
-const isRun = (year: number) => {
+export const isRun = (year: number) => {
   return (year % 100 != 0 && year % 4 == 0) || year % 400 == 0
 }
 
@@ -88,15 +78,6 @@ const taskXCoordinate = (
   let totalDays = isRun(d.getFullYear()) ? 366 : 365
 
   return (dy + days / totalDays) * ColumnWidthConf[ViewMode.Year]
-
-  // let columnWidth = ColumnWidthConf[viewMode]
-  // const index = dates.findIndex((d) => d.getTime() >= d.getTime()) - 1
-
-  // const remainderMillis = d.getTime() - dates[index].getTime()
-  // const percentOfInterval =
-  //   remainderMillis / (dates[index + 1].getTime() - dates[index].getTime())
-  // const x = index * columnWidth + percentOfInterval * columnWidth
-  // return x
 }
 
 const taskYCoordinate = (index: number) => {

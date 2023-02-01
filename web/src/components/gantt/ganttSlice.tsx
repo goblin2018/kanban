@@ -34,14 +34,13 @@ const ganttSlice = createSlice({
     },
     setTasks: (state, action: PayloadAction<GanttTask[]>) => {
       state.tasks = action.payload
+      state.rowCount = state.tasks.length
     },
     setDates: (state, action: PayloadAction<Date[]>) => {
       state.dates = action.payload
       state.totalWidth = state.dates.length * state.columnWidth
     },
-    setRowCount: (state, action: PayloadAction<number>) => {
-      state.rowCount = action.payload
-    },
+
     setHold: (state, action: PayloadAction<number>) => {
       state.hold = action.payload
     },
@@ -51,12 +50,6 @@ const ganttSlice = createSlice({
   },
 })
 
-export const {
-  setViewMode,
-  setTasks,
-  setDates,
-  setRowCount,
-  setHold,
-  setDiffX,
-} = ganttSlice.actions
+export const { setViewMode, setTasks, setDates, setHold, setDiffX } =
+  ganttSlice.actions
 export default ganttSlice.reducer

@@ -1,4 +1,5 @@
-import { preStepsCount } from './conf'
+import { ColumnWidthConf, preStepsCount, StepWidth } from './conf'
+import { isRun } from './task'
 import { GanttTask, ViewMode } from './types'
 
 type DateHelperScales =
@@ -130,3 +131,59 @@ export const seedDates = (
   }
   return dates
 }
+
+export const getWeekNumberISO8601 = (date: Date) => {
+  const tmpDate = new Date(date.valueOf())
+  const dayNumber = (tmpDate.getDay() + 6) % 7
+  tmpDate.setDate(tmpDate.getDate() - dayNumber + 3)
+  const firstThursday = tmpDate.valueOf()
+  tmpDate.setMonth(0, 1)
+  if (tmpDate.getDay() !== 4) {
+    tmpDate.setMonth(0, 1 + ((4 - tmpDate.getDay() + 7) % 7))
+  }
+  const weekNumber = (
+    1 + Math.ceil((firstThursday - tmpDate.valueOf()) / 604800000)
+  ).toString()
+
+  if (weekNumber.length === 1) {
+    return `0${weekNumber}`
+  } else {
+    return weekNumber
+  }
+}
+
+export const xToDate = (x: number, start: Date, viewMode: ViewMode) => {
+  let d = 0
+  let m = 0
+  let y = 0
+  switch (viewMode) {
+    case ViewMode.Day:
+      d = Math.floor(x / StepWidth[ViewMode.Day])
+      return addToDate(start, d, 'day')
+    case ViewMode.Week:
+      d = Math.floor(x / StepWidth[ViewMode.Week])
+      return addToDate(start, d * 7, 'day')
+    case ViewMode.Month:
+      m = Math.floor(x / ColumnWidthConf[ViewMode.Month])
+      let md = addToDate(start, m, 'month')
+      let days = Math.floor(
+        ((x % ColumnWidthConf[ViewMode.Month]) /
+          ColumnWidthConf[ViewMode.Month]) *
+          getDaysInMonth(md.getFullYear(), md.getMonth())
+      )
+      return addToDate(md, days, 'day')
+    case ViewMode.Year:
+      y = Math.floor(x / ColumnWidthConf[ViewMode.Year])
+      let my = addToDate(start, y, 'year')
+      let tDays = isRun(my.getFullYear()) ? 366 : 365
+      let ds = Math.floor(
+        ((x % ColumnWidthConf[ViewMode.Year]) /
+          ColumnWidthConf[ViewMode.Year]) *
+          tDays
+      )
+
+      return addToDate(my, ds, 'day')
+  }
+}
+
+
