@@ -9,13 +9,13 @@ type Context struct {
 	*gin.Context
 }
 
-func (c *Context) SetUserID(id string) {
+func (c *Context) SetUserID(id uint) {
 	c.Set("user_id", id)
 
 }
 
-func (c *Context) GetUserID() string {
-	return c.GetString("user_id")
+func (c *Context) GetUserID() uint {
+	return c.GetUint("user_id")
 }
 
 func (c *Context) SetPhone(phone string) {

@@ -6,6 +6,7 @@ type TaskGroup struct {
 	Name      string  `json:"name" form:"name"`
 	Serial    int     `json:"serial" form:"serial"`
 	Tasks     []*Task `json:"tasks" form:"tasks"`
+	Color     string  `json:"color" form:"color"`
 }
 
 type MoveTaskGroupResp struct {
