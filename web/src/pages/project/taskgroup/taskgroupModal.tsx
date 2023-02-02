@@ -4,7 +4,7 @@ import { useAppDispatch, useAppSelector } from 'app/hooks'
 import {
   closeTaskGroupModal,
   setCurrentProject,
-} from 'pages/projects/projectSlice'
+} from 'reducers/projectSlice'
 import { useState } from 'react'
 
 const TaskGroupModal = () => {

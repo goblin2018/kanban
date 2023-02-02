@@ -11,7 +11,7 @@ import styles from './bar.module.css'
 import DateHandle from './date-handle'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useAppDispatch, useAppSelector } from 'app/hooks'
-import { setHold } from 'components/gantt/ganttSlice'
+import { setHold } from 'reducers/ganttSlice'
 interface Props {
   task: GanttTask
   isSelected: boolean

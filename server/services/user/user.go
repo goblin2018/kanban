@@ -37,6 +37,7 @@ func (s *UserService) Login(c *ctx.Context, req *api.User) (resp *api.User, err 
 	resp.Level = u.Level
 	resp.Phone = u.Phone
 	resp.AvatarColor = u.AvatarColor
+	resp.Duty = u.Duty
 
 	return
 }
@@ -52,23 +53,46 @@ func (s *UserService) AddUser(c *ctx.Context, req *api.User) (resp *api.User, er
 	return
 }
 
-func (s *UserService) UpdateUser(c *ctx.Context, req *api.User) (resp *api.User, err error) {
+func (s *UserService) Update(c *ctx.Context, req *api.User) (resp *api.User, err error) {
 	resp = new(api.User)
 	u := &models.User{
-		Name:   req.Name,
-		Phone:  req.Phone,
-		Status: req.Status,
-		Level:  req.Level,
+		Name:        req.Name,
+		Phone:       req.Phone,
+		Status:      req.Status,
+		Level:       req.Level,
+		AvatarColor: req.AvatarColor,
 	}
 	u.ID = req.Id
 	err = s.dao.UpdateUser(u)
 	return
 }
 
-func (s *UserService) ResetPassword(c *ctx.Context, req *api.User) {
+func (s *UserService) UpdatePassword(c *ctx.Context, req *api.UpdatePasswordReq) (err error) {
+
 	u := new(models.User)
 	u.ID = req.Id
-	u.Password = ""
-	s.dao.UpdateUser(u)
+	if req.Action == api.Reset {
+		u.Password = encrypt.Encrypt(api.DefaultPassword)
+	} else {
+		ou, err := s.dao.GetUserById(req.Id)
+		if ou.ID <= 0 || err != nil {
+			return e.UserNotExists
+		}
 
+		if !encrypt.Compare(ou.Password, req.Op) {
+			return e.InvalidPassword
+		}
+		u.Password = encrypt.Encrypt(req.Np)
+	}
+
+	s.dao.UpdateUser(u)
+	return
+}
+
+func (s *UserService) ListUsers(c *ctx.Context, req *api.ListOpt) (resp *api.ListRes[*api.User], err error) {
+	resp = new(api.ListRes[*api.User])
+	users, total, err := s.dao.ListUsers(req)
+	resp.Items = users
+	resp.Total = total
+	return
 }

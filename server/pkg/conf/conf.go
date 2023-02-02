@@ -4,6 +4,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"time"
 
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
@@ -13,6 +14,7 @@ type Config struct {
 	App   App   `json:"app"`
 	DB    DB    `json:"db"`
 	Redis Redis `json:"redis"`
+	Token Token `json:"token"`
 }
 
 type App struct {
@@ -25,6 +27,10 @@ type App struct {
 	LogStd    bool
 	Log       string `json:"log"`
 	BlackList []string
+}
+type Token struct {
+	Expiration time.Duration `json:"expiration"`
+	Issuer     string        `json:"issuer"`
 }
 
 type DB struct {

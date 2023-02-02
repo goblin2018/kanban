@@ -1,6 +1,8 @@
 package ctx
 
 import (
+	"kanban/api"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -25,4 +27,12 @@ func (c *Context) SetPhone(phone string) {
 func (c *Context) GetPhone() string {
 	return c.GetString("phone")
 
+}
+
+func (c *Context) SetUserLevel(level int) {
+	c.Set("level", level)
+}
+
+func (c *Context) IsAdmin() bool {
+	return c.GetInt("level") == api.UserLevelAdmin
 }

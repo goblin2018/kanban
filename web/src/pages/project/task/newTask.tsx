@@ -5,7 +5,7 @@ import { ReactComponent as Right } from 'assets/right.svg'
 import { addTask } from 'api/task'
 import { TaskGroup } from 'api/taskgroup'
 import { useAppDispatch, useAppSelector } from 'app/hooks'
-import { setCurrentProject } from 'pages/projects/projectSlice'
+import { setCurrentProject } from 'reducers/projectSlice'
 
 interface Props {
   taskgroup: TaskGroup

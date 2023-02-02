@@ -4,7 +4,7 @@ import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import AddModal from './addModal'
 import ProjectCard from './projectCard'
-import { listProjects, openAddModal, setCurrentProject } from './projectSlice'
+import { listProjects, openAddModal, setCurrentProject } from '../../reducers/projectSlice'
 
 const ProjectPage = () => {
   const dispatch = useAppDispatch()

@@ -3,7 +3,7 @@ import { useAppDispatch, useAppSelector } from 'app/hooks'
 import {
   openTaskGroupModal,
   setCurrentProject,
-} from 'pages/projects/projectSlice'
+} from 'reducers/projectSlice'
 import TaskGroupModal from './taskgroup/taskgroupModal'
 import { useEffect, useState } from 'react'
 import { getProjectDetail } from 'api/project'

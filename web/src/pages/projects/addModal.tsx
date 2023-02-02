@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useAppDispatch, useAppSelector } from 'app/hooks'
-import { closeAddModal, listProjects } from './projectSlice'
+import { closeAddModal, listProjects } from '../../reducers/projectSlice'
 import { DatePicker, Form, Input, message, Modal, Radio, Select } from 'antd'
 import { addProject } from 'api/project'
 import dayjs from 'dayjs'

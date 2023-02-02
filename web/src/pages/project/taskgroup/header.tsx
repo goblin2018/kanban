@@ -2,7 +2,7 @@ import { MoreOutlined } from '@ant-design/icons'
 import { Button, Card, Dropdown, Input } from 'antd'
 import { TaskGroup, updateTaskGroup } from 'api/taskgroup'
 import { useAppDispatch, useAppSelector } from 'app/hooks'
-import { setCurrentProject } from 'pages/projects/projectSlice'
+import { setCurrentProject } from 'reducers/projectSlice'
 import { useState } from 'react'
 import { CirclePicker, Color } from 'react-color'
 

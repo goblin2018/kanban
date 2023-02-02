@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { ColumnWidthConf } from './utils/conf'
-import { GanttTask, ViewMode } from './utils/types'
+import { ColumnWidthConf } from '../components/gantt/utils/conf'
+import { GanttTask, ViewMode } from '../components/gantt/utils/types'
 
 export interface GanttState {
   viewMode: ViewMode

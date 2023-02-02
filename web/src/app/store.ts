@@ -1,9 +1,10 @@
 import storage from 'redux-persist/lib/storage'
 import { persistStore, persistReducer, createTransform } from 'redux-persist'
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
-import projectSlice from 'pages/projects/projectSlice'
-import taskSlice from 'pages/project/task/taskSlice'
-import ganttSlice, { GanttState } from 'components/gantt/ganttSlice'
+import projectSlice from 'reducers/projectSlice'
+import taskReducer from 'reducers/taskSlice'
+import ganttReducer, { GanttState } from 'reducers/ganttSlice'
+import userSlice from 'reducers/userSlice'
 
 const persistConfig = {
   key: 'root',
@@ -11,7 +12,7 @@ const persistConfig = {
   // whiteList: [],
 }
 
-let ganttReducer = persistReducer(
+let pGanttReducer = persistReducer(
   {
     key: 'gantt',
     storage,
@@ -43,13 +44,14 @@ let ganttReducer = persistReducer(
       ),
     ],
   },
-  ganttSlice
-) as unknown as typeof ganttSlice
+  ganttReducer
+) as unknown as typeof ganttReducer
 
 const reducer = combineReducers({
   project: projectSlice,
-  task: taskSlice,
-  gantt: ganttReducer,
+  task: taskReducer,
+  gantt: pGanttReducer,
+  user: userSlice,
 })
 
 const persistedReducer = persistReducer<any>(

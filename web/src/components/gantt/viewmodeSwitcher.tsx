@@ -1,7 +1,7 @@
 import { Radio } from 'antd'
 import { useAppDispatch, useAppSelector } from 'app/hooks'
 import React from 'react'
-import { setViewMode } from './ganttSlice'
+import { setViewMode } from '../../reducers/ganttSlice'
 import { ViewMode } from './utils/types'
 
 interface Props {}

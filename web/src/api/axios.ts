@@ -22,12 +22,13 @@ http.interceptors.request.use(
 http.interceptors.response.use(
   (res) => {
     // req.headers!['token'] = 'xxxx'
-    // console.log(res)
+    console.log(res)
 
     if (res.status == 200) {
-      if (res.data.refresh_token && res.data.refresh_token !== '') {
-        storeToken(res.data.refresh_token)
+      if (res.headers.token && res.headers.token !== '') {
+        storeToken(res.headers.token)
       }
+
       if (res.data.code == 1003) {
         clearToken()
         location.href = '/login'

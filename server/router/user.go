@@ -4,10 +4,8 @@ import (
 	"kanban/api"
 	"kanban/pkg/ctx"
 	"kanban/pkg/e"
-	"kanban/pkg/jwt"
 	"kanban/router/middlewares"
 	"kanban/services/user"
-	"time"
 )
 
 type UserController struct {
@@ -21,6 +19,13 @@ func NewUserController() *UserController {
 func (co UserController) RegisterRouters(en *ctx.RouterGroup) {
 	u := en.Group("/user")
 	u.POST("/login", co.login)
+
+	u.Use(middlewares.JWT())
+	{
+		u.PUT("", co.update)
+		u.GET("", co.list)
+		u.PUT("/password", co.password)
+	}
 }
 
 func (co UserController) login(c *ctx.Context) {
@@ -32,30 +37,62 @@ func (co UserController) login(c *ctx.Context) {
 
 	res, err := co.s.Login(c, req)
 	if err == nil {
-		now := time.Now()
-		claims := jwt.Claims{
-			Id:        res.ID,
-			Phone:     res.Phone,
-			Level:     res.Level,
-			ExpiresAt: now.Add(conf.Token.TokenExpiration).Unix(),
-			Issuer:    conf.Token.Issuer,
-		}
-
-		c.Header(middlewares.Token, jwt.GenerateToken(claims))
-		claims.ExpiresAt = now.Add(conf.Token.RefreshExpiration).Unix()
-		c.Header(middlewares.RefreshToken, jwt.GenerateToken(claims))
+		middlewares.LoadToken(c, res)
 	}
 
 	c.JSON(res, err)
-
 }
 
-func (co *UserController) register(c *ctx.Context) {
+func (co *UserController) update(c *ctx.Context) {
 	req := new(api.User)
 	if err := c.ShouldBind(req); err != nil {
 		c.Fail(e.InvalidParams.Add(err.Error()))
 		return
 	}
 
-	// res, err := c.
+	if req.Id == 0 {
+		req.Id = c.GetUserID()
+	} else {
+		if req.Id != c.GetUserID() && !c.IsAdmin() {
+			c.Fail(e.Forbidden)
+			return
+		}
+	}
+
+	res, err := co.s.Update(c, req)
+	c.JSON(res, err)
+}
+
+func (co *UserController) password(c *ctx.Context) {
+	req := new(api.UpdatePasswordReq)
+	if err := c.ShouldBind(req); err != nil {
+		c.Fail(e.InvalidParams.Add(err.Error()))
+		return
+	}
+
+	if req.Id == 0 {
+		req.Id = c.GetUserID()
+	} else {
+		if req.Id != c.GetUserID() && !c.IsAdmin() {
+			c.Fail(e.Forbidden)
+			return
+		}
+	}
+
+	err := co.s.UpdatePassword(c, req)
+	c.JSON(nil, err)
+}
+
+func (co *UserController) list(c *ctx.Context) {
+	req := new(api.ListOpt)
+	if err := c.ShouldBind(req); err != nil {
+		c.Fail(e.InvalidParams.Add(err.Error()))
+		return
+	}
+	if !c.IsAdmin() {
+		c.Fail(e.Forbidden)
+		return
+	}
+	res, err := co.s.ListUsers(c, req)
+	c.JSON(res, err)
 }

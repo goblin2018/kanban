@@ -5,11 +5,27 @@ import { createBrowserRouter } from 'react-router-dom'
 import Kanban from 'pages/project/kanban'
 import GanttPage from 'pages/project/gantt'
 import Gantt from 'components/gantt'
+import Login from 'pages/Login'
+import UserInfo from 'pages/user/User'
+import Users from 'pages/user/Users'
 
 const router = createBrowserRouter([
   {
     path: '/',
     element: <Home />,
+  },
+  {
+    path: '/login',
+    element: <Login />,
+  },
+
+  {
+    path: '/user',
+    element: <UserInfo />,
+  },
+  {
+    path: '/users',
+    element: <Users />,
   },
   {
     path: '/project/list',

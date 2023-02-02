@@ -1,10 +1,10 @@
 import { moveTask, Task } from 'api/task'
 import { toShortDate } from 'api/utils'
 import { useAppDispatch, useAppSelector } from 'app/hooks'
-import { setCurrentProject } from 'pages/projects/projectSlice'
+import { setCurrentProject } from 'reducers/projectSlice'
 import { DragEventHandler, useEffect, useRef, useState } from 'react'
 import StatusSelector from './statusSelector'
-import { setEditTask } from './taskSlice'
+import { setEditTask } from '../../../reducers/taskSlice'
 import { ReactComponent as Date } from 'assets/date.svg'
 
 interface Props {

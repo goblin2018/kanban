@@ -9,7 +9,7 @@ import { tasks } from './data'
 import Bars from './taskbar/bars'
 import { useAppDispatch, useAppSelector } from 'app/hooks'
 import TaskTable from './task-table'
-import { setDates, setTasks } from './ganttSlice'
+import { setDates, setTasks } from '../../reducers/ganttSlice'
 
 interface Props {}
 

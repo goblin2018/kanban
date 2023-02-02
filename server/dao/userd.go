@@ -1,6 +1,7 @@
 package dao
 
 import (
+	"kanban/api"
 	"kanban/models"
 	"kanban/pkg/mysql"
 
@@ -36,5 +37,11 @@ func (d *UserDao) GetUserByPhone(phone string) (user *models.User, err error) {
 func (d *UserDao) GetUserById(id uint) (user *models.User, err error) {
 	user = new(models.User)
 	err = d.Model(&models.User{}).Where("id = ?", id).First(user).Error
+	return
+}
+
+func (d *UserDao) ListUsers(opt *api.ListOpt) (users []*api.User, total int64, err error) {
+
+	err = d.Model(&models.User{}).Count(&total).Order("updated_at DESC").Offset(opt.Offset).Limit(opt.Limit).Find(&users).Error
 	return
 }

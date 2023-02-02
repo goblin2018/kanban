@@ -1,11 +1,11 @@
 import { DatePicker, Form, Input, Drawer, Radio, Divider, Button } from 'antd'
 import { useAppDispatch, useAppSelector } from 'app/hooks'
 import { useEffect, useState } from 'react'
-import { closeEditModal, setCurrentTask } from './taskSlice'
+import { closeEditModal, setCurrentTask } from '../../../reducers/taskSlice'
 
 import { Task, updateTask } from 'api/task'
 import { dayjsToStr, strToDayjs } from 'api/utils'
-import { setCurrentProject } from 'pages/projects/projectSlice'
+import { setCurrentProject } from 'reducers/projectSlice'
 
 const { Item } = Form
 

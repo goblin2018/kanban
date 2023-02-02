@@ -2,6 +2,7 @@ package middlewares
 
 import (
 	"kanban/api"
+	"kanban/pkg/conf"
 	"kanban/pkg/ctx"
 	"kanban/pkg/e"
 	"kanban/pkg/jwt"
@@ -11,8 +12,7 @@ import (
 )
 
 const (
-	Token        = "token"
-	RefreshToken = "refreshtoken"
+	Token = "token"
 )
 
 func JWT() ctx.HandlerFunc {
@@ -29,18 +29,18 @@ func JWT() ctx.HandlerFunc {
 			c.Abort(e.TokenError.Add(err.Error()))
 			return
 		}
-		// TODO 后续改造此逻辑
-		if time.Unix(claims.ExpiresAt, 0).Add(time.Hour * 48).Before(time.Now()) {
-			c.Abort(e.TokenError.Add("token expire more then 48h"))
+
+		if time.Unix(claims.ExpiresAt, 0).Add(conf.C.Token.Expiration).Before(time.Now()) {
+			c.Abort(e.TokenError.Add("token expired"))
 			return
 		}
 		// ok set user id  and phone
 		c.SetPhone(claims.Phone)
 		c.SetUserID(claims.Id)
+		c.SetUserLevel(claims.Level)
 
 		if claims.ExpiresAt < time.Now().Unix() {
-			// TODO token timeout
-			c.Set("refresh_token", jwt.GenToken(&api.User{Id: claims.Id, Phone: claims.Phone}, time.Hour*2))
+			LoadToken(c, &api.User{Id: claims.Id, Phone: claims.Phone, Level: claims.Level})
 		}
 
 		c.Set("request_id", uuid.NewV4().String())
@@ -48,4 +48,8 @@ func JWT() ctx.HandlerFunc {
 		c.Next()
 
 	}
+}
+
+func LoadToken(c *ctx.Context, user *api.User) {
+	c.Header(Token, jwt.GenToken(user, conf.C.Token.Expiration))
 }

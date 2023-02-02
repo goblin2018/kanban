@@ -1,6 +1,6 @@
 import { useAppDispatch, useAppSelector } from 'app/hooks'
 import { useEffect, useRef, useState } from 'react'
-import { setDiffX, setHold } from '../ganttSlice'
+import { setDiffX, setHold } from '../../../reducers/ganttSlice'
 import Grid from '../grid/grid'
 import { ColumnWidthConf, rowHeight, StepWidth } from '../utils/conf'
 import { getDaysInMonth, xToDate } from '../utils/date'
