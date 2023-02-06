@@ -1,7 +1,7 @@
 import { moveTask, Task } from 'api/task'
 import { toShortDate } from 'api/utils'
 import { useAppDispatch, useAppSelector } from 'app/hooks'
-import { setCurrentProject } from 'reducers/projectSlice'
+import { setTaskGroups } from 'reducers/projectSlice'
 import { DragEventHandler, useEffect, useRef, useState } from 'react'
 import StatusSelector from './statusSelector'
 import { setEditTask } from '../../../reducers/taskSlice'
@@ -22,7 +22,7 @@ hold.style.background = '#1f66ba'
 const TaskItem: React.FC<Props> = ({ task, idx, groupIdx }) => {
   const dispatch = useAppDispatch()
   const [draggable, setDraggable] = useState(false)
-  const project = useAppSelector((s) => s.project.current)
+  const taskGroups = useAppSelector((s) => s.project.taskGroups)
 
   const item = useRef<HTMLDivElement>(null)
 
@@ -74,14 +74,14 @@ const TaskItem: React.FC<Props> = ({ task, idx, groupIdx }) => {
     let newParentIdx = Math.floor((e.clientX - containerLeft!) / 220)
 
     newParentIdx =
-      newParentIdx <= project?.taskGroups?.length! - 1
+      newParentIdx <= taskGroups.length - 1
         ? newParentIdx
-        : project?.taskGroups?.length! - 1
+        : taskGroups.length - 1
 
     // 垂直方向 以父元素为参考
     let newIdx = Math.floor((e.clientY - originParent?.offsetTop!) / 176)
 
-    let newGroup = project?.taskGroups![newParentIdx]
+    let newGroup = taskGroups[newParentIdx]
     let newGroupTasksCount = newGroup?.tasks ? newGroup.tasks.length : 0
     newIdx = newIdx <= newGroupTasksCount ? newIdx : newGroupTasksCount
 
@@ -154,7 +154,7 @@ const TaskItem: React.FC<Props> = ({ task, idx, groupIdx }) => {
     }
 
     // 请求后端重新排序
-    let tgs = [...project?.taskGroups!]
+    let tgs = [...taskGroups]
 
     let currentTasks: Task[] = []
     // 当前组 更换位置
@@ -190,7 +190,7 @@ const TaskItem: React.FC<Props> = ({ task, idx, groupIdx }) => {
       tgs[currentGroupIdx] = currentGroup
     }
 
-    dispatch(setCurrentProject({ ...project, taskGroups: tgs }))
+    dispatch(setTaskGroups([...tgs]))
 
     let [prev, next] = [0, 0]
 

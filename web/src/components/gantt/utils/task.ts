@@ -1,3 +1,5 @@
+import { TaskGroup } from 'api/taskgroup'
+import dayjs, { Dayjs } from 'dayjs'
 import {
   barBackgroundColor,
   ColumnWidthConf,
@@ -83,4 +85,78 @@ const taskXCoordinate = (
 const taskYCoordinate = (index: number) => {
   const y = index * rowHeight + (rowHeight - taskHeight) / 2
   return y
+}
+
+export const convertToGanttTaks = (tgs: TaskGroup[]) => {
+  let index = 0
+
+  let tasks: GanttTask[] = []
+
+  let totalStart: Dayjs | undefined = undefined
+  let totalEnd: Dayjs | undefined = undefined
+
+  tgs.forEach((tg, i) => {
+    // 修改数据
+    let groupIndex = index
+    tasks.push({
+      id: tg.id!,
+      name: tg.name!,
+      pIndex: i,
+      index: groupIndex,
+      hideChildren: false,
+      type: 'project',
+      barInfo: {
+        color: tg.color!,
+      },
+    })
+
+    index += 1
+
+    if (tg.tasks) {
+      let groupStart: Dayjs | undefined = undefined
+      let groupEnd: Dayjs | undefined = undefined
+      tg.tasks.forEach((t, j) => {
+        let start = t.startAt ? dayjs(t.startAt) : undefined
+        let end = t.endAt ? dayjs(t.endAt) : undefined
+
+        tasks.push({
+          id: t.id!,
+          name: t.name!,
+          pIndex: [i, j],
+          index: index,
+          type: 'task',
+          start: start,
+          end: end,
+          barInfo: {
+            color: tg.color!,
+          },
+        })
+
+        if (start && start.isBefore(groupStart)) {
+          groupStart = start
+        }
+        if (end && end.isAfter(groupEnd)) {
+          groupEnd = end
+        }
+
+        if (start && start.isBefore(totalStart)) {
+          totalStart = start
+        }
+        if (end && end.isAfter(totalEnd)) {
+          totalEnd = end
+        }
+      })
+
+      tasks[groupIndex].start = groupStart
+      tasks[groupIndex].end = groupEnd
+
+      index += 1
+    }
+  })
+
+  return {
+    tasks: tasks,
+    start: totalStart || dayjs(),
+    end: totalEnd || dayjs(),
+  }
 }

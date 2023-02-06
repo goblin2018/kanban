@@ -1,25 +1,26 @@
 import {
   Button,
   Divider,
+  notification,
   Pagination,
   Popconfirm,
   Table,
   TableColumnsType,
   Tag,
 } from 'antd'
-import { Action, ModalState } from 'api/constatns'
-import { listUsers, updatePassword, User } from 'api/user'
+import { Action, ErrCode, ModalState } from 'api/constatns'
+import { delUser, listUsers, updatePassword, User } from 'api/user'
 import { useAppDispatch, useAppSelector } from 'app/hooks'
 import Header from 'components/header/Header'
 import { useEffect, useState } from 'react'
-import { setPage } from 'reducers/userSlice'
+import { setPage, setUserEditIndex, setUsers } from 'reducers/userSlice'
 import UserModal from './userModal'
 
 const Users = () => {
-  const [users, setUsers] = useState<User[]>([])
   const [total, setTotal] = useState(0)
+  const [shouldUpdateUsers, setShouldUpdateUsers] = useState(false)
 
-  const page = useAppSelector((s) => s.user.page!)
+  const { page, users } = useAppSelector((s) => s.user)
   const dispatch = useAppDispatch()
 
   const [userModalState, setUserModalState] = useState<ModalState>('close')
@@ -44,10 +45,17 @@ const Users = () => {
       key: 'operation',
       dataIndex: 'operation',
       title: '',
-      render: (v, r) => {
+      render: (v, r, index) => {
         return (
           <div className="flex">
-            <Button>修改</Button>
+            <Button
+              onClick={() => {
+                dispatch(setUserEditIndex(index))
+                setUserModalState('edit')
+              }}
+            >
+              修改
+            </Button>
             <Popconfirm
               title={
                 <div>
@@ -63,7 +71,31 @@ const Users = () => {
             >
               <Button>重置密码</Button>
             </Popconfirm>
-            <Button>删除</Button>
+
+            <Popconfirm
+              title={'确定删除用户？'}
+              onConfirm={() => {
+                delUser({ id: r.id }).then((res) => {
+                  switch (res.code) {
+                    case ErrCode.Ok:
+                      setShouldUpdateUsers(true)
+                      notification.success({
+                        message: '操作成功',
+                        description: '删除用户成功',
+                      })
+                      break
+                    case ErrCode.Forbidden:
+                      notification.warning({
+                        message: '操作失败',
+                        description: '没有权限删除用户',
+                      })
+                      break
+                  }
+                })
+              }}
+            >
+              <Button>删除</Button>
+            </Popconfirm>
           </div>
         )
       },
@@ -71,6 +103,17 @@ const Users = () => {
   ]
 
   useEffect(() => {
+    setShouldUpdateUsers(true)
+  }, [page])
+
+  useEffect(() => {
+    if (shouldUpdateUsers) {
+      updateUsers()
+      setShouldUpdateUsers(false)
+    }
+  }, [shouldUpdateUsers])
+
+  const updateUsers = () => {
     listUsers({ offset: page * 10, limit: 10 }).then((res) => {
       if (res.code != 200) {
         return
@@ -80,9 +123,10 @@ const Users = () => {
       users.forEach((u: any) => {
         u.key = u.id
       })
-      setUsers(users)
+      dispatch(setUsers(users))
     })
-  }, [page])
+  }
+
   return (
     <div className="relative h-screen">
       <Header />
@@ -95,7 +139,11 @@ const Users = () => {
       </Button>
       <Table dataSource={users} columns={columns} pagination={false} />
       <Pagination className="absolute bottom-4" current={page} total={total} />
-      <UserModal state={userModalState} setState={setUserModalState} />
+      <UserModal
+        state={userModalState}
+        setState={setUserModalState}
+        setShouldUpdateUsers={setShouldUpdateUsers}
+      />
     </div>
   )
 }

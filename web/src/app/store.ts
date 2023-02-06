@@ -1,9 +1,9 @@
 import storage from 'redux-persist/lib/storage'
 import { persistStore, persistReducer, createTransform } from 'redux-persist'
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
-import projectSlice from 'reducers/projectSlice'
+import projectReducer from 'reducers/projectSlice'
 import taskReducer from 'reducers/taskSlice'
-import ganttReducer, { GanttState } from 'reducers/ganttSlice'
+import ganttReducer from 'reducers/ganttSlice'
 import userSlice from 'reducers/userSlice'
 
 const persistConfig = {
@@ -47,9 +47,46 @@ let pGanttReducer = persistReducer(
   ganttReducer
 ) as unknown as typeof ganttReducer
 
+let pProjectReducer = persistReducer(
+  {
+    key: 'project',
+    storage,
+    transforms: [
+      createTransform((state, key) => {
+        switch (key) {
+          case 'projectModalState':
+          case 'taskGroupModalState':
+            return 'close'
+          default:
+            return state
+        }
+      }),
+    ],
+  },
+  projectReducer
+) as unknown as typeof projectReducer
+
+let pTaskReducer = persistReducer(
+  {
+    key: 'task',
+    storage,
+    transforms: [
+      createTransform((state, key) => {
+        switch (key) {
+          case 'taskDrawerOpen':
+            return false
+          default:
+            return state
+        }
+      }),
+    ],
+  },
+  taskReducer
+) as unknown as typeof taskReducer
+
 const reducer = combineReducers({
-  project: projectSlice,
-  task: taskReducer,
+  project: pProjectReducer,
+  task: pTaskReducer,
   gantt: pGanttReducer,
   user: userSlice,
 })

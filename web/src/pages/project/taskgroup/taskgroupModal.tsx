@@ -2,8 +2,8 @@ import { Drawer, Input, Modal } from 'antd'
 import { addTaskGroup } from 'api/taskgroup'
 import { useAppDispatch, useAppSelector } from 'app/hooks'
 import {
-  closeTaskGroupModal,
   setCurrentProject,
+  setTaskGroupModalState,
 } from 'reducers/projectSlice'
 import { useState } from 'react'
 
@@ -13,7 +13,7 @@ const TaskGroupModal = () => {
   const dispatch = useAppDispatch()
 
   const cancel = () => {
-    dispatch(closeTaskGroupModal())
+    dispatch(setTaskGroupModalState('close'))
   }
   const submit = () => {
     if (name == '') {

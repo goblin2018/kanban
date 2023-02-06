@@ -3,12 +3,12 @@ import { Task } from 'api/task'
 
 interface TaskState {
   current?: Task
-  editModalOpen?: boolean
+  taskDrawerOpen?: boolean
   groupIdx?: number
   taskIdx?: number
 }
 
-const initialState: TaskState = { editModalOpen: false }
+const initialState: TaskState = { taskDrawerOpen: false }
 
 const taskSlice = createSlice({
   name: 'task',
@@ -21,10 +21,10 @@ const taskSlice = createSlice({
       state.current = action.payload.task
       state.groupIdx = action.payload.groupIdx
       state.taskIdx = action.payload.taskIdx
-      state.editModalOpen = true
+      state.taskDrawerOpen = true
     },
-    closeEditModal: (state) => {
-      state.editModalOpen = false
+    closeTaskDrawer: (state) => {
+      state.taskDrawerOpen = false
     },
     setCurrentTask: (state, action: PayloadAction<Task>) => {
       state.current = action.payload
@@ -32,5 +32,5 @@ const taskSlice = createSlice({
   },
 })
 
-export const { setEditTask, closeEditModal, setCurrentTask } = taskSlice.actions
+export const { setEditTask, closeTaskDrawer, setCurrentTask } = taskSlice.actions
 export default taskSlice.reducer

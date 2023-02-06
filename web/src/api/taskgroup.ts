@@ -47,3 +47,11 @@ export const moveTaskGroup = (req: {
     data: req,
   }).then((res) => res.data)
 }
+
+export const lTaskGroup = (t: TaskGroup) => {
+  return http({
+    method: 'GET',
+    url: url,
+    params: { projectId: t.projectId },
+  }).then((res) => res.data)
+}

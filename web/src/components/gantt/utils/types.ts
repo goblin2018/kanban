@@ -1,3 +1,5 @@
+import { Dayjs } from 'dayjs'
+
 export enum ViewMode {
   Day = 'Day',
   Week = 'Week',
@@ -15,11 +17,11 @@ export type TaskType = 'task' | 'project'
 export interface GanttTask {
   id: number
   name: string
-  pIndex: number
+  pIndex: number | number[]
   index: number
   type: TaskType
-  start?: Date
-  end?: Date
+  start?: Dayjs
+  end?: Dayjs
   hideChildren?: boolean
 
   barInfo?: {

@@ -45,7 +45,9 @@ export const updatePassword = (opt: {
   }).then((res) => res.data)
 }
 
-export const listUsers = (opt: { offset: number; limit: number }) => {
+export const listUsers = (
+  opt: { offset: number; limit: number } | { all: boolean }
+) => {
   return http({
     method: 'GET',
     url: url,
@@ -56,6 +58,14 @@ export const listUsers = (opt: { offset: number; limit: number }) => {
 export const addUser = (u: User) => {
   return http({
     method: 'POST',
+    url: url,
+    data: u,
+  }).then((res) => res.data)
+}
+
+export const delUser = (u: User) => {
+  return http({
+    method: 'DELETE',
     url: url,
     data: u,
   }).then((res) => res.data)

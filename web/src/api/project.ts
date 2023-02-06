@@ -1,5 +1,6 @@
 import http from './axios'
 import { TaskGroup } from './taskgroup'
+import { User } from './user'
 
 export interface Project {
   id?: number
@@ -7,8 +8,10 @@ export interface Project {
   startAt?: string
   endAt?: string
   desc?: string
-  owner?: number
+  ownerId?: number
+  owner?: User
   taskGroups?: TaskGroup[]
+  status?: number
 }
 const url = '/api/project'
 export const addProject = (p: Project) => {
@@ -32,5 +35,13 @@ export const getProjectDetail = (id: number) => {
     method: 'GET',
     url: url + '/detail',
     params: { id: id },
+  }).then((res) => res.data)
+}
+
+export const updateProject = (p: Project) => {
+  return http({
+    method: 'PUT',
+    url: url,
+    data: p,
   }).then((res) => res.data)
 }

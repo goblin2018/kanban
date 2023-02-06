@@ -1,6 +1,7 @@
 import { Avatar, Button, Divider, Dropdown, MenuProps } from 'antd'
 import { UserLevel } from 'api/user'
 import { useAppSelector } from 'app/hooks'
+import UserAvatar from 'components/userAvatar'
 import { Link, useNavigate } from 'react-router-dom'
 
 const Header = () => {
@@ -32,9 +33,7 @@ const Header = () => {
         )}
       >
         <div className="flex items-center mx-4 cursor-pointer">
-          <Avatar style={{ backgroundColor: user?.avatarColor }}>
-            {user?.name?.substring(user.name.length - 2)}
-          </Avatar>
+          <UserAvatar user={user!} />
           <div className="ml-2">{user?.name}</div>
         </div>
       </Dropdown>

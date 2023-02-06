@@ -1,30 +1,22 @@
 import { Button } from 'antd'
 import { useAppDispatch, useAppSelector } from 'app/hooks'
-import {
-  openTaskGroupModal,
-  setCurrentProject,
-} from 'reducers/projectSlice'
+import { setTaskGroupModalState } from 'reducers/projectSlice'
 import TaskGroupModal from './taskgroup/taskgroupModal'
-import { useEffect, useState } from 'react'
-import { getProjectDetail } from 'api/project'
-import TaskGroupItem from './taskgroup/taskgroup'
+
 import ProjectMenu from './projectmenu'
 import { Outlet, useNavigate } from 'react-router-dom'
-import EditTaskModal from './task/editModal'
+import TaskDrawer from './task/taskDrawer'
+import Header from 'components/header/Header'
 
 const ProjectDetailPage = () => {
   const project = useAppSelector((s) => s.project.current)
+
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
 
-  useEffect(() => {
-    console.log(project)
-    getProjectDetail(project!.id!).then((res) => {
-      dispatch(setCurrentProject(res.data))
-    })
-  }, [])
   return (
     <div>
+      <Header />
       <div className="flex border-b-2 py-4 items-center">
         <div>
           <Button
@@ -41,13 +33,13 @@ const ProjectDetailPage = () => {
         </div>
         <Button
           onClick={() => {
-            dispatch(openTaskGroupModal())
+            dispatch(setTaskGroupModalState('add'))
           }}
         >
           添加任务组
         </Button>
         <TaskGroupModal />
-        <EditTaskModal />
+        <TaskDrawer />
       </div>
       <div>
         <Outlet />

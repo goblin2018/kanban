@@ -1,14 +1,20 @@
-import { useAppSelector } from 'app/hooks'
-import TaskGroupItem from './taskgroup/taskgroup'
+import { useAppDispatch, useAppSelector } from 'app/hooks'
+import { useEffect } from 'react'
+import { listTaskGroup } from 'reducers/projectSlice'
+import TaskGroupItem from './taskgroup'
 
 const Kanban = () => {
-  const project = useAppSelector((s) => s.project.current!)
+  const taskGroups = useAppSelector((s) => s.project.taskGroups)
+  const dispatch = useAppDispatch()
+  useEffect(() => {
+    dispatch(listTaskGroup())
+  }, [])
 
   return (
     <div>
       <div id="groups-dragging-container"></div>
       <div className="flex" id="groups-container">
-        {project.taskGroups?.map((tg, idx) => (
+        {taskGroups.map((tg, idx) => (
           <TaskGroupItem taskgroup={tg} key={`taskgroup${idx}`} idx={idx} />
         ))}
       </div>

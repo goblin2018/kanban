@@ -3,7 +3,7 @@ import Calendar from './calendar/calendar'
 
 import { ganttDateRange, seedDates } from './utils/date'
 import HorizontalScroll from './scrollbar/scroll'
-import { loadBarInfo } from './utils/task'
+import { convertToGanttTaks, loadBarInfo } from './utils/task'
 import ViewModeSwither from './viewmodeSwitcher'
 import { tasks } from './data'
 import Bars from './taskbar/bars'
@@ -17,6 +17,15 @@ const Gantt: React.FC<Props> = ({}) => {
   const { viewMode, totalWidth, rowCount, dates } = useAppSelector(
     (s) => s.gantt
   )
+
+  const taskGroups = useAppSelector((s) => s.project.taskGroups)
+
+  useEffect(() => {
+    let { tasks, start, end } = convertToGanttTaks(taskGroups)
+
+    console.log(tasks, start, end)
+  }, [taskGroups])
+
   const dispatch = useAppDispatch()
 
   useEffect(() => {

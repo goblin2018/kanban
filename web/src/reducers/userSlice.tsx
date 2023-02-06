@@ -3,11 +3,12 @@ import { User } from 'api/user'
 
 interface UserState {
   my?: User
-  users?: User[]
-  page?: number
+  users: User[]
+  editIndex?: number
+  page: number
 }
 
-const initialState: UserState = { page: 0 }
+const initialState: UserState = { page: 0, editIndex: -1, users: [] }
 
 const userSlice = createSlice({
   name: 'user',
@@ -19,8 +20,15 @@ const userSlice = createSlice({
     setPage: (state, action: PayloadAction<number>) => {
       state.page = action.payload
     },
+    setUsers: (state, action: PayloadAction<User[]>) => {
+      state.users = action.payload
+    },
+    setUserEditIndex: (state, action: PayloadAction<number>) => {
+      state.editIndex = action.payload
+    },
   },
 })
 
-export const { setUser, setPage } = userSlice.actions
+export const { setUser, setPage, setUsers, setUserEditIndex } =
+  userSlice.actions
 export default userSlice.reducer

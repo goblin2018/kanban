@@ -1,10 +1,8 @@
-import { Button, Card, Divider, Dropdown } from 'antd'
 import { moveTaskGroup, TaskGroup } from 'api/taskgroup'
-import { PlusOutlined, MoreOutlined } from '@ant-design/icons'
 import { useEffect, useRef, useState } from 'react'
 import { useAppDispatch, useAppSelector } from 'app/hooks'
-import { setCurrentProject } from 'reducers/projectSlice'
-import TaskItem from '../task/taskCard'
+import { setTaskGroups } from 'reducers/projectSlice'
+import TaskItem from '../task'
 import NewTaskItem from '../task/newTask'
 import TaskgroupHeader from './header'
 
@@ -26,7 +24,7 @@ const TaskGroupItem: React.FC<Props> = ({ taskgroup, idx }) => {
 
   const [position, setPosition] = useState({ x: 0, y: 0 })
 
-  const project = useAppSelector((s) => s.project.current)
+  const taskGroups = useAppSelector((s) => s.project.taskGroups)
   const dispatch = useAppDispatch()
 
   const [draggable, setDraggable] = useState(false)
@@ -34,7 +32,6 @@ const TaskGroupItem: React.FC<Props> = ({ taskgroup, idx }) => {
   const item = document.getElementById(`taskgroup-${idx}`)!
 
   const onDragStart = (e: React.DragEvent<HTMLDivElement>) => {
-    // console.log(e)
     if (parent.lastChild == item) {
       parent.appendChild(hold)
     } else {
@@ -107,13 +104,13 @@ const TaskGroupItem: React.FC<Props> = ({ taskgroup, idx }) => {
 
     // 请求后端重新排序
 
-    let tgs = [...project?.taskGroups!]
+    let tgs = [...taskGroups]
 
     let origin = tgs[originIdx]
     tgs.splice(originIdx, 1)
     tgs.splice(currentIdx, 0, origin)
 
-    dispatch(setCurrentProject({ ...project, taskGroups: tgs }))
+    dispatch(setTaskGroups(tgs))
     console.log('tgs after', tgs)
 
     let prev, next
@@ -132,7 +129,7 @@ const TaskGroupItem: React.FC<Props> = ({ taskgroup, idx }) => {
 
     moveTaskGroup({
       id: origin.id!,
-      projectId: project?.id!,
+      projectId: origin.projectId!,
       prev: prev,
       next: next,
     }).then((res) => {
@@ -158,15 +155,18 @@ const TaskGroupItem: React.FC<Props> = ({ taskgroup, idx }) => {
       onDragEnd={onDragEnd}
     >
       <TaskgroupHeader taskgroup={taskgroup} setDraggable={setDraggable} />
-      <div id={`task-container-${idx}`}>
-        {taskgroup.tasks?.map((t, i) => (
-          <TaskItem
-            task={t}
-            key={`task-${taskgroup.id}-${i}`}
-            groupIdx={idx}
-            idx={i}
-          />
-        ))}
+
+      <div className="overflow-y-scroll max-h-[calc(100%-100px)] scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100">
+        <div id={`task-container-${idx}`}>
+          {taskgroup.tasks?.map((t, i) => (
+            <TaskItem
+              task={t}
+              key={`task-${taskgroup.id}-${i}`}
+              groupIdx={idx}
+              idx={i}
+            />
+          ))}
+        </div>
       </div>
       <div>
         <NewTaskItem taskgroup={taskgroup} groupIdx={idx} />
