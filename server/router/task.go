@@ -4,6 +4,7 @@ import (
 	"kanban/api"
 	"kanban/pkg/ctx"
 	"kanban/pkg/e"
+	"kanban/router/middlewares"
 	"kanban/services/task"
 )
 
@@ -17,10 +18,13 @@ func NewTaskController() *TaskController {
 
 func (co *TaskController) RegisterRouters(en *ctx.RouterGroup) {
 	t := en.Group("/task")
-	t.POST("", co.addTask)
-	t.PUT("/status", co.updateTaskStatus)
-	t.POST("/move", co.moveTask)
-	t.PUT("", co.updateTask)
+	t.Use(middlewares.JWT())
+	{
+		t.POST("", co.addTask)
+		t.PUT("/status", co.updateTaskStatus)
+		t.POST("/move", co.moveTask)
+		t.PUT("", co.updateTask)
+	}
 }
 
 func (co *TaskController) addTask(c *ctx.Context) {

@@ -29,4 +29,9 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+
+	err = db.AutoMigrate(&models.Comment{})
+	if err != nil {
+		panic(err)
+	}
 }

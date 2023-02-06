@@ -16,7 +16,7 @@ func NewTaskGroupService() *TaskGroupService {
 	return &TaskGroupService{dao.NewTaskGroupDao()}
 }
 
-func (s *TaskGroupService) AddTaskGroup(c *ctx.Context, req *api.TaskGroup) (res *api.TaskGroup, err error) {
+func (s *TaskGroupService) Add(c *ctx.Context, req *api.TaskGroup) (res *api.TaskGroup, err error) {
 	res = new(api.TaskGroup)
 
 	t := &models.TaskGroup{
@@ -34,7 +34,7 @@ func (s *TaskGroupService) AddTaskGroup(c *ctx.Context, req *api.TaskGroup) (res
 	return
 }
 
-func (s *TaskGroupService) MoveTaskGroup(c *ctx.Context, req *api.MoveTaskGroupReq) (res *api.MoveTaskGroupResp, err error) {
+func (s *TaskGroupService) Move(c *ctx.Context, req *api.MoveTaskGroupReq) (res *api.MoveTaskGroupResp, err error) {
 	res = new(api.MoveTaskGroupResp)
 
 	var prev, next int
@@ -90,7 +90,7 @@ func findIndex(tgs []*models.TaskGroup, id uint) int {
 	return -1
 }
 
-func (s *TaskGroupService) UpdateTaskGroup(c *ctx.Context, req *api.TaskGroup) (res *api.TaskGroup, err error) {
+func (s *TaskGroupService) Update(c *ctx.Context, req *api.TaskGroup) (res *api.TaskGroup, err error) {
 	res = new(api.TaskGroup)
 
 	t := &models.TaskGroup{
@@ -99,5 +99,12 @@ func (s *TaskGroupService) UpdateTaskGroup(c *ctx.Context, req *api.TaskGroup) (
 	}
 	t.ID = req.Id
 	err = s.dao.UpdateTaskGroup(t)
+	return
+}
+
+func (s *TaskGroupService) List(c *ctx.Context, req *api.TaskGroup) (res *api.ListRes[*api.TaskGroup]) {
+	res = new(api.ListRes[*api.TaskGroup])
+	items := s.dao.List(req.ProjectId)
+	res.Items = append(res.Items, items...)
 	return
 }

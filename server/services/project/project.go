@@ -2,28 +2,12 @@ package project
 
 import (
 	"kanban/api"
-	"kanban/dao"
-	"kanban/models"
 	"kanban/pkg/ctx"
 )
 
-type ProjectService struct {
-	dao *dao.ProjectDao
-}
-
-func NewProjectService() *ProjectService {
-	return &ProjectService{dao.NewProjectDao()}
-}
-
 func (s *ProjectService) AddProject(c *ctx.Context, req *api.Project) (res *api.Project, err error) {
 	res = new(api.Project)
-	err = s.dao.AddProject(&models.Project{
-		Name:    req.Name,
-		Desc:    req.Desc,
-		StartAt: req.StartAt,
-		EndAt:   req.EndAt,
-	})
-
+	err = s.dao.AddProject(apiToModel(req))
 	return
 }
 
@@ -37,7 +21,13 @@ func (s *ProjectService) ListProjects(c *ctx.Context) (ps []*api.Project) {
 	return
 }
 
-func (s *ProjectService) GetProjectDetail(c *ctx.Context, req *api.Project) (resp *api.Project, err error) {
-	resp, err = s.dao.GetProjectDetail(req.Id)
+// func (s *ProjectService) GetProjectDetail(c *ctx.Context, req *api.Project) (resp *api.Project, err error) {
+// 	resp, err = s.dao.GetProjectDetail(req.Id)
+// 	return
+// }
+
+func (s *ProjectService) Update(c *ctx.Context, req *api.Project) (res *api.Project, err error) {
+	res = new(api.Project)
+	err = s.dao.UpdateProject(apiToModel(req))
 	return
 }

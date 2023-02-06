@@ -33,6 +33,10 @@ func (c *Context) SetUserLevel(level int) {
 	c.Set("level", level)
 }
 
+func (c *Context) GetUserLevel() int {
+	return c.GetInt("level")
+}
+
 func (c *Context) IsAdmin() bool {
 	return c.GetInt("level") == api.UserLevelAdmin
 }

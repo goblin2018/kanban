@@ -20,7 +20,7 @@ func (d *UserDao) AddUser(u *models.User) error {
 	return d.Create(u).Error
 }
 
-func (d *UserDao) DelUser(id uint) {
+func (d *UserDao) Delete(id uint) {
 	d.Model(&models.User{}).Where("id = ?", id).Delete(&models.User{})
 }
 
@@ -41,7 +41,10 @@ func (d *UserDao) GetUserById(id uint) (user *models.User, err error) {
 }
 
 func (d *UserDao) ListUsers(opt *api.ListOpt) (users []*api.User, total int64, err error) {
-
-	err = d.Model(&models.User{}).Count(&total).Order("updated_at DESC").Offset(opt.Offset).Limit(opt.Limit).Find(&users).Error
+	if opt.All {
+		err = d.Model(&models.User{}).Find(&users).Error
+	} else {
+		err = d.Model(&models.User{}).Count(&total).Order("updated_at DESC").Offset(opt.Offset).Limit(opt.Limit).Find(&users).Error
+	}
 	return
 }

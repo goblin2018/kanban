@@ -1,6 +1,8 @@
 package models
 
 import (
+	"kanban/api"
+
 	"gopkg.in/guregu/null.v4"
 	"gorm.io/gorm"
 )
@@ -11,5 +13,15 @@ type Project struct {
 	Desc    string
 	StartAt null.Time
 	EndAt   null.Time
-	Owner   uint `gorm:"comment:项目拥有者"`
+	OwnerId uint `gorm:"comment:项目拥有者"`
+	Owner   *User
+	Status  int `gorm:"comment:1.未开始，2.进行中，3.已完成"`
+	Tasks   []*Task
+}
+
+func (p *Project) BeforeCreate(tx *gorm.DB) (err error) {
+	if p.Status == 0 {
+		p.Status = api.StatusNotStart
+	}
+	return
 }

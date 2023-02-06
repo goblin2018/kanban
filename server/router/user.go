@@ -24,6 +24,8 @@ func (co UserController) RegisterRouters(en *ctx.RouterGroup) {
 	{
 		u.PUT("", co.update)
 		u.GET("", co.list)
+		u.POST("", co.add)
+		u.DELETE("", co.delete)
 		u.PUT("/password", co.password)
 	}
 }
@@ -95,4 +97,28 @@ func (co *UserController) list(c *ctx.Context) {
 	}
 	res, err := co.s.ListUsers(c, req)
 	c.JSON(res, err)
+}
+
+func (co *UserController) add(c *ctx.Context) {
+	req := new(api.User)
+	if err := c.ShouldBind(req); err != nil {
+		c.Fail(e.InvalidParams.Add(err.Error()))
+		return
+	}
+	if !c.IsAdmin() {
+		c.Fail(e.Forbidden)
+		return
+	}
+	res, err := co.s.AddUser(c, req)
+	c.JSON(res, err)
+}
+
+func (co *UserController) delete(c *ctx.Context) {
+	req := new(api.User)
+	if err := c.ShouldBind(req); err != nil {
+		c.Fail(e.InvalidParams.Add(err.Error()))
+		return
+	}
+	err := co.s.Delete(c, req)
+	c.JSON(nil, err)
 }

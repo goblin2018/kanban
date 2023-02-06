@@ -1,6 +1,7 @@
 package dao
 
 import (
+	"kanban/api"
 	"kanban/models"
 	"kanban/pkg/mysql"
 
@@ -68,5 +69,12 @@ func (d *TaskGroupDao) GetTaskGroupSerialById(id uint) (serial int) {
 
 func (d *TaskGroupDao) GetSerialsByProjectId(id uint) (tgs []*models.TaskGroup) {
 	d.Model(&models.TaskGroup{}).Select("id, serial").Where("project_id = ?", id).Order("serial ASC").Find(&tgs)
+	return
+}
+
+func (d *TaskGroupDao) List(projectId uint) (tgs []*api.TaskGroup) {
+	d.Model(&models.TaskGroup{}).Where("project_id = ?", projectId).Preload("Tasks", func(db *gorm.DB) *gorm.DB {
+		return db.Order("serial ASC")
+	}).Order("serial ASC").Find(&tgs)
 	return
 }

@@ -6,6 +6,7 @@ import (
 	"kanban/pkg/ctx"
 	"kanban/pkg/e"
 	"kanban/pkg/jwt"
+	"kanban/pkg/log"
 	"time"
 
 	uuid "github.com/satori/go.uuid"
@@ -35,6 +36,7 @@ func JWT() ctx.HandlerFunc {
 			return
 		}
 		// ok set user id  and phone
+		log.L.Debugf("user phone %s, userid: %d, level %d", claims.Phone, claims.Id, claims.Level)
 		c.SetPhone(claims.Phone)
 		c.SetUserID(claims.Id)
 		c.SetUserLevel(claims.Level)

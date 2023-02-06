@@ -11,6 +11,7 @@ func InitRouter() *ctx.Engine {
 	NewTaskGroupController().RegisterRouters(v1)
 	NewTaskController().RegisterRouters(v1)
 	NewUserController().RegisterRouters(v1)
+	NewCommentController().RegisterRouters(v1)
 
 	return app
 }

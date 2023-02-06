@@ -48,7 +48,12 @@ func (s *UserService) AddUser(c *ctx.Context, req *api.User) (resp *api.User, er
 		Name:  req.Name,
 		Phone: req.Phone,
 		Duty:  req.Duty,
+		Level: req.Level,
 	})
+
+	if err != nil {
+		err = e.UserAlreadyExists.Add(err.Error())
+	}
 
 	return
 }
@@ -64,6 +69,9 @@ func (s *UserService) Update(c *ctx.Context, req *api.User) (resp *api.User, err
 	}
 	u.ID = req.Id
 	err = s.dao.UpdateUser(u)
+	if err != nil {
+		err = e.UserAlreadyExists.Add(err.Error())
+	}
 	return
 }
 
@@ -94,5 +102,20 @@ func (s *UserService) ListUsers(c *ctx.Context, req *api.ListOpt) (resp *api.Lis
 	users, total, err := s.dao.ListUsers(req)
 	resp.Items = users
 	resp.Total = total
+	return
+}
+
+func (s *UserService) Delete(c *ctx.Context, req *api.User) (err error) {
+	user, err := s.dao.GetUserById(req.Id)
+	if err != nil {
+		err = e.UserNotExists
+		return
+	}
+
+	if c.GetUserLevel() <= user.Level {
+		err = e.Forbidden
+		return
+	}
+	s.dao.Delete(req.Id)
 	return
 }

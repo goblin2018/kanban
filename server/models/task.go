@@ -17,4 +17,5 @@ type Task struct {
 	ProjectId   uint      `gorm:"comment:项目Id"`
 	TaskGroupId uint      `gorm:"comment:任务组Id"`
 	Serial      int       `gorm:"comment:任务排序编号"`
+	Comments    []*Comment
 }

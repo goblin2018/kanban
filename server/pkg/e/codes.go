@@ -19,6 +19,7 @@ var (
 	QueryTooFrequently = New(1002, "请求太频繁")
 	TokenError         = New(1003, "token error: ")
 
-	UserNotExists   = New(2004, "user not exists: ")
-	InvalidPassword = New(2005, "invalidPassword: ")
+	UserAlreadyExists = New(2003, "user aleady exists: ")
+	UserNotExists     = New(2004, "user not exists: ")
+	InvalidPassword   = New(2005, "invalidPassword: ")
 )
