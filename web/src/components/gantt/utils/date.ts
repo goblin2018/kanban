@@ -1,3 +1,4 @@
+import { Dayjs } from 'dayjs'
 import { ColumnWidthConf, preStepsCount, StepWidth } from './conf'
 import { isRun } from './task'
 import { GanttTask, ViewMode } from './types'
@@ -11,33 +12,13 @@ type DateHelperScales =
   | 'second'
   | 'millisecond'
 
-export const getWeekDay = (date: Date) => {
+export const getWeekDay = (d: Dayjs) => {
   let arr = ['日', '一', '二', '三', '四', '五', '六']
-  return arr[date.getDay()]
+  return arr[d.day()]
 }
 
 export const getMonth = (date: Date) => {
   return `${date.getFullYear()}年${date.getMonth() + 1}月`
-}
-
-export const getDaysInMonth = (year: number, month: number) => {
-  return new Date(year, month + 1, 0).getDate()
-}
-export const addToDate = (
-  date: Date,
-  quantity: number,
-  scale: DateHelperScales
-) => {
-  const newDate = new Date(
-    date.getFullYear() + (scale == 'year' ? quantity : 0),
-    date.getMonth() + (scale == 'month' ? quantity : 0),
-    date.getDate() + (scale === 'day' ? quantity : 0),
-    date.getHours() + (scale === 'hour' ? quantity : 0),
-    date.getMinutes() + (scale === 'minute' ? quantity : 0),
-    date.getSeconds() + (scale === 'second' ? quantity : 0),
-    date.getMilliseconds() + (scale === 'millisecond' ? quantity : 0)
-  )
-  return newDate
 }
 
 export const startOfDate = (date: Date, scale: DateHelperScales) => {
@@ -52,52 +33,6 @@ export const startOfDate = (date: Date, scale: DateHelperScales) => {
   }
 }
 
-export const ganttDateRange = (tasks: GanttTask[], viewMode: ViewMode) => {
-  // TODO 处理task中没有时间的问题
-  let newStartDate: Date = tasks[0].start!
-  let newEndDate: Date = tasks[0].end!
-  for (const t of tasks) {
-    if (t.start! < newStartDate) {
-      newStartDate = t.start!
-    }
-    if (t.end! > newEndDate) {
-      newEndDate = t.end!
-    }
-  }
-
-  switch (viewMode) {
-    case ViewMode.Year:
-      newStartDate = addToDate(newStartDate, -1, 'year')
-      newStartDate = startOfDate(newStartDate, 'year')
-      newEndDate = addToDate(newEndDate, 1, 'year')
-      newEndDate = startOfDate(newEndDate, 'year')
-      break
-    case ViewMode.Month:
-      newStartDate = addToDate(newStartDate, -1 * preStepsCount, 'month')
-      newStartDate = startOfDate(newStartDate, 'month')
-      newEndDate = addToDate(newEndDate, 1, 'year')
-      newEndDate = startOfDate(newEndDate, 'year')
-      break
-    case ViewMode.Week:
-      newStartDate = startOfDate(newStartDate, 'day')
-      newStartDate = addToDate(
-        getMonday(newStartDate),
-        -7 * preStepsCount,
-        'day'
-      )
-      newEndDate = startOfDate(newEndDate, 'day')
-      newEndDate = addToDate(newEndDate, 1.5, 'month')
-      break
-    case ViewMode.Day:
-      newStartDate = startOfDate(newStartDate, 'day')
-      newStartDate = addToDate(newStartDate, -1 * preStepsCount, 'day')
-      newEndDate = startOfDate(newEndDate, 'day')
-      newEndDate = addToDate(newEndDate, 3, 'day')
-      break
-  }
-  return [newStartDate, newEndDate]
-}
-
 const getMonday = (d: Date) => {
   let day = d.getDay()
   day = day == 0 ? -7 : day
@@ -106,25 +41,44 @@ const getMonday = (d: Date) => {
 }
 
 export const seedDates = (
-  startDate: Date,
-  endDate: Date,
+  startDate: Dayjs,
+  endDate: Dayjs,
   viewMode: ViewMode
 ) => {
-  let currentDate: Date = new Date(startDate)
-  const dates: Date[] = [currentDate]
+  switch (viewMode) {
+    case ViewMode.Year:
+      startDate = startDate.subtract(1, 'y').startOf('y')
+      endDate = endDate.add(1, 'y').endOf('y')
+      break
+    case ViewMode.Month:
+      startDate = startDate.subtract(preStepsCount, 'M').startOf('M')
+      endDate = endDate.add(1, 'y').endOf('y')
+      break
+    case ViewMode.Week:
+      startDate = startDate.subtract(preStepsCount, 'w').startOf('w')
+      endDate = endDate.add(1, 'M').endOf('M')
+      break
+    case ViewMode.Day:
+      startDate = startDate.subtract(preStepsCount, 'd').startOf('d')
+      endDate = endDate.add(7, 'd').endOf('d')
+      break
+  }
+
+  let currentDate = startDate
+  const dates: Dayjs[] = [currentDate]
   while (currentDate < endDate) {
     switch (viewMode) {
       case ViewMode.Year:
-        currentDate = addToDate(currentDate, 1, 'year')
+        currentDate = currentDate.add(1, 'y')
         break
       case ViewMode.Month:
-        currentDate = addToDate(currentDate, 1, 'month')
+        currentDate = currentDate.add(1, 'M')
         break
       case ViewMode.Week:
-        currentDate = addToDate(currentDate, 7, 'day')
+        currentDate = currentDate.add(1, 'w')
         break
       case ViewMode.Day:
-        currentDate = addToDate(currentDate, 1, 'day')
+        currentDate = currentDate.add(1, 'd')
         break
     }
     dates.push(currentDate)
@@ -152,38 +106,35 @@ export const getWeekNumberISO8601 = (date: Date) => {
   }
 }
 
-export const xToDate = (x: number, start: Date, viewMode: ViewMode) => {
+export const xToDate = (x: number, start: Dayjs, viewMode: ViewMode) => {
   let d = 0
   let m = 0
   let y = 0
   switch (viewMode) {
     case ViewMode.Day:
       d = Math.floor(x / StepWidth[ViewMode.Day])
-      return addToDate(start, d, 'day')
+      return start.add(d, 'd')
     case ViewMode.Week:
       d = Math.floor(x / StepWidth[ViewMode.Week])
-      return addToDate(start, d * 7, 'day')
+      return start.add(d, 'w')
     case ViewMode.Month:
       m = Math.floor(x / ColumnWidthConf[ViewMode.Month])
-      let md = addToDate(start, m, 'month')
+      let md = start.add(m, 'M')
       let days = Math.floor(
         ((x % ColumnWidthConf[ViewMode.Month]) /
           ColumnWidthConf[ViewMode.Month]) *
-          getDaysInMonth(md.getFullYear(), md.getMonth())
+          md.endOf('M').date()
       )
-      return addToDate(md, days, 'day')
+      return md.add(days, 'd')
     case ViewMode.Year:
       y = Math.floor(x / ColumnWidthConf[ViewMode.Year])
-      let my = addToDate(start, y, 'year')
-      let tDays = isRun(my.getFullYear()) ? 366 : 365
+      let my = start.add(y, 'y')
       let ds = Math.floor(
         ((x % ColumnWidthConf[ViewMode.Year]) /
           ColumnWidthConf[ViewMode.Year]) *
-          tDays
+          my.endOf('y').dayOfYear()
       )
 
-      return addToDate(my, ds, 'day')
+      return my.add(ds, 'd')
   }
 }
-
-

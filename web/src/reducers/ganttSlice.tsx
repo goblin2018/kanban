@@ -1,11 +1,12 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { Dayjs } from 'dayjs'
 import { ColumnWidthConf } from '../components/gantt/utils/conf'
 import { GanttTask, ViewMode } from '../components/gantt/utils/types'
 
 export interface GanttState {
   viewMode: ViewMode
   tasks: GanttTask[]
-  dates: Date[]
+  dates: Dayjs[]
   columnWidth: number
   totalWidth: number
   rowCount: number
@@ -36,7 +37,7 @@ const ganttSlice = createSlice({
       state.tasks = action.payload
       state.rowCount = state.tasks.length
     },
-    setDates: (state, action: PayloadAction<Date[]>) => {
+    setDates: (state, action: PayloadAction<Dayjs[]>) => {
       state.dates = action.payload
       state.totalWidth = state.dates.length * state.columnWidth
     },

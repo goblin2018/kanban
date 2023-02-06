@@ -8,12 +8,13 @@ import {
   StepWidth,
   taskHeight,
 } from './conf'
-import { addToDate, getDaysInMonth } from './date'
 import { GanttTask, ViewMode } from './types'
+import dayOfYear from 'dayjs/plugin/dayOfYear'
+dayjs.extend(dayOfYear)
 
 export const loadBarInfo = (
   tasks: GanttTask[],
-  dates: Date[],
+  dates: Dayjs[],
   viewMode: ViewMode
 ) => {
   let ts = tasks.map((t) => ({ ...t }))
@@ -32,52 +33,48 @@ export const isRun = (year: number) => {
 
 const loadBarInfoImpl = (
   task: GanttTask,
-  dates: Date[],
+  dates: Dayjs[],
   viewMode: ViewMode
 ) => {
-  let barInfo = task.barInfo
-  barInfo = {
-    color: task.type == 'project' ? projectBackgroundColor : barBackgroundColor,
+  let barInfo = task.barInfo!
+  if (task.start) {
+    barInfo.x1 = taskXCoordinate(task.start, dates, viewMode)
+    if (!task.end) {
+      task.end = task.start
+    }
+    barInfo.x2 = taskXCoordinate(task.end, dates, viewMode, true)
+    barInfo.y = taskYCoordinate(task.index)
   }
-  barInfo.x1 = taskXCoordinate(task.start!, dates, viewMode)
-  barInfo.x2 = taskXCoordinate(task.end!, dates, viewMode, true)
-  barInfo.y = taskYCoordinate(task.index)
   task.barInfo = barInfo
 }
 
 const taskXCoordinate = (
-  d: Date,
-  dates: Date[],
+  d: Dayjs,
+  dates: Dayjs[],
   viewMode: ViewMode,
   isEnd: boolean = false
 ) => {
   if (isEnd) {
-    d = addToDate(d, 1, 'day')
+    d = d.add(1, 'd')
   }
   let start = dates[0]
   if (viewMode == ViewMode.Day || viewMode == ViewMode.Week) {
     let step = StepWidth[viewMode]
-    return ((d.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) * step
+    return d.diff(start, 'd') * step
   }
 
   if (viewMode == ViewMode.Month) {
-    let dm =
-      (d.getFullYear() - start.getFullYear()) * 12 +
-      (d.getMonth() - start.getMonth())
-
-    let dday = d.getDate() / getDaysInMonth(d.getFullYear(), d.getMonth())
+    let dm = d.diff(start, 'M')
+    let dday = d.date() / d.endOf('M').date()
     return (dm + dday) * ColumnWidthConf[ViewMode.Month]
   }
 
   // viewMode year
 
-  let dy = d.getFullYear() - start.getFullYear()
+  let dy = d.diff(start, 'y')
 
-  let days = d.getDate()
-  for (let index = 0; index < d.getMonth(); index++) {
-    days += getDaysInMonth(d.getFullYear(), index)
-  }
-  let totalDays = isRun(d.getFullYear()) ? 366 : 365
+  let days = d.dayOfYear()
+  let totalDays = d.endOf('y').dayOfYear()
 
   return (dy + days / totalDays) * ColumnWidthConf[ViewMode.Year]
 }

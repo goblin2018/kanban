@@ -1,7 +1,7 @@
 import styles from './grid.module.css'
-import { addToDate } from '../utils/date'
 import { rowHeight } from '../utils/conf'
 import { useAppSelector } from 'app/hooks'
+import dayjs from 'dayjs'
 
 interface Props {
   todayColor?: string
@@ -47,16 +47,15 @@ const Grid: React.FC<Props> = ({ todayColor = 'rgba(252, 248, 227, 0.5)' }) => {
     y += rowHeight
   }
 
-  const now = new Date()
+  const now = dayjs()
   let tickX = 0
   let ticks = []
   let today = <rect />
   for (let i = 0; i < dates.length; i++) {
     const date = dates[i]
-
     ticks.push(
       <line
-        key={date.getTime()}
+        key={date.unix()}
         x1={tickX}
         y1={0}
         x2={tickX}
@@ -67,17 +66,13 @@ const Grid: React.FC<Props> = ({ todayColor = 'rgba(252, 248, 227, 0.5)' }) => {
 
     if (
       (i + 1 !== dates.length &&
-        date.getTime() < now.getTime() &&
-        dates[i + 1].getTime() >= now.getTime()) ||
+        date.isBefore(now) &&
+        dates[i + 1].isAfter(now)) ||
       // if current date is last
       (i !== 0 &&
         i + 1 === dates.length &&
-        date.getTime() < now.getTime() &&
-        addToDate(
-          date,
-          date.getTime() - dates[i - 1].getTime(),
-          'millisecond'
-        ).getTime() >= now.getTime())
+        date.isBefore(now) &&
+        date.add(date.unix() - dates[i - 1].unix(), 's').isAfter(now))
     ) {
       today = (
         <rect

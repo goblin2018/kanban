@@ -33,7 +33,7 @@ const Header = () => {
         )}
       >
         <div className="flex items-center mx-4 cursor-pointer">
-          <UserAvatar user={user!} />
+          <UserAvatar user={user} />
           <div className="ml-2">{user?.name}</div>
         </div>
       </Dropdown>

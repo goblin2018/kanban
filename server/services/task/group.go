@@ -28,8 +28,6 @@ func (s *TaskGroupService) Add(c *ctx.Context, req *api.TaskGroup) (res *api.Tas
 
 	res.Id = t.ID
 	res.Serial = t.Serial
-	res.Name = t.Name
-	res.ProjectId = t.ProjectId
 
 	return
 }

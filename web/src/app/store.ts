@@ -5,6 +5,7 @@ import projectReducer from 'reducers/projectSlice'
 import taskReducer from 'reducers/taskSlice'
 import ganttReducer from 'reducers/ganttSlice'
 import userSlice from 'reducers/userSlice'
+import dayjs from 'dayjs'
 
 const persistConfig = {
   key: 'root',
@@ -30,12 +31,12 @@ let pGanttReducer = persistReducer(
             case 'diffX':
               return 0
             case 'dates':
-              return outboundState.map((t: string) => new Date(t))
+              return outboundState.map((t: string) => dayjs(t))
             case 'tasks':
               return outboundState.map((t: any) => ({
                 ...t,
-                start: new Date(t.start),
-                end: new Date(t.end),
+                start: dayjs(t.start),
+                end: dayjs(t.end),
               }))
             default:
               return outboundState

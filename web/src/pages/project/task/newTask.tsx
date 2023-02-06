@@ -5,7 +5,7 @@ import { ReactComponent as Right } from 'assets/right.svg'
 import { addTask } from 'api/task'
 import { TaskGroup } from 'api/taskgroup'
 import { useAppDispatch, useAppSelector } from 'app/hooks'
-import { setCurrentProject } from 'reducers/projectSlice'
+import { setCurrentProject, setTaskGroups } from 'reducers/projectSlice'
 
 interface Props {
   taskgroup: TaskGroup
@@ -15,7 +15,7 @@ interface Props {
 const NewTaskItem: React.FC<Props> = ({ taskgroup, groupIdx }) => {
   const [title, setTitle] = useState('')
   const [showAdd, setShowAdd] = useState(false)
-  const project = useAppSelector((s) => s.project.current)
+  const taskGroups = useAppSelector((s) => s.project.taskGroups)
   const dispatch = useAppDispatch()
   const cancel = () => {
     setShowAdd(false)
@@ -36,8 +36,7 @@ const NewTaskItem: React.FC<Props> = ({ taskgroup, groupIdx }) => {
 
       let nt = res.data
 
-      let p = { ...project }
-      let groups = [...p.taskGroups!]
+      let groups = [...taskGroups]
       let g = { ...groups[groupIdx] }
       let tasks = [...g.tasks!]
 
@@ -52,8 +51,7 @@ const NewTaskItem: React.FC<Props> = ({ taskgroup, groupIdx }) => {
 
       g.tasks = tasks
       groups[groupIdx] = g
-      p.taskGroups = groups
-      dispatch(setCurrentProject(p))
+      dispatch(setTaskGroups(groups))
       setShowAdd(false)
 
       console.log(res.data)

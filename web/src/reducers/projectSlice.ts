@@ -25,7 +25,8 @@ export const listTaskGroup = createAsyncThunk(
   async (_, { getState }) => {
     const p = (getState() as { project: ProjectState }).project.current
     const res = await lTaskGroup({ projectId: p.id })
-    return res.data.items
+
+    return res.data.items || []
   }
 )
 
@@ -66,7 +67,7 @@ export const {
   setProjectModalState,
   setTaskGroupModalState,
   setProjectItems,
-  setTaskGroups
+  setTaskGroups,
 } = projectSlice.actions
 
 export default projectSlice.reducer

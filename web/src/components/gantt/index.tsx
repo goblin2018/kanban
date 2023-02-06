@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import Calendar from './calendar/calendar'
 
-import { ganttDateRange, seedDates } from './utils/date'
+import { seedDates } from './utils/date'
 import HorizontalScroll from './scrollbar/scroll'
 import { convertToGanttTaks, loadBarInfo } from './utils/task'
 import ViewModeSwither from './viewmodeSwitcher'
@@ -10,6 +10,7 @@ import Bars from './taskbar/bars'
 import { useAppDispatch, useAppSelector } from 'app/hooks'
 import TaskTable from './task-table'
 import { setDates, setTasks } from '../../reducers/ganttSlice'
+import { Dayjs } from 'dayjs'
 
 interface Props {}
 
@@ -19,22 +20,14 @@ const Gantt: React.FC<Props> = ({}) => {
   )
 
   const taskGroups = useAppSelector((s) => s.project.taskGroups)
-
-  useEffect(() => {
-    let { tasks, start, end } = convertToGanttTaks(taskGroups)
-
-    console.log(tasks, start, end)
-  }, [taskGroups])
+  let { tasks, start, end } = convertToGanttTaks(taskGroups)
 
   const dispatch = useAppDispatch()
 
   useEffect(() => {
-    const [startDate, endDate] = ganttDateRange(tasks, viewMode)
-    let dates = seedDates(startDate, endDate, viewMode)
+    let dates = seedDates(start, end, viewMode)
     dispatch(setDates(dates))
-
     let ts = loadBarInfo(tasks, dates, viewMode)
-
     dispatch(setTasks(ts))
   }, [viewMode])
 

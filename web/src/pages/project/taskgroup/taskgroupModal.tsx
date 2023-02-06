@@ -4,12 +4,16 @@ import { useAppDispatch, useAppSelector } from 'app/hooks'
 import {
   setCurrentProject,
   setTaskGroupModalState,
+  setTaskGroups,
 } from 'reducers/projectSlice'
 import { useState } from 'react'
 
 const TaskGroupModal = () => {
-  const state = useAppSelector((s) => s.project.taskGroupModalState)
-  const project = useAppSelector((s) => s.project.current)
+  const {
+    taskGroupModalState: state,
+    taskGroups,
+    current: project,
+  } = useAppSelector((s) => s.project)
   const dispatch = useAppDispatch()
 
   const cancel = () => {
@@ -19,18 +23,16 @@ const TaskGroupModal = () => {
     if (name == '') {
       return
     }
-    addTaskGroup({ projectId: project?.id, name: name }).then((res) => {
-      // 获取任务列表
-
-      let tmp = { ...project }
-      console.log(tmp.taskGroups)
-
-      if (!tmp.taskGroups) {
-        tmp.taskGroups = []
-      }
-      tmp.taskGroups = [...tmp.taskGroups, res.data]
-      dispatch(setCurrentProject(tmp))
-    })
+    addTaskGroup({ projectId: project.id, name: name })
+      .then((res) => {
+        // 获取任务列表
+        let tgs = [...taskGroups]
+        tgs.push({ ...res.data, projectId: project.id, name: name })
+        dispatch(setTaskGroups(tgs))
+      })
+      .finally(() => {
+        setName('')
+      })
     cancel()
   }
 

@@ -2,7 +2,7 @@ import { MoreOutlined } from '@ant-design/icons'
 import { Button, Card, Dropdown, Input } from 'antd'
 import { TaskGroup, updateTaskGroup } from 'api/taskgroup'
 import { useAppDispatch, useAppSelector } from 'app/hooks'
-import { setCurrentProject } from 'reducers/projectSlice'
+import { setCurrentProject, setTaskGroups } from 'reducers/projectSlice'
 import { useState } from 'react'
 import { CirclePicker, Color } from 'react-color'
 
@@ -11,7 +11,7 @@ interface Props {
   setDraggable: (draggable: boolean) => void
 }
 const TaskgroupHeader: React.FC<Props> = ({ taskgroup, setDraggable }) => {
-  const project = useAppSelector((s) => s.project.current!)
+  const taskGroups = useAppSelector((s) => s.project.taskGroups)
   const dispatch = useAppDispatch()
 
   const [name, setName] = useState(taskgroup.name)
@@ -25,12 +25,10 @@ const TaskgroupHeader: React.FC<Props> = ({ taskgroup, setDraggable }) => {
     // 提交
     updateTaskGroup({ id: taskgroup.id, name: name }).then((res) => {
       // 更新名称
-      let p = { ...project }
-      let tgs = [...p.taskGroups!]
+      let tgs = [...taskGroups]
       let i = tgs.findIndex((t) => t.id == taskgroup.id)
       tgs[i] = { ...tgs[i], name: name }
-      p.taskGroups = tgs
-      dispatch(setCurrentProject(p))
+      dispatch(setTaskGroups(tgs))
     })
   }
 
@@ -41,12 +39,10 @@ const TaskgroupHeader: React.FC<Props> = ({ taskgroup, setDraggable }) => {
     // 提交
     updateTaskGroup({ id: taskgroup.id, color: color }).then((res) => {
       // 更新名称
-      let p = { ...project }
-      let tgs = [...p.taskGroups!]
+      let tgs = [...taskGroups]
       let i = tgs.findIndex((t) => t.id == taskgroup.id)
       tgs[i] = { ...tgs[i], color: color }
-      p.taskGroups = tgs
-      dispatch(setCurrentProject(p))
+      dispatch(setTaskGroups(tgs))
     })
   }
 
