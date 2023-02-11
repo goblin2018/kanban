@@ -122,6 +122,7 @@ func (s *TaskService) UpdateTask(c *ctx.Context, req *api.Task) (resp *api.Task,
 		Name:    req.Name,
 		StartAt: req.StartAt,
 		EndAt:   req.EndAt,
+		Desc:    req.Desc,
 	}
 	t.ID = req.Id
 	s.dao.UpdateTaskInfo(t)

@@ -1,7 +1,10 @@
-import { Dayjs } from 'dayjs'
+import dayjs, { Dayjs } from 'dayjs'
 import { ColumnWidthConf, preStepsCount, StepWidth } from './conf'
 import { isRun } from './task'
 import { GanttTask, ViewMode } from './types'
+import weekOfYear from 'dayjs/plugin/weekOfYear'
+dayjs.extend(weekOfYear)
+
 
 type DateHelperScales =
   | 'year'
@@ -31,13 +34,6 @@ export const startOfDate = (date: Date, scale: DateHelperScales) => {
     default: // default day
       return new Date(date.getFullYear(), date.getMonth(), date.getDate())
   }
-}
-
-const getMonday = (d: Date) => {
-  let day = d.getDay()
-  day = day == 0 ? -7 : day
-  const mon = d.getDate() - day + 1
-  return new Date(d.setDate(mon))
 }
 
 export const seedDates = (
@@ -116,7 +112,7 @@ export const xToDate = (x: number, start: Dayjs, viewMode: ViewMode) => {
       return start.add(d, 'd')
     case ViewMode.Week:
       d = Math.floor(x / StepWidth[ViewMode.Week])
-      return start.add(d, 'w')
+      return start.add(d, 'd')
     case ViewMode.Month:
       m = Math.floor(x / ColumnWidthConf[ViewMode.Month])
       let md = start.add(m, 'M')

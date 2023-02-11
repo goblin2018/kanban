@@ -7,17 +7,13 @@ export enum ViewMode {
   Year = 'Year',
 }
 
-export interface DateSetup {
-  dates: Date[]
-  viewMode: ViewMode
-}
-
 export type TaskType = 'task' | 'project'
 
 export interface GanttTask {
   id: number
   name: string
-  pIndex: number | number[]
+  previousIndex: number | number[]
+  parentIndex?: number
   index: number
   type: TaskType
   start?: Dayjs

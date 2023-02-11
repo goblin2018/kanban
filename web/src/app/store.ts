@@ -20,8 +20,11 @@ let pGanttReducer = persistReducer(
     // whiteList: [],
     transforms: [
       createTransform(
-        (state) => {
-          return state
+        (state, key) => {
+          switch (key) {
+            default:
+              return state
+          }
         },
 
         (outboundState, key) => {
@@ -35,8 +38,8 @@ let pGanttReducer = persistReducer(
             case 'tasks':
               return outboundState.map((t: any) => ({
                 ...t,
-                start: dayjs(t.start),
-                end: dayjs(t.end),
+                start: t.start == undefined ? undefined : dayjs(t.start),
+                end: t.end == undefined ? undefined : dayjs(t.end),
               }))
             default:
               return outboundState

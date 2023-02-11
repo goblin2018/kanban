@@ -45,10 +45,11 @@ func (s *UserService) Login(c *ctx.Context, req *api.User) (resp *api.User, err 
 func (s *UserService) AddUser(c *ctx.Context, req *api.User) (resp *api.User, err error) {
 	resp = new(api.User)
 	err = s.dao.AddUser(&models.User{
-		Name:  req.Name,
-		Phone: req.Phone,
-		Duty:  req.Duty,
-		Level: req.Level,
+		Name:     req.Name,
+		Phone:    req.Phone,
+		Duty:     req.Duty,
+		Level:    req.Level,
+		Password: encrypt.Encrypt(api.DefaultPassword),
 	})
 
 	if err != nil {

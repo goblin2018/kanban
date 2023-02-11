@@ -66,7 +66,14 @@ const Users = () => {
                 </div>
               }
               onConfirm={() => {
-                updatePassword({ id: r.id!, action: Action.Reset })
+                updatePassword({ id: r.id!, action: Action.Reset }).then(
+                  (res) => {
+                    notification.success({
+                      message: '操作成功',
+                      description: '重置密码为senmeng66',
+                    })
+                  }
+                )
               }}
             >
               <Button>重置密码</Button>

@@ -1,9 +1,12 @@
 import { Menu, MenuProps } from 'antd'
+import { useAppDispatch, useAppSelector } from 'app/hooks'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { PageOption, setPage } from 'reducers/projectSlice'
 
 const ProjectMenu = () => {
-  const [current, setCurrent] = useState('kanban')
+  const page = useAppSelector((s) => s.project.page)
+  const dispatch = useAppDispatch()
   const navigate = useNavigate()
 
   const items: MenuProps['items'] = [
@@ -18,21 +21,17 @@ const ProjectMenu = () => {
   ]
 
   useEffect(() => {
-    if (current == 'kanban') {
-      navigate('kanban')
-    } else {
-      navigate('gantt')
-    }
-  }, [current])
+    navigate(page)
+  }, [page])
 
   const onClick: MenuProps['onClick'] = ({ key }) => {
-    setCurrent(key)
+    dispatch(setPage(key as PageOption))
   }
 
   return (
     <Menu
       onClick={onClick}
-      selectedKeys={[current]}
+      selectedKeys={[page]}
       mode="horizontal"
       items={items}
     />

@@ -14,6 +14,7 @@ type Task struct {
 	ProjectId   uint      `json:"projectId" form:"projectId"`
 	TaskGroupId uint      `json:"taskGroupId" form:"taskGroupId"`
 	Serial      int       `json:"serial" form:"serial"`
+	Desc        string    `json:"desc" form:"desc"`
 }
 
 type MoveTaskReq struct {

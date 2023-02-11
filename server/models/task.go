@@ -15,6 +15,7 @@ type Task struct {
 	StartAt     null.Time `gorm:"comment:开始时间"`
 	EndAt       null.Time `gorm:"comment:结束时间"`
 	ProjectId   uint      `gorm:"comment:项目Id"`
+	Desc        string    `gorm:"comment:项目描述"`
 	TaskGroupId uint      `gorm:"comment:任务组Id"`
 	Serial      int       `gorm:"comment:任务排序编号"`
 	Comments    []*Comment

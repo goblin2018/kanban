@@ -15,13 +15,13 @@ const TaskTable = () => {
       </div>
       {tasks.map((t) => (
         <div
-          key={`taskname-${t.id}`}
+          key={`taskname-${t.type == 'task' ? 't' : 'g'}-${t.id}`}
           className="flex items-center justify-between"
           style={{ height: rowHeight }}
         >
           <div>{t.name}</div>
-          <div>{t.start!.toLocaleDateString()}</div>
-          <div>{t.end!.toLocaleDateString()}</div>
+          <div>{t.start?.format('MM-DD')}</div>
+          <div>{t.end?.format('MM-DD')}</div>
         </div>
       ))}
     </div>

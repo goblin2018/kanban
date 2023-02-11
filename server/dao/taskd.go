@@ -35,11 +35,20 @@ func (d *TaskDao) UpdateTask(t *models.Task) error {
 }
 
 func (d *TaskDao) UpdateTaskInfo(t *models.Task) error {
-	return d.Model(&models.Task{}).Where("id = ?", t.ID).Updates(map[string]interface{}{
-		"name":     t.Name,
+
+	info := map[string]interface{}{
 		"start_at": t.StartAt,
 		"end_at":   t.EndAt,
-	}).Error
+	}
+
+	if t.Name != "" {
+		info["name"] = t.Name
+	}
+	if t.Desc != "" {
+		info["desc"] = t.Desc
+	}
+	return d.Model(&models.Task{}).Where("id = ?", t.ID).Updates(info).Error
+
 }
 
 func (d *TaskDao) UpdateTaskStatus(t *models.Task) error {

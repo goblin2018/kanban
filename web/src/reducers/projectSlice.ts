@@ -6,10 +6,13 @@ import { lTaskGroup, TaskGroup } from 'api/taskgroup'
 interface ProjectState {
   items: Project[]
   current: Project
-  projectModalState?: ModalState
-  taskGroupModalState?: ModalState
+  projectModalState: ModalState
+  taskGroupModalState: ModalState
   taskGroups: TaskGroup[]
+  page: PageOption
 }
+
+export type PageOption = 'kanban' | 'gantt'
 
 export const listProjects = createAsyncThunk(
   'project/listProjects',
@@ -30,7 +33,14 @@ export const listTaskGroup = createAsyncThunk(
   }
 )
 
-const initialState: ProjectState = { items: [], current: {}, taskGroups: [] }
+const initialState: ProjectState = {
+  items: [],
+  current: {},
+  taskGroups: [],
+  page: 'kanban',
+  projectModalState: 'close',
+  taskGroupModalState: 'close',
+}
 const projectSlice = createSlice({
   name: 'project',
   initialState,
@@ -50,6 +60,9 @@ const projectSlice = createSlice({
     setTaskGroupModalState: (state, action: PayloadAction<ModalState>) => {
       state.taskGroupModalState = action.payload
     },
+    setPage: (state, action: PayloadAction<PageOption>) => {
+      state.page = action.payload
+    },
   },
 
   extraReducers: (builder) => {
@@ -68,6 +81,7 @@ export const {
   setTaskGroupModalState,
   setProjectItems,
   setTaskGroups,
+  setPage,
 } = projectSlice.actions
 
 export default projectSlice.reducer

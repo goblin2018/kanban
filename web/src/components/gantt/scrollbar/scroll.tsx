@@ -1,35 +1,30 @@
-import { useAppSelector } from 'app/hooks'
+import { useAppDispatch, useAppSelector } from 'app/hooks'
 import { useEffect, useRef } from 'react'
+import { setScrollLeft } from 'reducers/ganttSlice'
 import styles from './scroll.module.css'
 
 interface Props {
-  scroll: number
-  setScroll: (scroll: number) => void
   taskListWidth: number
   width: number
 }
 
-const HorizontalScroll: React.FC<Props> = ({
-  scroll,
-  setScroll,
-  taskListWidth,
-  width,
-}) => {
-  const totalWidth = useAppSelector((s) => s.gantt.totalWidth)
+const HorizontalScroll: React.FC<Props> = ({ taskListWidth, width }) => {
+  const { totalWidth, scrollLeft } = useAppSelector((s) => s.gantt)
   const scrollRef = useRef<HTMLDivElement>(null)
+  const dispatch = useAppDispatch()
 
   useEffect(() => {
     if (scrollRef.current) {
-      scrollRef.current.scrollLeft = scroll
+      scrollRef.current.scrollLeft = scrollLeft
     }
-  }, [scroll])
+  }, [scrollLeft])
 
   return (
     <div
       style={{ left: taskListWidth, width: width }}
       className={`${styles.scrollWrapper} fixed bottom-4`}
       onScroll={(e) => {
-        setScroll(scrollRef.current!.scrollLeft)
+        dispatch(setScrollLeft(scrollRef.current!.scrollLeft))
       }}
       ref={scrollRef}
     >

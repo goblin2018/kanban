@@ -9,6 +9,7 @@ export interface Task {
   status?: number
   startAt?: string
   endAt?: string
+  desc?: string
 }
 
 const url = '/api/task'

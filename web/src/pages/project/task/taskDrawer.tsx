@@ -1,13 +1,4 @@
-import {
-  DatePicker,
-  Form,
-  Input,
-  Drawer,
-  Radio,
-  Divider,
-  Button,
-  Popconfirm,
-} from 'antd'
+import { DatePicker, Form, Input, Drawer, Button, Popconfirm } from 'antd'
 import { useAppDispatch, useAppSelector } from 'app/hooks'
 import { useEffect } from 'react'
 import { closeTaskDrawer, setCurrentTask } from '../../../reducers/taskSlice'
@@ -51,11 +42,13 @@ const TaskDrawer = () => {
     newTask.name = t.name == '' ? task?.name : t.name
     newTask.startAt = t.startAt
     newTask.endAt = t.endAt
+    newTask.desc = t.desc == '' ? task?.desc : t.desc
 
     if (
       newTask.name == task?.name &&
       toShortDate(newTask.startAt) == toShortDate(task?.startAt) &&
-      toShortDate(newTask.endAt) == toShortDate(task?.endAt)
+      toShortDate(newTask.endAt) == toShortDate(task?.endAt) &&
+      newTask.desc == task?.desc
     ) {
       return
     }
@@ -95,6 +88,9 @@ const TaskDrawer = () => {
             </Item>
             <Item label="结束时间" name="endAt">
               <DatePicker></DatePicker>
+            </Item>
+            <Item label="项目描述" name={'desc'}>
+              <Input.TextArea />
             </Item>
           </Form>
 

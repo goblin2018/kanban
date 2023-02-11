@@ -3,7 +3,7 @@ import { GanttTask } from './utils/types'
 export let tasks: GanttTask[] = [
   {
     index: 0,
-    pIndex: 0,
+    previousIndex: 0,
     id: 1,
     type: 'project',
     name: 'p1',
@@ -12,7 +12,7 @@ export let tasks: GanttTask[] = [
   },
   {
     index: 1,
-    pIndex: 1,
+    previousIndex: 1,
     id: 4,
     type: 'task',
     name: 't4这个任务很长啊',
@@ -21,7 +21,7 @@ export let tasks: GanttTask[] = [
   },
   {
     index: 2,
-    pIndex: 2,
+    previousIndex: 2,
     id: 3,
     type: 'task',
     name: 't3',
@@ -30,7 +30,7 @@ export let tasks: GanttTask[] = [
   },
   {
     index: 3,
-    pIndex: 3,
+    previousIndex: 3,
     id: 2,
     type: 'project',
     name: 'p2',

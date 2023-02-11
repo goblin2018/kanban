@@ -1,7 +1,6 @@
 import { TaskGroup } from 'api/taskgroup'
 import dayjs, { Dayjs } from 'dayjs'
 import {
-  barBackgroundColor,
   ColumnWidthConf,
   projectBackgroundColor,
   rowHeight,
@@ -18,7 +17,6 @@ export const loadBarInfo = (
   viewMode: ViewMode
 ) => {
   let ts = tasks.map((t) => ({ ...t }))
-
   ts.forEach((t, i) => {
     t.index = i
     loadBarInfoImpl(t, dates, viewMode)
@@ -42,21 +40,14 @@ const loadBarInfoImpl = (
     if (!task.end) {
       task.end = task.start
     }
-    barInfo.x2 = taskXCoordinate(task.end, dates, viewMode, true)
+    barInfo.x2 = taskXCoordinate(task.end, dates, viewMode)
     barInfo.y = taskYCoordinate(task.index)
   }
   task.barInfo = barInfo
+
 }
 
-const taskXCoordinate = (
-  d: Dayjs,
-  dates: Dayjs[],
-  viewMode: ViewMode,
-  isEnd: boolean = false
-) => {
-  if (isEnd) {
-    d = d.add(1, 'd')
-  }
+const taskXCoordinate = (d: Dayjs, dates: Dayjs[], viewMode: ViewMode) => {
   let start = dates[0]
   if (viewMode == ViewMode.Day || viewMode == ViewMode.Week) {
     let step = StepWidth[viewMode]
@@ -98,7 +89,7 @@ export const convertToGanttTaks = (tgs: TaskGroup[]) => {
     tasks.push({
       id: tg.id!,
       name: tg.name!,
-      pIndex: i,
+      previousIndex: i,
       index: groupIndex,
       hideChildren: false,
       type: 'project',
@@ -119,35 +110,40 @@ export const convertToGanttTaks = (tgs: TaskGroup[]) => {
         tasks.push({
           id: t.id!,
           name: t.name!,
-          pIndex: [i, j],
+          previousIndex: [i, j],
+          parentIndex: groupIndex,
           index: index,
           type: 'task',
           start: start,
           end: end,
           barInfo: {
-            color: tg.color!,
+            color: tg.color || '#2196f3',
           },
         })
+        index += 1
 
-        if (start && start.isBefore(groupStart)) {
-          groupStart = start
-        }
-        if (end && end.isAfter(groupEnd)) {
-          groupEnd = end
+        if (start) {
+          if (!groupStart || (groupStart && start.isBefore(groupStart))) {
+            groupStart = start
+          }
+          if (!totalStart || (totalStart && start.isBefore(totalStart))) {
+            totalStart = start
+          }
         }
 
-        if (start && start.isBefore(totalStart)) {
-          totalStart = start
-        }
-        if (end && end.isAfter(totalEnd)) {
-          totalEnd = end
+        if (end) {
+          if (!groupEnd || (groupEnd && end.isAfter(groupEnd))) {
+            groupEnd = end
+          }
+
+          if (!totalEnd || (totalEnd && end.isAfter(totalEnd))) {
+            totalEnd = end
+          }
         }
       })
 
       tasks[groupIndex].start = groupStart
       tasks[groupIndex].end = groupEnd
-
-      index += 1
     }
   })
 

@@ -7,6 +7,7 @@ export const barCornerRadius = 4
 export const handleWidth = 8
 export const handleHeight = taskHeight - 2
 export const headerHeight = 60
+export const calendarTopHeight = headerHeight * 0.5
 
 export const barProgressColor = '#a3a3ff'
 export const barProgressSelectedColor = '#8282f5'
@@ -29,4 +30,6 @@ export const ColumnWidthConf = {
 export const StepWidth = {
   [ViewMode.Week]: ColumnWidthConf[ViewMode.Week] / 7,
   [ViewMode.Day]: ColumnWidthConf[ViewMode.Day],
+  [ViewMode.Month]: ColumnWidthConf[ViewMode.Month] / 30,
+  [ViewMode.Year]: 5,
 }

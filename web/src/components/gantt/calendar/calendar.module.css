@@ -14,7 +14,7 @@
 }
 
 .calendarTopText {
-  text-anchor: middle;
+  text-anchor: start;
   fill: #555;
   -webkit-touch-callout: none;
   -webkit-user-select: none;

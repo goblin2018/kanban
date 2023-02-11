@@ -5,19 +5,15 @@ import { seedDates } from './utils/date'
 import HorizontalScroll from './scrollbar/scroll'
 import { convertToGanttTaks, loadBarInfo } from './utils/task'
 import ViewModeSwither from './viewmodeSwitcher'
-import { tasks } from './data'
 import Bars from './taskbar/bars'
 import { useAppDispatch, useAppSelector } from 'app/hooks'
 import TaskTable from './task-table'
-import { setDates, setTasks } from '../../reducers/ganttSlice'
-import { Dayjs } from 'dayjs'
+import { setDates, setScrollLeft, setTasks } from 'reducers/ganttSlice'
 
 interface Props {}
 
 const Gantt: React.FC<Props> = ({}) => {
-  const { viewMode, totalWidth, rowCount, dates } = useAppSelector(
-    (s) => s.gantt
-  )
+  const { viewMode, totalWidth, scrollLeft } = useAppSelector((s) => s.gantt)
 
   const taskGroups = useAppSelector((s) => s.project.taskGroups)
   let { tasks, start, end } = convertToGanttTaks(taskGroups)
@@ -25,6 +21,7 @@ const Gantt: React.FC<Props> = ({}) => {
   const dispatch = useAppDispatch()
 
   useEffect(() => {
+    console.log('start ', start.format())
     let dates = seedDates(start, end, viewMode)
     dispatch(setDates(dates))
     let ts = loadBarInfo(tasks, dates, viewMode)
@@ -32,7 +29,6 @@ const Gantt: React.FC<Props> = ({}) => {
   }, [viewMode])
 
   const ganttContainerRef = useRef<HTMLDivElement>(null)
-  const [scrollLeft, setScrollLeft] = useState(0)
   useEffect(() => {
     if (ganttContainerRef.current) {
       ganttContainerRef.current.scrollLeft = scrollLeft
@@ -63,7 +59,7 @@ const Gantt: React.FC<Props> = ({}) => {
             ) {
               nl = totalWidth - ganttContainerRef.current!.clientWidth
             }
-            setScrollLeft(nl)
+            dispatch(setScrollLeft(nl))
           }}
         >
           <ViewModeSwither />
@@ -75,8 +71,6 @@ const Gantt: React.FC<Props> = ({}) => {
         <HorizontalScroll
           taskListWidth={300}
           width={ganttContainerRef.current?.clientWidth}
-          scroll={scrollLeft}
-          setScroll={setScrollLeft}
         />
       )}
     </div>
