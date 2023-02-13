@@ -19,6 +19,7 @@ func NewUserController() *UserController {
 func (co UserController) RegisterRouters(en *ctx.RouterGroup) {
 	u := en.Group("/user")
 	u.POST("/login", co.login)
+	u.GET("/test", co.test)
 
 	u.Use(middlewares.JWT())
 	{
@@ -28,6 +29,11 @@ func (co UserController) RegisterRouters(en *ctx.RouterGroup) {
 		u.DELETE("", co.delete)
 		u.PUT("/password", co.password)
 	}
+}
+
+func (co UserController) test(c *ctx.Context) {
+
+	c.JSON("ok", nil)
 }
 
 func (co UserController) login(c *ctx.Context) {

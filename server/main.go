@@ -1,7 +1,6 @@
 package main
 
 import (
-	"kanban/pkg/conf"
 	"kanban/pkg/log"
 	"kanban/pkg/mysql"
 	"kanban/pkg/redis"
@@ -15,7 +14,6 @@ func main() {
 
 	app := router.InitRouter()
 
-	ac := conf.C.App
-	app.Run(ac.Host + ":" + ac.Port)
+	app.Run(":80")
 
 }

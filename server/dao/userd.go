@@ -13,7 +13,9 @@ type UserDao struct {
 }
 
 func NewUserDao() *UserDao {
-	return &UserDao{mysql.GetDB()}
+	d := &UserDao{mysql.GetDB()}
+
+	return d
 }
 
 func (d *UserDao) AddUser(u *models.User) error {

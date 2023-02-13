@@ -45,4 +45,5 @@ func Init() {
 
 	fmt.Println("done mysql")
 	// TODO 有时候不需要migrate
+	migrate()
 }

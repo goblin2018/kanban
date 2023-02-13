@@ -56,7 +56,7 @@ func init() {
 
 	env := viper.GetString("env")
 
-	viper.AddConfigPath(getConfPath())
+	viper.AddConfigPath("config")
 	viper.SetConfigName("app." + env)
 	viper.SetConfigType("json")
 
