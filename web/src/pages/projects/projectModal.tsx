@@ -43,20 +43,28 @@ const ProjectModal = () => {
         let items = res.data.items ? res.data.items : []
         setUsers(items)
       })
-    } else if (user?.level == UserLevel.Normal) {
-      setUsers([{ ...project?.owner }])
     }
   }, [user?.level])
 
   useEffect(() => {
     if (status == 'edit') {
+      if (user?.level == UserLevel.Normal) {
+        setUsers([{ ...project.owner }])
+      }
       let pdate: dayjs.Dayjs[] = []
       if (project.startAt) {
         pdate = [dayjs(project.startAt), dayjs(project.endAt)]
       }
       aForm.setFieldsValue({ ...project, pdate })
     } else if (status == 'add') {
-      aForm.setFieldsValue({ status: ProjectStatus.NotStart })
+      aForm.resetFields()
+      if (user?.level == UserLevel.Normal) {
+        setUsers([{ ...user }])
+      }
+      aForm.setFieldsValue({
+        status: ProjectStatus.NotStart,
+        ownerId: user?.id,
+      })
     }
   }, [status])
 

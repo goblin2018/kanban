@@ -9,7 +9,7 @@ import {
   Tag,
 } from 'antd'
 import { Action, ErrCode, ModalState } from 'api/constatns'
-import { delUser, listUsers, updatePassword, User } from 'api/user'
+import { delUser, listUsers, updatePassword, User, UserLevel } from 'api/user'
 import { useAppDispatch, useAppSelector } from 'app/hooks'
 import Header from 'components/header/Header'
 import { useEffect, useState } from 'react'
@@ -36,10 +36,23 @@ const Users = () => {
       dataIndex: 'name',
       title: '姓名',
     },
+
     {
       key: 'phone',
       dataIndex: 'phone',
       title: '手机号',
+    },
+
+    {
+      key: 'level',
+      dataIndex: 'level',
+      title: '用户类型',
+      render: (v) => {
+        if (v >= UserLevel.Admin) {
+          return '管理员'
+        }
+        return '普通用户'
+      },
     },
     {
       key: 'operation',

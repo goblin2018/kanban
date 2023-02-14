@@ -33,11 +33,13 @@ const UserModal: React.FC<Props> = ({
   }, [state])
 
   const submit = () => {
-    userForm.validateFields(['name', 'phone']).then((vs) => {
+    userForm.validateFields(['name', 'phone', 'level']).then((vs) => {
       let nu = { ...vs } as User
 
       if (state == 'add') {
         // 添加用户
+
+        console.log('add new user ', nu)
         addUser(nu).then((res) => {
           switch (res.code) {
             case ErrCode.Ok:

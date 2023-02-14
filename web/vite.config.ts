@@ -14,7 +14,9 @@ export default ({ mode }) => {
       port: 3000,
       proxy: {
         '/api': {
-          target: 'http://localhost:9000/api/v1',
+          target: 'http://120.78.83.29/api',
+
+          // target: 'http://localhost:9000/api/v1',
           changeOrigin: true,
           rewrite: (path) => path.replace(/^\/api/, ''),
         },
