@@ -1,0 +1,51 @@
+version: '3'
+services:
+  db:
+    image: mysql:5.7
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: xy2089
+      TZ: Asia/Shanghai
+    networks:
+      - kanban-net
+    ports:
+      - 3306:3306
+    volumes:
+      - kanban-db:/var/lib/mysql
+      - ./scripts/mysql/cmysql.cnf:/etc/mysql/conf.d/custom.cnf
+      - ./scripts/mysql/:/docker-entrypoint-initdb.d/
+
+    command: --max_connections=1000 --character-set-server=utf8mb4 --collation-server=utf8mb4_general_ci
+  redis:
+    image: redis:alpine3.17
+    restart: always
+    ports:
+      - 6379:6379
+    environment:
+      TZ: Asia/Shanghai
+    volumes:
+      - kanban-redis:/data
+    networks:
+      - kanban-net
+  server:
+    image: registry.cn-shenzhen.aliyuncs.com/uqi/kanban-server
+    networks:
+      - kanban-net
+    depends_on:
+      - db
+      - redis
+
+  web:
+    image: registry.cn-shenzhen.aliyuncs.com/uqi/kanban-web
+    networks:
+      - kanban-net
+    ports:
+      - "80:80"
+    depends_on:
+      - server
+
+volumes:
+  kanban-db:
+  kanban-redis:
+networks:
+  kanban-net:
