@@ -2,11 +2,25 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+  font-family: Han;
+  src: local('Han'),
+    url('../assets/fonts/SourceHanSansCN-Normal.otf') format('opentype');
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: Han;
+  src: local('Han'),
+    url('../assets/fonts/SourceHanSansCN-Medium.otf') format('opentype');
+  font-weight: 500;
+}
+
 :root {
-  font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
+  font-family: Han, Inter, Avenir, Helvetica, Arial, sans-serif;
+
   font-size: 16px;
   line-height: 24px;
-  font-weight: 400;
 
   color: rgba(57, 53, 53, 0.87);
 
@@ -17,6 +31,3 @@
   -webkit-text-size-adjust: 100%;
 }
 
-.ant-btn-primary {
-  background-color: #1677ff;
-}

@@ -3,7 +3,7 @@ import { updateTaskStatus } from 'api/task'
 import { useAppDispatch, useAppSelector } from 'app/hooks'
 import { setCurrentProject } from 'reducers/projectSlice'
 import React from 'react'
-import StatusTag from './statustag'
+import StatusTag from '../../../components/statustag'
 
 interface Props {
   status: number

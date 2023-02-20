@@ -3,9 +3,10 @@ import { ProjectStatusInfo } from 'api/constatns'
 import { Project } from 'api/project'
 import { toShortDate } from 'api/utils'
 import { useAppDispatch } from 'app/hooks'
+import StatusTag from 'components/statustag'
 import { useNavigate } from 'react-router-dom'
 import { setCurrentProject, setProjectModalState } from 'reducers/projectSlice'
-
+import './project.css'
 const { Meta } = Card
 interface Props {
   project: Project
@@ -23,40 +24,44 @@ const ProjectCard: React.FC<Props> = ({ project }) => {
       }}
     >
       <Card
-        className="mr-6"
+        className="mr-6 rounded-2xl"
         hoverable
-        style={{ width: 240 }}
-        cover={<div className="bg-emerald-300 text-4xl">Project</div>}
+        style={{ width: 360, height: 208 }}
       >
-        <Meta
-          title={project.name}
-          description={`${
-            project.startAt
+        <div
+          className="h-4 rounded-t-2xl"
+          style={{ background: '#f4af00' }}
+        ></div>
+
+        <div className="px-6 py-4">
+          <div className="text-xl">{project.name}</div>
+
+          <div>
+            <StatusTag status={project.status!} />
+          </div>
+          <div className="text-xs">
+            {project.startAt
               ? `${toShortDate(project.startAt)} - ${toShortDate(
                   project.endAt
                 )}`
-              : ''
-          }`}
-        />
+              : ''}
+          </div>
 
-        <div className="flex">
-          <div className="mr-2">状态</div>
-          <div>{ProjectStatusInfo[project.status!].info}</div>
+          <div className="flex">
+            <div className="mr-2">负责人</div>
+            <div>{project.owner?.name}</div>
+          </div>
+          <Button
+            onClick={(e) => {
+              // 编辑任务
+              e.stopPropagation()
+              dispatch(setCurrentProject(project))
+              dispatch(setProjectModalState('edit'))
+            }}
+          >
+            编辑
+          </Button>
         </div>
-        <div className="flex">
-          <div className="mr-2">负责人</div>
-          <div>{project.owner?.name}</div>
-        </div>
-        <Button
-          onClick={(e) => {
-            // 编辑任务
-            e.stopPropagation()
-            dispatch(setCurrentProject(project))
-            dispatch(setProjectModalState('edit'))
-          }}
-        >
-          编辑
-        </Button>
       </Card>
     </div>
   )

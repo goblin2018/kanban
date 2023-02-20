@@ -14,7 +14,7 @@ import router from './router'
 import store, { persistor } from './store'
 import { ConfigProvider } from 'antd'
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
-  <ConfigProvider locale={zhCN}>
+  <ConfigProvider locale={zhCN} theme={{ token: { colorPrimary: '#285ac4' } }}>
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
         <RouterProvider router={router} />

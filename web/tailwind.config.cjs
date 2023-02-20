@@ -3,8 +3,57 @@ const plugin = require('tailwindcss/plugin')
 
 module.exports = {
   content: ['./index.html', './src/**/*.{vue,js,ts,jsx,tsx}'],
+  corePlugins: {
+    preflight: false,
+  },
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        blue: {
+          50: '#eaeff9',
+          100: '#bccced',
+          200: '#9cb3e4',
+          300: '#6f90d7',
+          400: '#537bd0',
+          500: '#285ac4',
+          600: '#2452b2',
+          700: '#1c408b',
+          800: '#16326c',
+          900: '#112652',
+        },
+      },
+
+      fontSize: {
+        xs: [
+          '0.75rem',
+          {
+            lineHeight: '1.25rem',
+            fontWeight: 400,
+          },
+        ],
+        base: [
+          '1rem',
+          {
+            lineHeight: '1.5rem',
+            fontWeight: 400,
+          },
+        ],
+        xl: [
+          '1.5rem',
+          {
+            lineHeight: '2rem',
+            fontWeight: 500,
+          },
+        ],
+        '2xl': [
+          '2.25rem',
+          {
+            lineHeight: '3rem',
+            fontWeight: 500,
+          },
+        ],
+      },
+    },
   },
   plugins: [
     plugin(function ({ matchUtilities, theme }) {
