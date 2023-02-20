@@ -21,6 +21,9 @@ module.exports = {
           800: '#16326c',
           900: '#112652',
         },
+        text: {
+          disabled: '#ababab',
+        },
       },
 
       fontSize: {
@@ -36,6 +39,13 @@ module.exports = {
           {
             lineHeight: '1.5rem',
             fontWeight: 400,
+          },
+        ],
+        bold: [
+          '1rem',
+          {
+            lineHeight: '1.5rem',
+            fontWeight: 500,
           },
         ],
         xl: [
@@ -74,4 +84,7 @@ module.exports = {
     }),
     require('tailwind-scrollbar'),
   ],
+  variants: {
+    scrollbar: ['rounded'],
+  },
 }

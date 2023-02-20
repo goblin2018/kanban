@@ -4,10 +4,10 @@ import { Project } from 'api/project'
 import { toShortDate } from 'api/utils'
 import { useAppDispatch } from 'app/hooks'
 import StatusTag from 'components/statustag'
+import UserTag from 'components/userTag'
 import { useNavigate } from 'react-router-dom'
 import { setCurrentProject, setProjectModalState } from 'reducers/projectSlice'
 import './project.css'
-const { Meta } = Card
 interface Props {
   project: Project
 }
@@ -17,14 +17,9 @@ const ProjectCard: React.FC<Props> = ({ project }) => {
 
   // const
   return (
-    <div
-      onClick={() => {
-        dispatch(setCurrentProject(project))
-        navigate('/project')
-      }}
-    >
+    <div>
       <Card
-        className="mr-6 rounded-2xl"
+        className="mb-4 rounded-2xl mr-5 relative"
         hoverable
         style={{ width: 360, height: 208 }}
       >
@@ -36,22 +31,35 @@ const ProjectCard: React.FC<Props> = ({ project }) => {
         <div className="px-6 py-4">
           <div className="text-xl">{project.name}</div>
 
-          <div>
+          <div className="mt-2">
             <StatusTag status={project.status!} />
           </div>
-          <div className="text-xs">
-            {project.startAt
-              ? `${toShortDate(project.startAt)} - ${toShortDate(
-                  project.endAt
-                )}`
-              : ''}
+
+          <div className="absolute bottom-8">
+            <div className="text-xs mb-1">
+              {project.startAt
+                ? `${toShortDate(project.startAt, '/')} - ${toShortDate(
+                    project.endAt,
+                    '/'
+                  )}`
+                : ''}
+            </div>
+
+            <UserTag user={project.owner!} />
           </div>
 
-          <div className="flex">
-            <div className="mr-2">负责人</div>
-            <div>{project.owner?.name}</div>
-          </div>
           <Button
+            type="text"
+            className="absolute right-4 bottom-8"
+            onClick={() => {
+              dispatch(setCurrentProject(project))
+              navigate('/project')
+            }}
+          >
+            进入项目
+          </Button>
+          <Button
+            className="absolute right-4 top-8"
             onClick={(e) => {
               // 编辑任务
               e.stopPropagation()

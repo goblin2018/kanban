@@ -5,7 +5,8 @@ import { setTaskGroups } from 'reducers/projectSlice'
 import { DragEventHandler, useEffect, useRef, useState } from 'react'
 import StatusSelector from './statusSelector'
 import { setEditTask } from '../../../reducers/taskSlice'
-import { ReactComponent as Date } from 'assets/date.svg'
+import { ReactComponent as CommentSvg } from './comment.svg'
+import StatusTag from 'components/statustag'
 
 interface Props {
   task: Task
@@ -13,10 +14,12 @@ interface Props {
   groupIdx: number
 }
 
+const taskHeight = 136
+
 let hold = document.createElement('div')
 hold.id = 'holdtask'
-hold.style.height = '160px'
-hold.style.marginBottom = '16px'
+hold.style.height = `${taskHeight}px`
+hold.style.marginBottom = '8px'
 hold.style.background = '#1f66ba'
 
 const TaskItem: React.FC<Props> = ({ task, idx, groupIdx }) => {
@@ -221,13 +224,14 @@ const TaskItem: React.FC<Props> = ({ task, idx, groupIdx }) => {
 
   return (
     <div
-      className="bg-lime-200 p-4 text-gray-600 rounded mb-4 w-[186px] h-[160px] flex flex-col"
+      className="bg-white text-gray-600 rounded-xl mb-2 w-[312px] flex flex-col"
       draggable={draggable}
       ref={item}
       style={{
         left: position.x,
         top: position.y,
         position: 'relative',
+        height: taskHeight,
       }}
       onDragStart={dragStart}
       onDrag={onDrag}
@@ -238,6 +242,7 @@ const TaskItem: React.FC<Props> = ({ task, idx, groupIdx }) => {
       onDragEnd={onDragEnd}
     >
       <div
+        className="text-bold pt-4 mb-2 px-4"
         onMouseEnter={() => {
           setDraggable(true)
         }}
@@ -246,31 +251,28 @@ const TaskItem: React.FC<Props> = ({ task, idx, groupIdx }) => {
         {task.name}
       </div>
       <div
-        className="flex-1"
         onClick={() => {
           dispatch(
             setEditTask({ task: task, groupIdx: groupIdx, taskIdx: idx })
           )
         }}
       >
-        <div className="text-xs">
-          <StatusSelector
-            status={task.status!}
-            taskId={task.id!}
-            groupIdx={groupIdx}
-            idx={idx}
-          />
-
+        <div className="text-xs px-4 pb-1 text-text-disabled">
           <div className="flex">
-            <Date className="w-4 h-4 mr-1" />
             <div className="mr-2">开始时间</div>
             <div>{toShortDate(task.startAt)}</div>
           </div>
           <div className="flex">
-            <Date className="w-4 h-4 mr-1" />
             <div className="mr-2">结束时间</div>
             <div>{toShortDate(task.endAt)}</div>
           </div>
+        </div>
+        <div className="flex px-4 justify-between items-center">
+          <div className="flex items-start">
+            <CommentSvg className="mr-1" />
+            <div>{20}</div>
+          </div>
+          <StatusTag status={task.status!} />
         </div>
       </div>
     </div>

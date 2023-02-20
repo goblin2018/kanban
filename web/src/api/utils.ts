@@ -1,15 +1,20 @@
 import dayjs from 'dayjs'
 
-export const toShortDate = (t: string | undefined | dayjs.Dayjs) => {
+export const toShortDate = (
+  t: string | undefined | dayjs.Dayjs,
+  split: string = '-'
+) => {
   if (!t) {
     return ''
   }
+
+  let td: dayjs.Dayjs
   if (typeof t == 'string') {
-    let i = t.indexOf('T')
-    return t.substring(0, i)
+    td = dayjs(t)
   } else {
-    return dayjsToStr(t)
+    td = t
   }
+  return dayjsToStr(td, split)
 }
 
 export const strToDayjs = (t: string | undefined) => {
@@ -20,12 +25,12 @@ export const strToDayjs = (t: string | undefined) => {
   return dayjs(t, 'YYYY-MM-DD')
 }
 
-export const dayjsToStr = (t: dayjs.Dayjs | undefined) => {
+export const dayjsToStr = (t: dayjs.Dayjs | undefined, split: string = '-') => {
   if (!t) {
     return undefined
   }
 
-  return t.format('YYYY-MM-DD')
+  return t.format(`YYYY${split}MM${split}DD`)
 }
 
 export const toDateString = (t: string) => {

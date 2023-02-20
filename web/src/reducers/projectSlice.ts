@@ -12,7 +12,7 @@ interface ProjectState {
   page: PageOption
 }
 
-export type PageOption = 'kanban' | 'gantt'
+export type PageOption = '' | 'gantt'
 
 export const listProjects = createAsyncThunk(
   'project/listProjects',
@@ -37,7 +37,7 @@ const initialState: ProjectState = {
   items: [],
   current: {},
   taskGroups: [],
-  page: 'kanban',
+  page: '',
   projectModalState: 'close',
   taskGroupModalState: 'close',
 }

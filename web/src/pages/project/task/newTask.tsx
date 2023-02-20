@@ -1,6 +1,6 @@
 import { PlusOutlined } from '@ant-design/icons'
 import { Button, Input } from 'antd'
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { ReactComponent as Right } from 'assets/right.svg'
 import { addTask } from 'api/task'
 import { TaskGroup } from 'api/taskgroup'
@@ -10,9 +10,14 @@ import { setCurrentProject, setTaskGroups } from 'reducers/projectSlice'
 interface Props {
   taskgroup: TaskGroup
   groupIdx: number
+  atBottom?: boolean
 }
 
-const NewTaskItem: React.FC<Props> = ({ taskgroup, groupIdx }) => {
+const NewTaskItem: React.FC<Props> = ({
+  taskgroup,
+  groupIdx,
+  atBottom = false,
+}) => {
   const [title, setTitle] = useState('')
   const [showAdd, setShowAdd] = useState(false)
   const taskGroups = useAppSelector((s) => s.project.taskGroups)
@@ -57,10 +62,17 @@ const NewTaskItem: React.FC<Props> = ({ taskgroup, groupIdx }) => {
       console.log(res.data)
     })
   }
+
   return (
-    <div className="mt-4">
+    <div className="mt-2">
       {showAdd ? (
-        <div className="my-2">
+        <div
+          className={`${
+            atBottom
+              ? 'fixed bottom-0 w-[360px] bg-white pl-5 pr-7 pt-4'
+              : 'my-2 pl-5  pr-5'
+          }`}
+        >
           <Input.TextArea
             value={title}
             onChange={(e) => {
@@ -68,32 +80,38 @@ const NewTaskItem: React.FC<Props> = ({ taskgroup, groupIdx }) => {
               setTitle(v.trim())
             }}
           />
-          <div className="py-1">
-            <Button
-              type="text"
-              icon={<Right className="w-4 h-4 mr-2" />}
-              className="flex items-center"
-            >
-              任务
-            </Button>
-          </div>
-          <div className="p-1">
-            <Button type="primary" className="mr-2" onClick={submit}>
-              确认
-            </Button>
-            <Button type="text" onClick={cancel}>
-              取消
-            </Button>
+
+          <div className="flex justify-between py-2">
+            <div className="py-1">
+              <Button
+                type="text"
+                icon={<Right className="w-4 h-4 mr-2" />}
+                className="flex items-center"
+              >
+                任务
+              </Button>
+            </div>
+            <div className="p-1">
+              <Button type="primary" className="mr-2" onClick={submit}>
+                确认
+              </Button>
+              <Button type="text" onClick={cancel}>
+                取消
+              </Button>
+            </div>
           </div>
         </div>
       ) : (
         <Button
+          size="large"
           icon={<PlusOutlined />}
-          style={{ width: '100%' }}
+          style={{ width: 312, marginLeft: 20 }}
           onClick={() => {
             setShowAdd(true)
           }}
-        ></Button>
+        >
+          添加任务
+        </Button>
       )}
     </div>
   )

@@ -37,7 +37,7 @@ const router = createBrowserRouter([
     element: <ProjectDetailPage />,
     children: [
       {
-        path: 'kanban',
+        path: '',
         element: <Kanban />,
       },
       {

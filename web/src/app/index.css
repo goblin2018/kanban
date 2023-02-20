@@ -23,6 +23,7 @@
   line-height: 24px;
 
   color: rgba(57, 53, 53, 0.87);
+  background-color: #f5f7fa;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -30,4 +31,3 @@
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
 }
-

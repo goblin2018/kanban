@@ -36,8 +36,13 @@ const UserInfo = () => {
     <div>
       <Header />
       <div className="p-4">
-        <div className="w-[500px]">
-          <Form form={userForm} layout="vertical" initialValues={{ ...user }}>
+        <div className="w-[636px] mx-auto rounded-xl">
+          <Form
+            form={userForm}
+            layout="vertical"
+            initialValues={{ ...user }}
+            requiredMark={false}
+          >
             <Form.Item
               label="姓名"
               name={'name'}

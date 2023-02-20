@@ -20,6 +20,7 @@ import dayjs from 'dayjs'
 import { ErrCode, ProjectStatus, ProjectStatusInfo } from 'api/constatns'
 import { listUsers, User, UserLevel } from 'api/user'
 import { toShortDate } from 'api/utils'
+import UserTag from 'components/userTag'
 
 const { Item } = Form
 const ProjectModal = () => {
@@ -137,9 +138,12 @@ const ProjectModal = () => {
         onCancel={cancel}
         onOk={submit}
       >
-        <Form form={aForm}>
+        <Form form={aForm} layout="vertical">
+          <Item label="名称" name={'name'}>
+            <Input size="large" />
+          </Item>
           <Item label="当前状态" name={'status'}>
-            <Radio.Group>
+            <Radio.Group size="large">
               <Radio.Button value={ProjectStatus.NotStart}>
                 {ProjectStatusInfo[ProjectStatus.NotStart].info}
               </Radio.Button>
@@ -151,11 +155,19 @@ const ProjectModal = () => {
               </Radio.Button>
             </Radio.Group>
           </Item>
-          <Item label="名称" name={'name'}>
-            <Input />
+
+          <Item label="负责人" name="ownerId" className="w-52">
+            <Select size="large">
+              {users.map((u, i) => (
+                <Select.Option key={`user-${i}`} value={u.id}>
+                  <UserTag user={u} />
+                </Select.Option>
+              ))}
+            </Select>
           </Item>
+
           <Item label="项目日期" name={'pdate'}>
-            <DatePicker.RangePicker />
+            <DatePicker.RangePicker size="large" />
           </Item>
           {/* <Item label="结束时间" name={'start'}>
             <DatePicker />
@@ -163,17 +175,9 @@ const ProjectModal = () => {
           <Item name={'end'}>
             <DatePicker />
           </Item> */}
+
           <Item label="项目描述" name="desc">
             <Input.TextArea />
-          </Item>
-          <Item label="负责人" name="ownerId">
-            <Select>
-              {users.map((u, i) => (
-                <Select.Option key={`user-${i}`} value={u.id}>
-                  {u.name}
-                </Select.Option>
-              ))}
-            </Select>
           </Item>
         </Form>
       </Modal>

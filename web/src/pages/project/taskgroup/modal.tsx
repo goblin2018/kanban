@@ -7,6 +7,7 @@ import {
   setTaskGroups,
 } from 'reducers/projectSlice'
 import { useState } from 'react'
+import { CirclePicker, Color } from 'react-color'
 
 const TaskGroupModal = () => {
   const {
@@ -36,6 +37,25 @@ const TaskGroupModal = () => {
     cancel()
   }
 
+  const [color, setColor] = useState<Color>(
+    // taskgroup.color!
+    '#aabbcc'
+  )
+
+  const submitColor = (color: string) => {
+    if (color == taskgroup.color) {
+      return
+    }
+    // 提交
+    updateTaskGroup({ id: taskgroup.id, color: color }).then((res) => {
+      // 更新名称
+      let tgs = [...taskGroups]
+      let i = tgs.findIndex((t) => t.id == taskgroup.id)
+      tgs[i] = { ...tgs[i], color: color }
+      dispatch(setTaskGroups(tgs))
+    })
+  }
+
   const [name, setName] = useState('')
   return (
     <Modal
@@ -44,14 +64,25 @@ const TaskGroupModal = () => {
       onCancel={cancel}
       onOk={submit}
     >
+      <div className="mb-1">任务组名称</div>
       <Input
         value={name}
+        size="large"
         placeholder={'请输入任务组的名称'}
         onChange={(e) => {
           let v = e.target.value
           setName(v.trim())
         }}
         onPressEnter={submit}
+      />
+
+      <div>选择主题色</div>
+      <CirclePicker
+        color={color}
+        onChange={(c, e) => {
+          setColor(c.hex)
+          submitColor(c.hex)
+        }}
       />
     </Modal>
   )

@@ -11,9 +11,11 @@ interface Props {
   idx: number
 }
 
+const groupWidth = 360
+
 let hold = document.createElement('div')
 hold.id = 'hold'
-hold.style.width = '220px'
+hold.style.width = `${groupWidth}px`
 hold.style.background = '#1f66ba'
 
 const TaskGroupItem: React.FC<Props> = ({ taskgroup, idx }) => {
@@ -51,7 +53,7 @@ const TaskGroupItem: React.FC<Props> = ({ taskgroup, idx }) => {
 
     // t.parentElement.ap
 
-    let idx = Math.floor((e.clientX - parent!.offsetLeft) / 220)
+    let idx = Math.floor((e.clientX - parent!.offsetLeft) / groupWidth)
     setCurrentIdx(idx)
     setOriginIdx(idx)
 
@@ -65,7 +67,7 @@ const TaskGroupItem: React.FC<Props> = ({ taskgroup, idx }) => {
       y: e.clientY - diff.y,
     })
 
-    let newIdx = Math.floor((e.clientX - parent!.offsetLeft) / 220)
+    let newIdx = Math.floor((e.clientX - parent!.offsetLeft) / groupWidth)
 
     newIdx =
       newIdx <= parent!.childElementCount ? newIdx : parent!.childElementCount
@@ -139,12 +141,13 @@ const TaskGroupItem: React.FC<Props> = ({ taskgroup, idx }) => {
 
   return (
     <div
-      className="w-[220px] border h-[600px] p-4 cursor-pointer bg-white"
+      className={`border h-full cursor-pointer bg-blue-50 flex-shrink-0 ml-2  rounded-xl`}
       draggable={draggable}
       style={{
         left: position.x,
         top: position.y,
         position: 'relative',
+        width: groupWidth - 8,
       }}
       id={`taskgroup-${idx}`}
       onDragStart={onDragStart}
@@ -156,8 +159,13 @@ const TaskGroupItem: React.FC<Props> = ({ taskgroup, idx }) => {
     >
       <TaskgroupHeader taskgroup={taskgroup} setDraggable={setDraggable} />
 
-      <div className="overflow-y-scroll max-h-[calc(100%-100px)] scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100">
-        <div id={`task-container-${idx}`}>
+      <div
+        className={`overflow-y-scroll max-h-[calc(100%-120px)] 
+        scrollbar-thin scrollbar-thumb-blue-200 
+         scrollbar-thumb-rounded-full
+         scrollbar-track-blue-50`}
+      >
+        <div id={`task-container-${idx}`} className="pl-5">
           {taskgroup.tasks?.map((t, i) => (
             <TaskItem
               task={t}
@@ -168,8 +176,12 @@ const TaskGroupItem: React.FC<Props> = ({ taskgroup, idx }) => {
           ))}
         </div>
       </div>
-      <div>
-        <NewTaskItem taskgroup={taskgroup} groupIdx={idx} />
+      <div className="relative">
+        <NewTaskItem
+          taskgroup={taskgroup}
+          groupIdx={idx}
+          atBottom={taskgroup.tasks && taskgroup.tasks.length > 3}
+        />
       </div>
     </div>
   )

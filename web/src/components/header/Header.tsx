@@ -4,12 +4,13 @@ import { useAppSelector } from 'app/hooks'
 import UserAvatar from 'components/userAvatar'
 import { Link, useNavigate } from 'react-router-dom'
 
-import { ReactComponent as Project } from 'assets/project.svg'
+import { ReactComponent as ProjectSvg } from 'assets/project.svg'
 
 import logo from 'assets/sm.png'
 import { setCurrentProject } from 'reducers/projectSlice'
 import { useState } from 'react'
 import MenuItem from './menuitem'
+import UserTag from 'components/userTag'
 
 const Header = () => {
   const user = useAppSelector((s) => s.user.my)
@@ -22,7 +23,7 @@ const Header = () => {
     {
       label: '项目',
       key: '/',
-      icon: <Project />,
+      icon: <ProjectSvg />,
     },
     // {
     //   label: 'Navigation Two',
@@ -32,17 +33,17 @@ const Header = () => {
     // },
   ]
 
-  const [currentPage, setCurrentPage] = useState('')
+  const [currentPage, setCurrentPage] = useState('/')
 
   const onClick: MenuProps['onClick'] = (e) => {
     setCurrentPage(e.key)
   }
 
   return (
-    <div className="flex justify-between h-16 items-center px-[100px] bg-blue-500">
+    <div className="flex justify-between h-12 items-center px-[100px] bg-blue-500">
       <div className="flex h-full">
-        <div>
-          <img src={logo} height={50} />
+        <div className="mr-16">
+          <img src={logo} height={48} width={126} />
         </div>
 
         <div>
@@ -54,32 +55,42 @@ const Header = () => {
               onClick={() => {
                 navigate(it.key)
                 setCurrentPage(it.key)
+
+                console.log('currentPage ', currentPage)
               }}
+              active={it.key == currentPage}
             />
           ))}
         </div>
       </div>
       <Dropdown
         dropdownRender={() => (
-          <div>
+          <div className="bg-white rounded absolute top-2">
             <div>
-              <Link to={'/user'}>我的</Link>
+              <Link to={'/user'}>
+                <Button type="text" size="large">
+                  个人中心
+                </Button>
+              </Link>
             </div>
             <div>
               {user?.level == UserLevel.Admin ? (
-                <Link to={'/users'}>管理用户</Link>
+                <Link to={'/users'}>
+                  <Button type="text" size="large">
+                    用户管理
+                  </Button>
+                </Link>
               ) : null}
             </div>
-            <div className="h-0 w-full border-b border-gray-300 my-2"></div>
-            <Button type="text" onClick={logout}>
-              登出
+            <div className="h-px w-full bg-gray-300 px-2 my-2 bg-clip-content"></div>
+            <Button type="text" size="large" onClick={logout}>
+              退出登录
             </Button>
           </div>
         )}
       >
-        <div className="flex items-center mx-4 cursor-pointer">
-          <UserAvatar user={user} />
-          <div className="ml-2">{user?.name}</div>
+        <div>
+          <UserTag user={user!} theme="dark" />
         </div>
       </Dropdown>
     </div>

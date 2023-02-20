@@ -11,7 +11,7 @@ const ProjectMenu = () => {
 
   const items: MenuProps['items'] = [
     {
-      key: 'kanban',
+      key: '',
       label: '任务看板',
     },
     {
@@ -21,6 +21,8 @@ const ProjectMenu = () => {
   ]
 
   useEffect(() => {
+    console.log('page is ', page)
+
     navigate(page)
   }, [page])
 
@@ -30,6 +32,7 @@ const ProjectMenu = () => {
 
   return (
     <Menu
+      className="bg-inherit"
       onClick={onClick}
       selectedKeys={[page]}
       mode="horizontal"

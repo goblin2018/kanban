@@ -32,3 +32,5 @@ export const ProjectStatusInfo = {
     color: '#00FF7F',
   },
 }
+
+export type Theme = 'light' | 'dark'
