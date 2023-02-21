@@ -1,7 +1,8 @@
 import { Button, Form, Input } from 'antd'
-import { updateUser, User } from 'api/user'
+import { updateUser, User, UserLevel } from 'api/user'
 import { useAppDispatch, useAppSelector } from 'app/hooks'
 import Header from 'components/header/Header'
+import UserAvatar from 'components/userAvatar'
 import { useEffect, useState } from 'react'
 import { CirclePicker } from 'react-color'
 import { setUser } from 'reducers/userSlice'
@@ -32,16 +33,43 @@ const UserInfo = () => {
     })
   }
 
+  const [changed, setChanged] = useState(false)
+
   return (
     <div>
       <Header />
       <div className="p-4">
-        <div className="w-[636px] mx-auto rounded-xl">
+        <div className="w-[636px] mx-auto rounded-xl px-[148px] bg-white py-[100px] mt-10">
+          <div className="flex justify-between mb-8">
+            <div className="flex">
+              <UserAvatar user={user}  />
+              <div className="ml-4">
+                <div className="text-xl">{user?.name}</div>
+                <div className="text-xs text-blue-500">
+                  {user?.level == UserLevel.Normal ? '普通用户' : '管理员'}
+                </div>
+              </div>
+            </div>
+
+            <div className="">
+              <Button
+                onClick={() => {
+                  setShowPasswordModal(true)
+                }}
+                // type="text"
+              >
+                修改密码
+              </Button>
+            </div>
+          </div>
           <Form
             form={userForm}
             layout="vertical"
             initialValues={{ ...user }}
             requiredMark={false}
+            onValuesChange={(e) => {
+              setChanged(true)
+            }}
           >
             <Form.Item
               label="姓名"
@@ -59,6 +87,7 @@ const UserInfo = () => {
             </Form.Item>
           </Form>
 
+          <div className="mb-2">头像颜色</div>
           <CirclePicker
             color={user?.avatarColor}
             onChange={(c, e) => {
@@ -67,25 +96,23 @@ const UserInfo = () => {
             }}
           />
 
-          <div>
-            <div>职位：</div>
-            <div>{user?.duty}</div>
-          </div>
-
-          <div>
-            <Button type="primary" onClick={submit} loading={loading}>
-              确认
-            </Button>
-          </div>
-
-          <div className="mt-4">
-            <Button
-              onClick={() => {
-                setShowPasswordModal(true)
-              }}
-            >
-              修改密码
-            </Button>
+          <div className="flex justify-end mt-6">
+            {changed && (
+              <>
+                <Button
+                  className="mr-4"
+                  onClick={() => {
+                    userForm.setFieldsValue({ ...user })
+                    setChanged(false)
+                  }}
+                >
+                  取消
+                </Button>
+                <Button type="primary" onClick={submit} loading={loading}>
+                  确认
+                </Button>
+              </>
+            )}
           </div>
         </div>
       </div>

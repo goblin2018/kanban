@@ -1,6 +1,8 @@
 import { Form, Input, Modal } from 'antd'
 import { Action, ErrCode } from 'api/constatns'
 import { updatePassword, User } from 'api/user'
+import { ReactComponent as Lock } from 'assets/lock.svg'
+import { useEffect } from 'react'
 
 interface Props {
   show: boolean
@@ -11,6 +13,12 @@ const PasswordModal: React.FC<Props> = ({ show, setShow, user }) => {
   const cancel = () => {
     setShow(false)
   }
+
+  useEffect(() => {
+    if (show) {
+      passwordForm.resetFields()
+    }
+  }, [show])
 
   const submit = () => {
     passwordForm.validateFields().then((vs) => {
@@ -56,21 +64,21 @@ const PasswordModal: React.FC<Props> = ({ show, setShow, user }) => {
           name={'op'}
           rules={[{ required: true, message: '请输入密码!' }]}
         >
-          <Input.Password />
+          <Input.Password prefix={<Lock />} />
         </Form.Item>
         <Form.Item
           label="新密码"
           name={'np'}
           rules={[{ required: true, message: '请输入新密码!' }]}
         >
-          <Input.Password />
+          <Input.Password prefix={<Lock />} />
         </Form.Item>
         <Form.Item
           label="重复新密码"
           name={'rnp'}
           rules={[{ required: true, message: '请输入相同的新密码!' }]}
         >
-          <Input.Password />
+          <Input.Password prefix={<Lock />} />
         </Form.Item>
       </Form>
     </Modal>

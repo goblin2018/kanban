@@ -23,6 +23,7 @@ func (s *TaskGroupService) Add(c *ctx.Context, req *api.TaskGroup) (res *api.Tas
 		Name:      req.Name,
 		ProjectId: req.ProjectId,
 		Serial:    0,
+		Color:     req.Color,
 	}
 	err = s.dao.AddTaskGroup(t)
 

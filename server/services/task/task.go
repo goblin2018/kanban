@@ -123,8 +123,13 @@ func (s *TaskService) UpdateTask(c *ctx.Context, req *api.Task) (resp *api.Task,
 		StartAt: req.StartAt,
 		EndAt:   req.EndAt,
 		Desc:    req.Desc,
+		Status:  req.Status,
 	}
 	t.ID = req.Id
 	s.dao.UpdateTaskInfo(t)
 	return
+}
+
+func (s *TaskService) Delete(c *ctx.Context, req *api.Task) {
+	s.dao.DelTask(req.Id)
 }

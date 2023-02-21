@@ -16,9 +16,9 @@ export const Action = {
 }
 
 export const ProjectStatus = {
-  NotStart: 1,
-  On: 2,
-  Done: 3,
+  NotStart: 0,
+  On: 1,
+  Done: 2,
 }
 
 export const ProjectStatusInfo = {

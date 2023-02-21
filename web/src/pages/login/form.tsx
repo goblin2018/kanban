@@ -72,7 +72,7 @@ const LoginForm = () => {
           <Input
             prefix={<Phone />}
             placeholder="请输入手机号"
-            size="large"
+            
             autoComplete="on"
           />
         </Form.Item>
@@ -83,7 +83,7 @@ const LoginForm = () => {
         >
           <Input.Password
             prefix={<Lock />}
-            size="large"
+            
             placeholder="请输入密码"
             autoComplete="on"
           />
@@ -91,7 +91,7 @@ const LoginForm = () => {
         <Form.Item className="mt-20">
           <Button
             className="w-full"
-            size="large"
+            
             type="primary"
             htmlType="submit"
             loading={loading}

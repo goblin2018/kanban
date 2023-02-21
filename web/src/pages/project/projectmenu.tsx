@@ -21,7 +21,7 @@ const ProjectMenu = () => {
   ]
 
   useEffect(() => {
-    console.log('page is ', page)
+    // console.log('page is ', page)
 
     navigate(page)
   }, [page])

@@ -23,6 +23,7 @@ func (co *TaskController) RegisterRouters(en *ctx.RouterGroup) {
 		t.POST("", co.addTask)
 		t.PUT("/status", co.updateTaskStatus)
 		t.POST("/move", co.moveTask)
+		t.DELETE("", co.delete)
 		t.PUT("", co.updateTask)
 	}
 }
@@ -69,4 +70,15 @@ func (co *TaskController) updateTask(c *ctx.Context) {
 
 	res, err := co.s.UpdateTask(c, req)
 	c.JSON(res, err)
+}
+
+func (co *TaskController) delete(c *ctx.Context) {
+	req := new(api.Task)
+	if err := c.ShouldBind(req); err != nil {
+		c.Fail(e.InvalidParams.Add(err.Error()))
+		return
+	}
+
+	co.s.Delete(c, req)
+	c.JSON(nil, nil)
 }

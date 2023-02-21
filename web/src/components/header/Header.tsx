@@ -68,7 +68,7 @@ const Header = () => {
           <div className="bg-white rounded absolute top-2">
             <div>
               <Link to={'/user'}>
-                <Button type="text" size="large">
+                <Button type="text" >
                   个人中心
                 </Button>
               </Link>
@@ -76,14 +76,14 @@ const Header = () => {
             <div>
               {user?.level == UserLevel.Admin ? (
                 <Link to={'/users'}>
-                  <Button type="text" size="large">
+                  <Button type="text" >
                     用户管理
                   </Button>
                 </Link>
               ) : null}
             </div>
             <div className="h-px w-full bg-gray-300 px-2 my-2 bg-clip-content"></div>
-            <Button type="text" size="large" onClick={logout}>
+            <Button type="text"  onClick={logout}>
               退出登录
             </Button>
           </div>

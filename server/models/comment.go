@@ -8,10 +8,11 @@ import (
 
 type Comment struct {
 	gorm.Model
-	UserId uint
-	User   *User
-	Info   string
-	TaskId uint
+	UserId    uint
+	User      *User
+	Info      string
+	TaskId    uint
+	ProjectId uint
 }
 
 func (co *Comment) AfterUpdate(tx *gorm.DB) (err error) {

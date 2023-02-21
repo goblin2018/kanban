@@ -3,6 +3,7 @@ import { TaskGroup } from './taskgroup'
 import { User } from './user'
 
 export interface Project {
+  color?: string
   id?: number
   name?: string
   startAt?: string
@@ -41,6 +42,14 @@ export const getProjectDetail = (id: number) => {
 export const updateProject = (p: Project) => {
   return http({
     method: 'PUT',
+    url: url,
+    data: p,
+  }).then((res) => res.data)
+}
+
+export const delProject = (p: Project) => {
+  return http({
+    method: 'DELETE',
     url: url,
     data: p,
   }).then((res) => res.data)

@@ -20,5 +20,6 @@ func apiToModel(a *api.Comment) *models.Comment {
 	m.Info = a.Info
 	m.TaskId = a.TaskId
 	m.UserId = a.UserId
+	// m.
 	return m
 }

@@ -6,6 +6,7 @@ import { addTask } from 'api/task'
 import { TaskGroup } from 'api/taskgroup'
 import { useAppDispatch, useAppSelector } from 'app/hooks'
 import { setCurrentProject, setTaskGroups } from 'reducers/projectSlice'
+import { groupPadding, groupWidth, taskWidth } from '../constants'
 
 interface Props {
   taskgroup: TaskGroup
@@ -69,9 +70,10 @@ const NewTaskItem: React.FC<Props> = ({
         <div
           className={`${
             atBottom
-              ? 'fixed bottom-0 w-[360px] bg-white pl-5 pr-7 pt-4'
-              : 'my-2 pl-5  pr-5'
+              ? `fixed bottom-0  bg-white pl-4 pr-4 pt-4`
+              : 'my-2 pl-4  pr-4'
           }`}
+          style={{ width: atBottom ? groupWidth : '' }}
         >
           <Input.TextArea
             value={title}
@@ -85,27 +87,26 @@ const NewTaskItem: React.FC<Props> = ({
             <div className="py-1">
               <Button
                 type="text"
-                icon={<Right className="w-4 h-4 mr-2" />}
+                icon={<Right className="w-4 h-4 " />}
                 className="flex items-center"
               >
                 任务
               </Button>
             </div>
             <div className="p-1">
-              <Button type="primary" className="mr-2" onClick={submit}>
-                确认
-              </Button>
-              <Button type="text" onClick={cancel}>
+              <Button type="text" className="mr-1" onClick={cancel}>
                 取消
+              </Button>
+              <Button type="primary" onClick={submit}>
+                确认
               </Button>
             </div>
           </div>
         </div>
       ) : (
         <Button
-          size="large"
           icon={<PlusOutlined />}
-          style={{ width: 312, marginLeft: 20 }}
+          style={{ width: taskWidth, marginLeft: groupPadding }}
           onClick={() => {
             setShowAdd(true)
           }}

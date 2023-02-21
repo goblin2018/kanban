@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { useAppDispatch, useAppSelector } from 'app/hooks'
 import {
   listProjects,
-  setProjectItems,
+  setTotalProjects,
   setProjectModalState,
 } from '../../reducers/projectSlice'
 import {
@@ -22,12 +22,14 @@ import { listUsers, User, UserLevel } from 'api/user'
 import { toShortDate } from 'api/utils'
 import UserTag from 'components/userTag'
 
+import { CirclePicker, Color } from 'react-color'
+
 const { Item } = Form
 const ProjectModal = () => {
   const {
     projectModalState: status,
-    current: project,
-    items,
+    currentProject: project,
+    totalProjects: items,
   } = useAppSelector((s) => s.project)
 
   const user = useAppSelector((s) => s.user.my)
@@ -81,6 +83,8 @@ const ProjectModal = () => {
       let endAt = pdate[1] as dayjs.Dayjs
       newP.endAt = endAt
     }
+
+    newP.color = color
     if (status == 'add') {
       // 添加项目
 
@@ -105,7 +109,8 @@ const ProjectModal = () => {
         np.ownerId == project?.ownerId &&
         toShortDate(np.startAt) == toShortDate(project?.startAt) &&
         toShortDate(np.endAt) == toShortDate(project?.endAt) &&
-        np.desc == project?.desc
+        np.desc == project?.desc &&
+        np.color == project.color
       ) {
         return
       }
@@ -118,7 +123,7 @@ const ProjectModal = () => {
             let its = [...items]
             let idx = its.findIndex((v) => v.id == project.id)
             its[idx] = { ...project, ...np }
-            dispatch(setProjectItems(its))
+            dispatch(setTotalProjects(its))
             cancel()
             notification.success({
               message: '操作成功',
@@ -129,6 +134,7 @@ const ProjectModal = () => {
       })
     }
   }
+  const [color, setColor] = useState<string>(project?.color || '#f44336')
 
   return (
     <>
@@ -137,13 +143,23 @@ const ProjectModal = () => {
         title={`${status == 'add' ? '创建' : '编辑'}项目`}
         onCancel={cancel}
         onOk={submit}
+        style={{ top: 20 }}
       >
         <Form form={aForm} layout="vertical">
           <Item label="名称" name={'name'}>
-            <Input size="large" />
+            <Input />
           </Item>
-          <Item label="当前状态" name={'status'}>
-            <Radio.Group size="large">
+          <Item label="负责人" name="ownerId" className="w-52">
+            <Select size="large">
+              {users.map((u, i) => (
+                <Select.Option key={`user-${i}`} value={u.id}>
+                  <UserTag user={u} />
+                </Select.Option>
+              ))}
+            </Select>
+          </Item>
+          <Item label="当前状态" name={'status'} className="inline-block">
+            <Radio.Group>
               <Radio.Button value={ProjectStatus.NotStart}>
                 {ProjectStatusInfo[ProjectStatus.NotStart].info}
               </Radio.Button>
@@ -156,25 +172,17 @@ const ProjectModal = () => {
             </Radio.Group>
           </Item>
 
-          <Item label="负责人" name="ownerId" className="w-52">
-            <Select size="large">
-              {users.map((u, i) => (
-                <Select.Option key={`user-${i}`} value={u.id}>
-                  <UserTag user={u} />
-                </Select.Option>
-              ))}
-            </Select>
+          <Item label="项目日期" name={'pdate'} className="inline-block">
+            <DatePicker.RangePicker />
           </Item>
-
-          <Item label="项目日期" name={'pdate'}>
-            <DatePicker.RangePicker size="large" />
+          <Item label="选择主题色">
+            <CirclePicker
+              color={color}
+              onChange={(c, e) => {
+                setColor(c.hex)
+              }}
+            />
           </Item>
-          {/* <Item label="结束时间" name={'start'}>
-            <DatePicker />
-          </Item>
-          <Item name={'end'}>
-            <DatePicker />
-          </Item> */}
 
           <Item label="项目描述" name="desc">
             <Input.TextArea />

@@ -20,4 +20,10 @@ type Project struct {
 	TaskGroups []*TaskGroup `json:"taskGroups" form:"taskGroups"`
 	Owner      *User        `json:"owner" form:"owner"`
 	OwnerId    uint         `json:"ownerId" form:"ownerId"`
+	Color      string       `json:"color" form:"color"`
+}
+
+type ListProjectReq struct {
+	ListOpt
+	My bool `json:"my" form:"my"`
 }

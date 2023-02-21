@@ -1,19 +1,35 @@
-import { Button } from 'antd'
+import { Button, Radio } from 'antd'
 import { useAppDispatch, useAppSelector } from 'app/hooks'
-import { useEffect } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import ProjectModal from './projectModal'
 import ProjectCard from './projectCard'
-import { listProjects, setProjectModalState } from '../../reducers/projectSlice'
+import {
+  listProjects,
+  setProjectModalState,
+  setProjectOption,
+} from 'reducers/projectSlice'
 import Header from 'components/header/Header'
 import { PlusOutlined } from '@ant-design/icons'
+import { Project } from 'api/project'
 
 const ProjectPage = () => {
   const dispatch = useAppDispatch()
-  const ps = useAppSelector((s) => s.project.items)
+  const { totalProjects, projectOption } = useAppSelector((s) => s.project)
+  const user = useAppSelector((s) => s.user.my)
+
+  const ps = useMemo(() => {
+    if (projectOption == 'my') {
+      return totalProjects.filter((p) => p.ownerId == user?.id)
+    }
+
+    return totalProjects
+  }, [totalProjects, projectOption, user])
+
   useEffect(() => {
     dispatch(listProjects())
   }, [])
+
   return (
     <div>
       <Header />
@@ -25,17 +41,31 @@ const ProjectPage = () => {
           style={{ boxShadow: '0px 2px 0px rgba(0, 0, 0, 0.05)' }}
         >
           <div className="flex w-full justify-between">
-            <div className="text-xl">全部项目</div>
-            <Button
-              type="primary"
-              icon={<PlusOutlined />}
-              size={'large'}
-              onClick={() => {
-                dispatch(setProjectModalState('add'))
-              }}
-            >
-              创建项目
-            </Button>
+            <div className="text-xl">
+              {projectOption == 'all' ? '全部项目' : '我的项目'}
+            </div>
+
+            <div className="flex">
+              <Radio.Group
+                className="mr-6"
+                value={projectOption}
+                onChange={(e) => {
+                  dispatch(setProjectOption(e.target.value))
+                }}
+              >
+                <Radio.Button value="my">我的项目</Radio.Button>
+                <Radio.Button value="all">全部项目</Radio.Button>
+              </Radio.Group>
+              <Button
+                type="primary"
+                icon={<PlusOutlined />}
+                onClick={() => {
+                  dispatch(setProjectModalState('add'))
+                }}
+              >
+                创建项目
+              </Button>
+            </div>
           </div>
         </div>
         <div className="flex flex-wrap -mr-5 px-12">

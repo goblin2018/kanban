@@ -3,10 +3,16 @@ import { toShortDate } from 'api/utils'
 import { useAppDispatch, useAppSelector } from 'app/hooks'
 import { setTaskGroups } from 'reducers/projectSlice'
 import { DragEventHandler, useEffect, useRef, useState } from 'react'
-import StatusSelector from './statusSelector'
 import { setEditTask } from '../../../reducers/taskSlice'
 import { ReactComponent as CommentSvg } from './comment.svg'
 import StatusTag from 'components/statustag'
+import {
+  groupTotalWidth,
+  taskHeight,
+  taskMargin,
+  taskTotalHeight,
+  taskWidth,
+} from '../constants'
 
 interface Props {
   task: Task
@@ -14,13 +20,14 @@ interface Props {
   groupIdx: number
 }
 
-const taskHeight = 136
-
 let hold = document.createElement('div')
 hold.id = 'holdtask'
+hold.style.width = `${taskWidth}px`
 hold.style.height = `${taskHeight}px`
-hold.style.marginBottom = '8px'
-hold.style.background = '#1f66ba'
+hold.style.marginBottom = `${taskMargin}px`
+hold.style.background = '#bccced'
+hold.style.border = '1px solid #ababab'
+hold.style.borderRadius = '12px'
 
 const TaskItem: React.FC<Props> = ({ task, idx, groupIdx }) => {
   const dispatch = useAppDispatch()
@@ -39,6 +46,8 @@ const TaskItem: React.FC<Props> = ({ task, idx, groupIdx }) => {
   const [currentGroupIdx, setCurrentGroupIdx] = useState(0)
   const [currentIdx, setCurrentIdx] = useState(0)
 
+  const [direction, setDirection] = useState<'up' | 'down' | 'none'>('none')
+
   useEffect(() => {
     let p = item.current!
     setOriginParent(p.parentElement)
@@ -47,6 +56,7 @@ const TaskItem: React.FC<Props> = ({ task, idx, groupIdx }) => {
   const dragStart: DragEventHandler = (e) => {
     e.stopPropagation()
     setCurrentParent(originParent)
+    setDirection('none')
 
     setCurrentIdx(idx)
     setCurrentGroupIdx(groupIdx)
@@ -54,13 +64,18 @@ const TaskItem: React.FC<Props> = ({ task, idx, groupIdx }) => {
     if (originParent!.lastChild == item.current!) {
       originParent?.appendChild(hold)
     } else {
+      console.log('insert hold')
+
       originParent?.insertBefore(hold, item.current!.nextSibling)
     }
 
-    setPosition({ x: item.current!.offsetLeft, y: item.current!.offsetTop })
+    setPosition({
+      x: item.current!.offsetLeft,
+      y: item.current!.offsetTop,
+    })
     setDiff({
       x: e.clientX - item.current!.offsetLeft,
-      y: e.clientY - item.current!.offsetTop,
+      y: e.clientY + originParent!.scrollTop - item.current!.offsetTop,
     })
 
     item.current!.style.position = 'absolute'
@@ -71,10 +86,15 @@ const TaskItem: React.FC<Props> = ({ task, idx, groupIdx }) => {
 
     // 计算位置 看是否有变化
 
-    setPosition({ x: e.clientX - diff.x, y: e.clientY - diff.y })
+    setPosition({
+      x: e.clientX - diff.x,
+      y: e.clientY + currentParent!.scrollTop - diff.y,
+    })
 
     // 水平方向， 以最外层为参考
-    let newParentIdx = Math.floor((e.clientX - containerLeft!) / 220)
+    let newParentIdx = Math.floor(
+      (e.clientX - containerLeft!) / groupTotalWidth
+    )
 
     newParentIdx =
       newParentIdx <= taskGroups.length - 1
@@ -82,7 +102,18 @@ const TaskItem: React.FC<Props> = ({ task, idx, groupIdx }) => {
         : taskGroups.length - 1
 
     // 垂直方向 以父元素为参考
-    let newIdx = Math.floor((e.clientY - originParent?.offsetTop!) / 176)
+
+    let pt = originParent!.getBoundingClientRect().top
+    let newIdx = Math.round(
+      (e.clientY + currentParent!.scrollTop - pt) / taskTotalHeight
+    )
+
+    // console.log(
+    //   'item ',
+    //   item.current?.getBoundingClientRect(),
+    //   'parent ',
+    //   currentParent?.scrollTop
+    // )
 
     let newGroup = taskGroups[newParentIdx]
     let newGroupTasksCount = newGroup?.tasks ? newGroup.tasks.length : 0
@@ -92,11 +123,9 @@ const TaskItem: React.FC<Props> = ({ task, idx, groupIdx }) => {
       return
     }
 
-    console.log(originParent, currentParent)
-
-    // 如果在当前的组内
     currentParent?.removeChild(hold)
 
+    // 如果在当前的组内
     if (newParentIdx == currentGroupIdx) {
       console.log('change position newIdx: ', newIdx, 'currentIdx', currentIdx)
 
@@ -106,16 +135,39 @@ const TaskItem: React.FC<Props> = ({ task, idx, groupIdx }) => {
           currentParent.appendChild(hold)
         } else {
           if (newParentIdx == groupIdx) {
+            let add = false
+            if (direction == 'none') {
+              setDirection('down')
+              add = true
+            }
+            add = add || direction == 'down'
+
             currentParent?.insertBefore(
               hold,
-              currentParent.children[newIdx + 1]
+              currentParent.children[newIdx + (add ? 1 : 0)]
             )
           } else {
+            console.log(
+              'insert before 2',
+              currentParent?.children[newIdx].children[0]
+            )
+
             currentParent?.insertBefore(hold, currentParent.children[newIdx])
           }
         }
       } else {
-        currentParent?.insertBefore(hold, currentParent.children[newIdx])
+        console.log(
+          'insert before 3',
+          currentParent?.children[newIdx].children[0]
+        )
+        if (direction == 'none') {
+          setDirection('up')
+        }
+
+        currentParent?.insertBefore(
+          hold,
+          currentParent.children[newIdx + (direction == 'down' ? 1 : 0)]
+        )
       }
 
       setCurrentIdx(newIdx)
@@ -141,13 +193,12 @@ const TaskItem: React.FC<Props> = ({ task, idx, groupIdx }) => {
 
   const onDragEnd: DragEventHandler = (e) => {
     e.stopPropagation()
-    console.log('son drag end ', e.target)
+    // console.log('son drag end ', e.target)
 
     setPosition({ x: 0, y: 0 })
     console.log('current ', item.current)
 
     item.current!.style.position = 'relative'
-    console.log('set position relative')
 
     currentParent?.removeChild(hold)
 
@@ -224,7 +275,7 @@ const TaskItem: React.FC<Props> = ({ task, idx, groupIdx }) => {
 
   return (
     <div
-      className="bg-white text-gray-600 rounded-xl mb-2 w-[312px] flex flex-col"
+      className="bg-white text-gray-600 rounded-xl flex flex-col"
       draggable={draggable}
       ref={item}
       style={{
@@ -232,6 +283,8 @@ const TaskItem: React.FC<Props> = ({ task, idx, groupIdx }) => {
         top: position.y,
         position: 'relative',
         height: taskHeight,
+        width: taskWidth,
+        marginBottom: taskMargin,
       }}
       onDragStart={dragStart}
       onDrag={onDrag}
@@ -246,7 +299,11 @@ const TaskItem: React.FC<Props> = ({ task, idx, groupIdx }) => {
         onMouseEnter={() => {
           setDraggable(true)
         }}
-        onMouseLeave={() => setDraggable(false)}
+        onMouseLeave={() => {
+          console.log('draggable false')
+
+          setDraggable(false)
+        }}
       >
         {task.name}
       </div>

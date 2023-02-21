@@ -1,21 +1,32 @@
 import { Drawer, Input, Modal } from 'antd'
-import { addTaskGroup } from 'api/taskgroup'
+import { addTaskGroup, updateTaskGroup } from 'api/taskgroup'
 import { useAppDispatch, useAppSelector } from 'app/hooks'
 import {
   setCurrentProject,
   setTaskGroupModalState,
   setTaskGroups,
 } from 'reducers/projectSlice'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { CirclePicker, Color } from 'react-color'
 
 const TaskGroupModal = () => {
   const {
     taskGroupModalState: state,
     taskGroups,
-    current: project,
+    currentProject: project,
+    currentTaskGroup: taskgroup,
   } = useAppSelector((s) => s.project)
   const dispatch = useAppDispatch()
+
+  useEffect(() => {
+    if (state == 'add') {
+      setName('')
+      setColor('#f44336')
+    } else if (state == 'edit') {
+      setName(taskgroup.name!)
+      setColor(taskgroup.color!)
+    }
+  }, [state])
 
   const cancel = () => {
     dispatch(setTaskGroupModalState('close'))
@@ -24,50 +35,61 @@ const TaskGroupModal = () => {
     if (name == '') {
       return
     }
-    addTaskGroup({ projectId: project.id, name: name })
+
+    if (state == 'add') {
+      add()
+    } else {
+      update()
+    }
+    cancel()
+  }
+
+  const add = () => {
+    addTaskGroup({ projectId: project.id, name: name, color: color })
       .then((res) => {
         // 获取任务列表
         let tgs = [...taskGroups]
-        tgs.push({ ...res.data, projectId: project.id, name: name })
+        tgs.push({
+          ...res.data,
+          projectId: project.id,
+          name: name,
+          color: color,
+        })
         dispatch(setTaskGroups(tgs))
       })
       .finally(() => {
         setName('')
       })
-    cancel()
   }
 
-  const [color, setColor] = useState<Color>(
-    // taskgroup.color!
-    '#aabbcc'
-  )
+  const [color, setColor] = useState<string>(taskgroup?.color || '#f44336')
 
-  const submitColor = (color: string) => {
-    if (color == taskgroup.color) {
+  const update = () => {
+    if ((taskgroup.name == name || name == '') && taskgroup.color == color) {
       return
     }
-    // 提交
-    updateTaskGroup({ id: taskgroup.id, color: color }).then((res) => {
-      // 更新名称
-      let tgs = [...taskGroups]
-      let i = tgs.findIndex((t) => t.id == taskgroup.id)
-      tgs[i] = { ...tgs[i], color: color }
-      dispatch(setTaskGroups(tgs))
-    })
+    updateTaskGroup({ id: taskgroup.id, name: name, color: color }).then(
+      (res) => {
+        // 更新名称
+        let tgs = [...taskGroups]
+        let i = tgs.findIndex((t) => t.id == taskgroup.id)
+        tgs[i] = { ...tgs[i], name: name, color: color }
+        dispatch(setTaskGroups(tgs))
+      }
+    )
   }
 
   const [name, setName] = useState('')
   return (
     <Modal
       open={state != 'close'}
-      title={'添加任务组'}
+      title={`${state == 'add' ? '添加' : '编辑'}任务组`}
       onCancel={cancel}
       onOk={submit}
     >
       <div className="mb-1">任务组名称</div>
       <Input
         value={name}
-        size="large"
         placeholder={'请输入任务组的名称'}
         onChange={(e) => {
           let v = e.target.value
@@ -76,12 +98,11 @@ const TaskGroupModal = () => {
         onPressEnter={submit}
       />
 
-      <div>选择主题色</div>
+      <div className="mt-6 mb-2">选择主题色</div>
       <CirclePicker
         color={color}
         onChange={(c, e) => {
           setColor(c.hex)
-          submitColor(c.hex)
         }}
       />
     </Modal>

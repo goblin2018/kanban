@@ -49,3 +49,11 @@ export const updateTask = (t: Task) => {
     data: t,
   }).then((res) => res.data)
 }
+
+export const delTask = (t: Task) => {
+  return http({
+    method: 'DELETE',
+    url: url,
+    data: t,
+  }).then((res) => res.data)
+}

@@ -76,5 +76,14 @@ func (d *TaskGroupDao) List(projectId uint) (tgs []*api.TaskGroup) {
 	d.Model(&models.TaskGroup{}).Where("project_id = ?", projectId).Preload("Tasks", func(db *gorm.DB) *gorm.DB {
 		return db.Order("serial ASC")
 	}).Order("serial ASC").Find(&tgs)
+
+	taskIds := []uint{}
+	for _, tg := range tgs {
+		for _, t := range tg.Tasks {
+			taskIds = append(taskIds, t.Id)
+		}
+	}
+
+	d.Model(&models.Comment{}).Count()
 	return
 }

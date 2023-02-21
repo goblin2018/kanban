@@ -1,5 +1,14 @@
 version: '3'
 services:
+  nginx-gateway:
+    build:
+      context: .
+    restart: always
+    networks:
+      - kanban-net
+    ports:
+      - "80:80"
+
   db:
     image: mysql:5.7
     restart: always
@@ -34,16 +43,13 @@ services:
     depends_on:
       - db
       - redis
-
-  web:
-    build:
-      context: ./web
-    networks:
-      - kanban-net
-    ports:
-      - "80:80"
-    depends_on:
-      - server
+  # web:
+  #   build:
+  #     context: ./web
+  #   networks:
+  #     - kanban-net
+  #   depends_on:
+  #     - server
 
 volumes:
   kanban-db:

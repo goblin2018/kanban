@@ -13,7 +13,7 @@ interface Props {
 }
 
 const StatusSelector: React.FC<Props> = ({ status, taskId, groupIdx, idx }) => {
-  const project = useAppSelector((s) => s.project.current)
+  const project = useAppSelector((s) => s.project.currentProject)
   const dispatch = useAppDispatch()
 
   const updateStatusImpl = (ns: number) => {

@@ -8,9 +8,11 @@ import { Outlet, useNavigate } from 'react-router-dom'
 import TaskDrawer from './task/taskDrawer'
 import Header from 'components/header/Header'
 import { PlusOutlined } from '@ant-design/icons'
+import { ReactComponent as GotoSvg } from 'assets/goto.svg'
+import { toShortDate } from 'api/utils'
 
 const ProjectDetailPage = () => {
-  const project = useAppSelector((s) => s.project.current)
+  const project = useAppSelector((s) => s.project.currentProject)
 
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
@@ -18,17 +20,30 @@ const ProjectDetailPage = () => {
   return (
     <div>
       <Header />
-      <div className="flex border-b-2 py-4 items-center">
-        <div>
-          <Button
+      <div className="flex border-b-2 pt-4 items-center px-[40px]">
+        <div className="flex items-center">
+          <GotoSvg
+            className="rotate-180 mr-2 cursor-pointer hover:text-blue-500"
             onClick={() => {
               navigate('/')
             }}
-          >
-            任务列表
-          </Button>
+          />
+          <div className="text-bold mr-4">{project.name}</div>
+          <div className="flex text-xs items-center">
+            <div>负责人：{project.owner?.name}</div>
+            {project.startAt ? (
+              <>
+                <div className="w-px h-3 bg-text-disabled mx-2"></div>
+                {`项目日期：${toShortDate(
+                  project.startAt,
+                  '/'
+                )} - ${toShortDate(project.endAt, '/')}`}
+              </>
+            ) : (
+              ''
+            )}
+          </div>
         </div>
-        <div className="text-xl mr-4">{project?.name}</div>
         <TaskGroupModal />
         <TaskDrawer />
       </div>
@@ -39,7 +54,6 @@ const ProjectDetailPage = () => {
         </div>
         <Button
           type="primary"
-          size="large"
           icon={<PlusOutlined />}
           onClick={() => {
             dispatch(setTaskGroupModalState('add'))
@@ -51,7 +65,7 @@ const ProjectDetailPage = () => {
 
       <div className="h-px bg-text-disabled mx-6 mb-4"></div>
 
-      <div className="h-[calc(100vh-191px)] min-h-[600px]">
+      <div className="h-[calc(100vh-151px)] min-h-[600px]">
         <Outlet />
       </div>
     </div>

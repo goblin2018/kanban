@@ -34,7 +34,8 @@ func (d *ProjectDao) GetProjectById(id uint) (p *models.Project, err error) {
 	return
 }
 
-func (d *ProjectDao) ListAllProjects() (ps []*api.Project) {
+func (d *ProjectDao) ListProjects() (ps []*api.Project) {
+
 	d.Model(&models.Project{}).Preload("Owner").Order("created_at DESC").Find(&ps)
 	return
 }

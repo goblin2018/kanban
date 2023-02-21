@@ -17,7 +17,7 @@ func (s *ProjectService) DelProject(c *ctx.Context, req *api.Project) (err error
 }
 
 func (s *ProjectService) ListProjects(c *ctx.Context) (ps []*api.Project) {
-	ps = s.dao.ListAllProjects()
+	ps = s.dao.ListProjects()
 	return
 }
 

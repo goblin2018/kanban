@@ -39,6 +39,7 @@ func (d *TaskDao) UpdateTaskInfo(t *models.Task) error {
 	info := map[string]interface{}{
 		"start_at": t.StartAt,
 		"end_at":   t.EndAt,
+		"status":   t.Status,
 	}
 
 	if t.Name != "" {

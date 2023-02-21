@@ -42,12 +42,18 @@ export const dateSuffix = (t: string) => {
 
   let now = dayjs()
   let suffix = ''
+  let info = ''
   if (now.subtract(10, 'm').isBefore(d)) {
     suffix = '刚刚'
+    info = d.format('HH:mm')
   } else if (d.startOf('d').isSame(now.startOf('d'))) {
     suffix = '今天'
+    info = d.format('HH:mm')
   } else if (d.startOf('d').add(1, 'd').isSame(now.startOf('d'))) {
     suffix = '昨天'
+    info = d.format('HH:mm')
+  } else {
+    info = d.format('YYYY/MM/DD HH:mm')
   }
-  return suffix
+  return { suffix, info }
 }

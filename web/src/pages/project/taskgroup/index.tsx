@@ -5,18 +5,26 @@ import { setTaskGroups } from 'reducers/projectSlice'
 import TaskItem from '../task'
 import NewTaskItem from '../task/newTask'
 import TaskgroupHeader from './header'
+import {
+  groupMargin,
+  groupPadding,
+  groupTotalWidth,
+  groupWidth,
+} from '../constants'
+import { HddOutlined } from '@ant-design/icons'
 
 interface Props {
   taskgroup: TaskGroup
   idx: number
 }
 
-const groupWidth = 360
-
 let hold = document.createElement('div')
 hold.id = 'hold'
 hold.style.width = `${groupWidth}px`
-hold.style.background = '#1f66ba'
+hold.style.marginLeft = `${groupMargin}px`
+hold.style.background = '#bccced'
+hold.style.border = '1px solid #ababab'
+hold.style.borderRadius = '12px'
 
 const TaskGroupItem: React.FC<Props> = ({ taskgroup, idx }) => {
   const [diff, setDiff] = useState({ x: 0, y: 0 })
@@ -49,11 +57,13 @@ const TaskGroupItem: React.FC<Props> = ({ taskgroup, idx }) => {
     })
 
     item.style.position = 'absolute'
-    // t.style.background = '#aa0000'
+    item.style.zIndex = '999'
+    item.style.marginLeft = '0'
+    item.style.boxShadow = '0px 16px 48px rgba(17, 38, 82, 0.16)'
 
     // t.parentElement.ap
 
-    let idx = Math.floor((e.clientX - parent!.offsetLeft) / groupWidth)
+    let idx = Math.floor((e.clientX - parent!.offsetLeft) / groupTotalWidth)
     setCurrentIdx(idx)
     setOriginIdx(idx)
 
@@ -67,7 +77,7 @@ const TaskGroupItem: React.FC<Props> = ({ taskgroup, idx }) => {
       y: e.clientY - diff.y,
     })
 
-    let newIdx = Math.floor((e.clientX - parent!.offsetLeft) / groupWidth)
+    let newIdx = Math.floor((e.clientX - parent!.offsetLeft) / groupTotalWidth)
 
     newIdx =
       newIdx <= parent!.childElementCount ? newIdx : parent!.childElementCount
@@ -91,12 +101,16 @@ const TaskGroupItem: React.FC<Props> = ({ taskgroup, idx }) => {
     }
     // console.log('idx ', newIdx)
 
-    // console.log('position ', e.clientX, e.clientY)
+    // console.log('test1 ', document.getElementById('test1')?.clientHeight)
+    // console.log('test2 ', document.getElementById('test2')?.clientHeight)
   }
 
   const onDragEnd = (e: React.DragEvent<HTMLDivElement>) => {
     setPosition({ x: 0, y: 0 })
     item.style.position = 'relative'
+    item.style.zIndex = '1'
+
+    item.style.marginLeft = `${groupMargin}px`
     parent?.removeChild(hold)
 
     if (originIdx == currentIdx) {
@@ -147,7 +161,7 @@ const TaskGroupItem: React.FC<Props> = ({ taskgroup, idx }) => {
         left: position.x,
         top: position.y,
         position: 'relative',
-        width: groupWidth - 8,
+        width: groupWidth,
       }}
       id={`taskgroup-${idx}`}
       onDragStart={onDragStart}
@@ -160,21 +174,21 @@ const TaskGroupItem: React.FC<Props> = ({ taskgroup, idx }) => {
       <TaskgroupHeader taskgroup={taskgroup} setDraggable={setDraggable} />
 
       <div
+        id={`task-container-${idx}`}
         className={`overflow-y-scroll max-h-[calc(100%-120px)] 
         scrollbar-thin scrollbar-thumb-blue-200 
          scrollbar-thumb-rounded-full
-         scrollbar-track-blue-50`}
+         scrollbar-track-blue-50  relative overflow-x-hidden`}
+        style={{ paddingLeft: groupPadding }}
       >
-        <div id={`task-container-${idx}`} className="pl-5">
-          {taskgroup.tasks?.map((t, i) => (
-            <TaskItem
-              task={t}
-              key={`task-${taskgroup.id}-${i}`}
-              groupIdx={idx}
-              idx={i}
-            />
-          ))}
-        </div>
+        {taskgroup.tasks?.map((t, i) => (
+          <TaskItem
+            task={t}
+            key={`task-${taskgroup.id}-${i}`}
+            groupIdx={idx}
+            idx={i}
+          />
+        ))}
       </div>
       <div className="relative">
         <NewTaskItem

@@ -11,9 +11,15 @@ const Kanban = () => {
   }, [])
 
   return (
-    <div className="h-full">
+    <div className="h-full  relative">
       <div id="groups-dragging-container"></div>
-      <div className="flex h-full" id="groups-container">
+      <div
+        className="flex h-full pb-[10px] pr-[100px] overflow-y-hidden relative 
+        scrollbar-thin scrollbar-thumb-blue-200 
+         scrollbar-thumb-rounded-full
+         scrollbar-track-blue-50  "
+        id="groups-container"
+      >
         {taskGroups.map((tg, idx) => (
           <TaskGroupItem taskgroup={tg} key={`taskgroup${idx}`} idx={idx} />
         ))}

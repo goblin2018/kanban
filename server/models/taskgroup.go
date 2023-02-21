@@ -7,5 +7,5 @@ type TaskGroup struct {
 	Name      string `gorm:"type:varchar(200);comment:任务组名称"`
 	ProjectId uint   `gorm:"comment:项目Id"`
 	Serial    int    `gorm:"comment:任务排序编号"`
-	Color     string `gorm:"comment:颜色"`
+	Color     string `gorm:"type:varchar(10);comment:颜色"`
 }

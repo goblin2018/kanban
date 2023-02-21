@@ -4,15 +4,18 @@ import { lProjects, Project } from 'api/project'
 import { lTaskGroup, TaskGroup } from 'api/taskgroup'
 
 interface ProjectState {
-  items: Project[]
-  current: Project
+  totalProjects: Project[]
+  currentProject: Project
+  currentTaskGroup: TaskGroup
   projectModalState: ModalState
   taskGroupModalState: ModalState
   taskGroups: TaskGroup[]
   page: PageOption
+  projectOption: ProjectOption
 }
 
 export type PageOption = '' | 'gantt'
+export type ProjectOption = 'my' | 'all'
 
 export const listProjects = createAsyncThunk(
   'project/listProjects',
@@ -26,7 +29,7 @@ export const listTaskGroup = createAsyncThunk(
   'project/listTaskGroups',
 
   async (_, { getState }) => {
-    const p = (getState() as { project: ProjectState }).project.current
+    const p = (getState() as { project: ProjectState }).project.currentProject
     const res = await lTaskGroup({ projectId: p.id })
 
     return res.data.items || []
@@ -34,22 +37,25 @@ export const listTaskGroup = createAsyncThunk(
 )
 
 const initialState: ProjectState = {
-  items: [],
-  current: {},
+  totalProjects: [],
+  currentProject: {},
   taskGroups: [],
   page: '',
   projectModalState: 'close',
   taskGroupModalState: 'close',
+  projectOption: 'my',
+  currentTaskGroup: {},
 }
 const projectSlice = createSlice({
   name: 'project',
   initialState,
   reducers: {
-    setProjectItems: (state, action: PayloadAction<Project[]>) => {
-      state.items = action.payload
+    setTotalProjects: (state, action: PayloadAction<Project[]>) => {
+      state.totalProjects = action.payload
     },
+
     setCurrentProject: (state, action: PayloadAction<Project>) => {
-      state.current = action.payload
+      state.currentProject = action.payload
     },
     setTaskGroups: (state, action: PayloadAction<TaskGroup[]>) => {
       state.taskGroups = action.payload
@@ -63,11 +69,18 @@ const projectSlice = createSlice({
     setPage: (state, action: PayloadAction<PageOption>) => {
       state.page = action.payload
     },
+    setProjectOption: (state, action: PayloadAction<ProjectOption>) => {
+      state.projectOption = action.payload
+    },
+    setCurrentTaskGroup: (state, action: PayloadAction<TaskGroup>) => {
+      state.currentTaskGroup = action.payload
+      state.taskGroupModalState = 'edit'
+    },
   },
 
   extraReducers: (builder) => {
     builder.addCase(listProjects.fulfilled, (state, action) => {
-      state.items = action.payload
+      state.totalProjects = action.payload
     }),
       builder.addCase(listTaskGroup.fulfilled, (state, action) => {
         state.taskGroups = action.payload
@@ -79,9 +92,11 @@ export const {
   setCurrentProject,
   setProjectModalState,
   setTaskGroupModalState,
-  setProjectItems,
+  setTotalProjects,
   setTaskGroups,
   setPage,
+  setProjectOption,
+  setCurrentTaskGroup,
 } = projectSlice.actions
 
 export default projectSlice.reducer

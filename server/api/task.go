@@ -3,18 +3,19 @@ package api
 import "gopkg.in/guregu/null.v4"
 
 type Task struct {
-	Id          uint      `json:"id" form:"id"`
-	Name        string    `json:"name" form:"name"`
-	Status      int       `json:"status" form:"status"`
-	Owner       uint      `json:"owner" form:"owner"`
-	PStartAt    null.Time `json:"pStartAt" form:"pStartAt"`
-	PEndAt      null.Time `json:"pEndAt" form:"pEndAt"`
-	StartAt     null.Time `json:"startAt" form:"startAt"`
-	EndAt       null.Time `json:"endAt" form:"endAt"`
-	ProjectId   uint      `json:"projectId" form:"projectId"`
-	TaskGroupId uint      `json:"taskGroupId" form:"taskGroupId"`
-	Serial      int       `json:"serial" form:"serial"`
-	Desc        string    `json:"desc" form:"desc"`
+	Id           uint      `json:"id" form:"id"`
+	Name         string    `json:"name" form:"name"`
+	Status       int       `json:"status" form:"status"`
+	Owner        uint      `json:"owner" form:"owner"`
+	PStartAt     null.Time `json:"pStartAt" form:"pStartAt"`
+	PEndAt       null.Time `json:"pEndAt" form:"pEndAt"`
+	StartAt      null.Time `json:"startAt" form:"startAt"`
+	EndAt        null.Time `json:"endAt" form:"endAt"`
+	ProjectId    uint      `json:"projectId" form:"projectId"`
+	TaskGroupId  uint      `json:"taskGroupId" form:"taskGroupId"`
+	Serial       int       `json:"serial" form:"serial"`
+	Desc         string    `json:"desc" form:"desc"`
+	CommentCount int       `json:"commentCount" form:"commentCount"`
 }
 
 type MoveTaskReq struct {

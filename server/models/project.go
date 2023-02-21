@@ -11,6 +11,7 @@ type Project struct {
 	gorm.Model
 	Name    string `gorm:"type:varchar(100);comment:项目名称"`
 	Desc    string
+	Color   string `gorm:"type:varchar(10);comment:主题色"`
 	StartAt null.Time
 	EndAt   null.Time
 	OwnerId uint `gorm:"comment:项目拥有者"`

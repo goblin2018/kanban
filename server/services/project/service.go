@@ -23,6 +23,7 @@ func apiToModel(a *api.Project) *models.Project {
 		EndAt:   a.EndAt,
 		OwnerId: a.OwnerId,
 		Status:  a.Status,
+		Color:   a.Color,
 	}
 	m.ID = a.Id
 	return m

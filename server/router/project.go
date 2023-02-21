@@ -63,6 +63,7 @@ func (co *ProjectController) delProject(c *ctx.Context) {
 }
 
 func (co *ProjectController) listProjects(c *ctx.Context) {
+
 	res := co.s.ListProjects(c)
 	c.JSON(res, nil)
 }
