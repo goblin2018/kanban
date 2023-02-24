@@ -327,7 +327,7 @@ const TaskItem: React.FC<Props> = ({ task, idx, groupIdx }) => {
         <div className="flex px-4 justify-between items-center">
           <div className="flex items-start">
             <CommentSvg className="mr-1" />
-            <div>{20}</div>
+            <div>{task.commentCount == 0 ? '' : task.commentCount}</div>
           </div>
           <StatusTag status={task.status!} />
         </div>

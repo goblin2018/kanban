@@ -110,7 +110,7 @@ const UserModal: React.FC<Props> = ({
       onCancel={cancel}
       onOk={submit}
     >
-      <Form form={userForm}>
+      <Form form={userForm} layout={'vertical'}>
         <Form.Item
           label="姓名"
           name={'name'}
@@ -134,7 +134,9 @@ const UserModal: React.FC<Props> = ({
           />
         </Form.Item>
       </Form>
-      <Tag color="success">新用户默认密码为: senmeng66</Tag>
+      <Tag className="py-1 px-4" color="success">
+        新用户默认密码为: senmeng66
+      </Tag>
     </Modal>
   )
 }

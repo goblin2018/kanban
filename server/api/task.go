@@ -15,7 +15,7 @@ type Task struct {
 	TaskGroupId  uint      `json:"taskGroupId" form:"taskGroupId"`
 	Serial       int       `json:"serial" form:"serial"`
 	Desc         string    `json:"desc" form:"desc"`
-	CommentCount int       `json:"commentCount" form:"commentCount"`
+	CommentCount int64     `json:"commentCount" form:"commentCount"`
 }
 
 type MoveTaskReq struct {

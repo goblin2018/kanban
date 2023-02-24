@@ -10,9 +10,10 @@ import Header from 'components/header/Header'
 import { PlusOutlined } from '@ant-design/icons'
 import { ReactComponent as GotoSvg } from 'assets/goto.svg'
 import { toShortDate } from 'api/utils'
+import ViewModeSwither from 'components/gantt/viewmodeSwitcher'
 
 const ProjectDetailPage = () => {
-  const project = useAppSelector((s) => s.project.currentProject)
+  const { currentProject: project, page } = useAppSelector((s) => s.project)
 
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
@@ -45,29 +46,34 @@ const ProjectDetailPage = () => {
           </div>
         </div>
         <TaskGroupModal />
-        <TaskDrawer />
       </div>
 
       <div className="flex justify-between px-6">
         <div className="">
           <ProjectMenu />
         </div>
-        <Button
-          type="primary"
-          icon={<PlusOutlined />}
-          onClick={() => {
-            dispatch(setTaskGroupModalState('add'))
-          }}
-        >
-          添加任务组
-        </Button>
+
+        {page == '' ? (
+          <Button
+            type="primary"
+            icon={<PlusOutlined />}
+            onClick={() => {
+              dispatch(setTaskGroupModalState('add'))
+            }}
+          >
+            添加任务组
+          </Button>
+        ) : (
+          <ViewModeSwither />
+        )}
       </div>
 
-      <div className="h-px bg-text-disabled mx-6 mb-4"></div>
+      <div className="h-px bg-text-disabled mx-6"></div>
 
       <div className="h-[calc(100vh-151px)] min-h-[600px]">
         <Outlet />
       </div>
+      <TaskDrawer />
     </div>
   )
 }

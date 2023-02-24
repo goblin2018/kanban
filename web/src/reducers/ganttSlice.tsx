@@ -21,6 +21,7 @@ export interface GanttState {
   hold: HoldType
   diffX: number
   scrollLeft: number
+  scrollTop: number
 }
 
 const initialState: GanttState = {
@@ -33,6 +34,7 @@ const initialState: GanttState = {
   hold: { index: -1 },
   diffX: 0,
   scrollLeft: 0,
+  scrollTop: 0,
 }
 
 const ganttSlice = createSlice({
@@ -72,6 +74,9 @@ const ganttSlice = createSlice({
     setScrollLeft: (state, action: PayloadAction<number>) => {
       state.scrollLeft = action.payload
     },
+    setScrollTop: (state, action: PayloadAction<number>) => {
+      state.scrollTop = action.payload
+    },
   },
 })
 
@@ -82,5 +87,6 @@ export const {
   setHold,
   setDiffX,
   setScrollLeft,
+  setScrollTop,
 } = ganttSlice.actions
 export default ganttSlice.reducer

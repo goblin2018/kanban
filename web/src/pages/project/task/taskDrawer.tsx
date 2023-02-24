@@ -9,7 +9,7 @@ import {
 } from 'antd'
 import { useAppDispatch, useAppSelector } from 'app/hooks'
 import { useEffect, useState } from 'react'
-import { closeTaskDrawer, setCurrentTask } from '../../../reducers/taskSlice'
+import { closeTaskDrawer, setCurrentTask } from 'reducers/taskSlice'
 
 import { delTask, Task, updateTask } from 'api/task'
 import { strToDayjs, toShortDate } from 'api/utils'
@@ -17,6 +17,9 @@ import { setTaskGroups } from 'reducers/projectSlice'
 import Comments from './comments'
 import { ProjectStatus, ProjectStatusInfo } from 'api/constatns'
 import { DeleteOutlined } from '@ant-design/icons'
+import dayjs from 'dayjs'
+import { loadBarInfoImpl } from 'components/gantt/utils/task'
+import { setTasks } from 'reducers/ganttSlice'
 
 const { Item } = Form
 
@@ -27,7 +30,8 @@ const TaskDrawer = () => {
     taskIdx,
     taskDrawerOpen: open,
   } = useAppSelector((s) => s.task)
-  const taskGroups = useAppSelector((s) => s.project.taskGroups)
+  const { taskGroups, page } = useAppSelector((s) => s.project)
+  const { tasks: ganttTasks, dates, viewMode } = useAppSelector((s) => s.gantt)
   const dispatch = useAppDispatch()
 
   const [tForm] = Form.useForm()
@@ -44,7 +48,7 @@ const TaskDrawer = () => {
       let startAt = strToDayjs(t.startAt)
       let endAt = strToDayjs(t.endAt)
 
-      console.log('get task ', t)
+      console.log('get task ', t.startAt, startAt?.format())
 
       tForm.setFieldsValue({ ...t, startAt: startAt, endAt: endAt })
     }
@@ -55,8 +59,8 @@ const TaskDrawer = () => {
 
     let newTask: Task = { id: task?.id }
     newTask.name = t.name == '' ? task?.name : t.name
-    newTask.startAt = t.startAt
-    newTask.endAt = t.endAt
+    newTask.startAt = toShortDate(t.startAt)
+    newTask.endAt = toShortDate(t.endAt)
     newTask.desc = t.desc == '' ? task?.desc : t.desc
     newTask.status = t.status
     if (
@@ -88,6 +92,57 @@ const TaskDrawer = () => {
       .finally(() => {
         cancel()
       })
+
+    // 如果在甘特图界面，对甘特图进行更新
+    if (page == '') {
+      return
+    }
+    if (
+      toShortDate(newTask.startAt) == toShortDate(task?.startAt) &&
+      toShortDate(newTask.endAt) == toShortDate(task?.endAt)
+    ) {
+      return
+    }
+
+    console.log('change date')
+
+    //
+    let idx = ganttTasks.findIndex((t) => {
+      return (
+        typeof t.previousIndex != 'number' &&
+        t.previousIndex[0] == groupIdx &&
+        t.previousIndex[1] == taskIdx
+      )
+    })
+
+    if (idx == -1) {
+      return
+    }
+
+    let ot = ganttTasks[idx]
+    let gt = { ...ot, barInfo: { ...ot.barInfo! } }
+
+    gt.start = dayjs(toShortDate(newTask.startAt))
+    gt.end = dayjs(toShortDate(newTask.endAt))
+
+    loadBarInfoImpl(gt, dates, viewMode)
+
+    let nts = [...ganttTasks]
+    nts[idx] = gt
+
+    let of = ganttTasks[ot.parentIndex!]
+    let f = { ...of, barInfo: { ...of.barInfo! } }
+    if (gt.start.isBefore(f.start)) {
+      f.start = gt.start
+    }
+
+    if (gt.end.isAfter(f.end)) {
+      f.end = gt.end
+    }
+
+    nts[ot.parentIndex!] = f
+
+    dispatch(setTasks(nts))
   }
 
   const submitDelete = () => {

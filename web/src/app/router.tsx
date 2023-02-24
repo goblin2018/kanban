@@ -1,4 +1,3 @@
-import Home from 'pages/Home'
 import ProjectDetailPage from 'pages/project'
 import ProjectPage from 'pages/projects'
 import { createBrowserRouter } from 'react-router-dom'

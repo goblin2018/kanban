@@ -11,7 +11,7 @@ const Kanban = () => {
   }, [])
 
   return (
-    <div className="h-full  relative">
+    <div className="h-full  relative mt-4">
       <div id="groups-dragging-container"></div>
       <div
         className="flex h-full pb-[10px] pr-[100px] overflow-y-hidden relative 

@@ -4,6 +4,7 @@ import {
   barBackgroundSelectedColor,
   barCornerRadius,
   handleWidth,
+  rowHeight,
   StepWidth,
   taskHeight,
 } from 'components/gantt/utils/conf'
@@ -19,13 +20,15 @@ import { setTaskGroups } from 'reducers/projectSlice'
 interface Props {
   task: GanttTask
   isSelected: boolean
+  rowIdx: number
 }
 
-const Bar: React.FC<Props> = ({ task, isSelected }) => {
+const Bar: React.FC<Props> = ({ task, isSelected, rowIdx }) => {
   const { diffX, viewMode, dates, tasks } = useAppSelector((s) => s.gantt)
   const { position, index, reset } = useAppSelector((s) => s.gantt.hold)
   const taskGroups = useAppSelector((s) => s.project.taskGroups)
   const isHolding = useMemo(() => index == task.index, [index])
+  const y = rowIdx * rowHeight + (rowHeight - taskHeight) / 2
   const dispatch = useAppDispatch()
 
   const [start, setStart] = useState(task.barInfo!.x1!)
@@ -62,10 +65,12 @@ const Bar: React.FC<Props> = ({ task, isSelected }) => {
   }, [reset, isHolding])
 
   const updateTasks = () => {
+    let startD = startDate.add(8, 'h').format()
+    let endD = endDate.add(8, 'h').format()
     updateTask({
       id: task.id,
-      startAt: startDate.format(),
-      endAt: endDate.format(),
+      startAt: startD,
+      endAt: endD,
     })
 
     let tgs = [...taskGroups]
@@ -74,12 +79,19 @@ const Bar: React.FC<Props> = ({ task, isSelected }) => {
       let ts = [...tg.tasks!]
       let t = {
         ...ts[task.previousIndex[1]],
-        start: startDate.format(),
-        end: endDate.format(),
+        startAt: startD,
+        endAt: endD,
       }
       ts[task.previousIndex[1]] = t
       tg.tasks = ts
       tgs[task.previousIndex[0]] = { ...tg }
+
+      console.log(
+        'get new tgs ',
+        task.previousIndex,
+        tgs[task.previousIndex[0]]
+      )
+
       dispatch(setTaskGroups(tgs))
     }
 
@@ -159,7 +171,8 @@ const Bar: React.FC<Props> = ({ task, isSelected }) => {
   }
 
   const getBarColor = () => {
-    return isSelected ? barBackgroundSelectedColor : barBackgroundColor
+    return task.barInfo?.color
+    // return isSelected ? barBackgroundSelectedColor : barBackgroundColor
   }
 
   const textRef = useRef<SVGTextElement>(null)
@@ -180,36 +193,39 @@ const Bar: React.FC<Props> = ({ task, isSelected }) => {
   return (
     <g className={styles.barWrapper} tabIndex={0}>
       {/* hint info */}
-      <g>
-        <rect
-          x={start}
-          y={task.barInfo!.y! - 35}
-          width={end - start}
-          height={30}
-          ry={barCornerRadius}
-          rx={barCornerRadius}
-          fill={'green'}
-          className={` flex`}
-        ></rect>
-        <text
-          x={isHintTextInside ? start + 10 : end + 10}
-          y={task.barInfo!.y! - 15}
-          fill={isHintTextInside ? '#fff' : '#555'}
-        >
-          {startDate.format('MM-DD')}
-        </text>
-        <text
-          x={isHintTextInside ? end - 50 : end + 60}
-          y={task.barInfo!.y! - 15}
-          fill={isHintTextInside ? '#fff' : '#555'}
-        >
-          {endDate.format('MM-DD')}
-        </text>
-      </g>
+
+      {isHolding && (
+        <g>
+          <rect
+            x={start}
+            y={y - 35}
+            width={end - start}
+            height={30}
+            ry={barCornerRadius}
+            rx={barCornerRadius}
+            fill={'green'}
+            className={` flex`}
+          ></rect>
+          <text
+            x={isHintTextInside ? start + 10 : end + 10}
+            y={y - 15}
+            fill={isHintTextInside ? '#fff' : '#555'}
+          >
+            {startDate.format('MM-DD')}
+          </text>
+          <text
+            x={isHintTextInside ? end - 50 : end + 60}
+            y={y - 15}
+            fill={isHintTextInside ? '#fff' : '#555'}
+          >
+            {endDate.format('MM-DD')}
+          </text>
+        </g>
+      )}
 
       <rect
         x={start}
-        y={task.barInfo!.y}
+        y={y}
         width={end - start}
         height={taskHeight}
         ry={barCornerRadius}
@@ -219,7 +235,7 @@ const Bar: React.FC<Props> = ({ task, isSelected }) => {
       />
       <text
         x={(isTextInside ? start : end) + 12}
-        y={task.barInfo!.y! + taskHeight * 0.65}
+        y={y + taskHeight * 0.65}
         style={{
           fill: isTextInside ? '#fff' : '#555',
         }}
@@ -232,13 +248,13 @@ const Bar: React.FC<Props> = ({ task, isSelected }) => {
         {/* left */}
         <DateHandle
           x={start + 1}
-          y={task.barInfo!.y! + 1}
+          y={y + 1}
           setHold={() => setHoldPoint('start')}
         />
         {/* right */}
         <DateHandle
           x={end - handleWidth - 1}
-          y={task.barInfo!.y! + 1}
+          y={y + 1}
           setHold={() => setHoldPoint('end')}
         />
       </g>

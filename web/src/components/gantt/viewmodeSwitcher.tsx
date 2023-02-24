@@ -10,7 +10,7 @@ const ViewModeSwither: React.FC<Props> = () => {
   const viewMode = useAppSelector((s) => s.gantt.viewMode)
   const dispatch = useAppDispatch()
   return (
-    <div className="absolute right-4">
+    <div className="" style={{ zIndex: 999 }}>
       <Radio.Group
         defaultValue={ViewMode.Day}
         buttonStyle="solid"

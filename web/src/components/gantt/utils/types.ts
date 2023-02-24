@@ -11,6 +11,7 @@ export type TaskType = 'task' | 'project'
 
 export interface GanttTask {
   id: number
+  status: number
   name: string
   previousIndex: number | number[]
   parentIndex?: number
@@ -19,6 +20,7 @@ export interface GanttTask {
   start?: Dayjs
   end?: Dayjs
   hideChildren?: boolean
+  hide?: boolean
 
   barInfo?: {
     color: string

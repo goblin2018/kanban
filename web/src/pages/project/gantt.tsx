@@ -1,11 +1,7 @@
 import Gantt from 'components/gantt'
 
 const GanttPage = () => {
-  return (
-    <div className="">
-      <Gantt />
-    </div>
-  )
+  return <Gantt />
 }
 
 export default GanttPage

@@ -1,8 +1,9 @@
 import { useAppDispatch, useAppSelector } from 'app/hooks'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { setDiffX, setHold } from 'reducers/ganttSlice'
+import { setEditTask } from 'reducers/taskSlice'
 import Grid from '../grid/grid'
-import { rowHeight, StepWidth } from '../utils/conf'
+import { headerHeight, rowHeight } from '../utils/conf'
 import Project from './project/project'
 import Bar from './task/bar'
 
@@ -10,6 +11,8 @@ const Bars = () => {
   const { tasks, hold, totalWidth, rowCount, diffX } = useAppSelector(
     (s) => s.gantt
   )
+
+  const taskGroups = useAppSelector((s) => s.project.taskGroups)
   const dispatch = useAppDispatch()
   const [startX, setStartX] = useState(0)
 
@@ -21,7 +24,6 @@ const Bars = () => {
         return
       }
 
-      console.log('move ', e.clientX - startX)
       dispatch(setDiffX(e.clientX - startX))
     },
     [startX]
@@ -40,7 +42,7 @@ const Bars = () => {
   }
 
   return (
-    <div className="relative">
+    <div className="relative" style={{ marginTop: headerHeight }}>
       <svg
         ref={barContainerRef}
         xmlns="http://www.w3.org/2000/svg"
@@ -64,37 +66,56 @@ const Bars = () => {
         <Grid />
 
         <g className="bar">
-          {tasks.map((task, i) => {
-            if (task.start) {
-              return (
-                <g
-                  key={`taskItem-${task.index}`}
-                  onKeyDown={(e) => {
-                    e.stopPropagation()
-                    switch (e.key) {
-                      case 'Delete': {
-                        break
+          {tasks
+            .filter((t) => t.hide != true)
+            .map((task, i) => {
+              if (task.start) {
+                return (
+                  <g
+                    key={`taskItem-${task.index}`}
+                    onKeyDown={(e) => {
+                      e.stopPropagation()
+                      switch (e.key) {
+                        case 'Delete': {
+                          break
+                        }
                       }
-                    }
-                  }}
-                  onMouseEnter={(e) => {}}
-                  onMouseLeave={(e) => {}}
-                  onClick={(e) => {
-                    // TODO 增加点击逻辑
-                    console.log('click item ', task.name)
-                  }}
-                >
-                  {task.type == 'project' ? (
-                    <Project task={task} isSeleceted={false} />
-                  ) : (
-                    <Bar task={task} isSelected={false} />
-                  )}
-                </g>
-              )
-            }
+                    }}
+                    onMouseEnter={(e) => {}}
+                    onMouseLeave={(e) => {}}
+                    onDoubleClick={(e) => {
+                      // TODO 增加点击逻辑
+                      console.log('click item ', task.name)
 
-            return <g key={`taskItem-${task.index}`}></g>
-          })}
+                      if (task.type == 'project') {
+                        return
+                      }
+
+                      let idx = task.previousIndex
+                      if (typeof idx == 'number') {
+                        return
+                      }
+                      let pTask = { ...taskGroups[idx[0]].tasks![idx[1]] }
+                      dispatch(
+                        setEditTask({
+                          task: pTask,
+                          groupIdx: idx[0],
+                          taskIdx: idx[1],
+                        })
+                      )
+                    }}
+                  >
+                    {task.type == 'project' ? (
+                      <Project task={task} isSeleceted={false} rowIdx={i} />
+                    ) : (
+                      <Bar task={task} isSelected={false} rowIdx={i} />
+                    )}
+                  </g>
+                )
+              }
+
+              return <g key={`taskItem-${task.index}`}></g>
+            })}
         </g>
       </svg>
     </div>

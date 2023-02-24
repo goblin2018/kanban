@@ -1,3 +1,4 @@
+import { PlusOutlined } from '@ant-design/icons'
 import {
   Button,
   Divider,
@@ -12,6 +13,7 @@ import { Action, ErrCode, ModalState } from 'api/constatns'
 import { delUser, listUsers, updatePassword, User, UserLevel } from 'api/user'
 import { useAppDispatch, useAppSelector } from 'app/hooks'
 import Header from 'components/header/Header'
+import UserTag from 'components/userTag'
 import { useEffect, useState } from 'react'
 import { setPage, setUserEditIndex, setUsers } from 'reducers/userSlice'
 import UserModal from './userModal'
@@ -35,6 +37,7 @@ const Users = () => {
       key: 'name',
       dataIndex: 'name',
       title: '姓名',
+      render: (v, r) => <UserTag user={r} />,
     },
 
     {
@@ -49,7 +52,7 @@ const Users = () => {
       title: '用户类型',
       render: (v) => {
         if (v >= UserLevel.Admin) {
-          return '管理员'
+          return <div className="text-green-600">管理员</div>
         }
         return '普通用户'
       },
@@ -62,6 +65,7 @@ const Users = () => {
         return (
           <div className="flex">
             <Button
+              className="mr-2"
               onClick={() => {
                 dispatch(setUserEditIndex(index))
                 setUserModalState('edit')
@@ -70,6 +74,7 @@ const Users = () => {
               修改
             </Button>
             <Popconfirm
+              className="mr-2"
               title={
                 <div>
                   <div>确认重置密码？</div>
@@ -114,7 +119,7 @@ const Users = () => {
                 })
               }}
             >
-              <Button>删除</Button>
+              <Button danger>删除</Button>
             </Popconfirm>
           </div>
         )
@@ -150,15 +155,27 @@ const Users = () => {
   return (
     <div className="relative h-screen">
       <Header />
-      <Button
-        onClick={() => {
-          setUserModalState('add')
-        }}
-      >
-        添加用户
-      </Button>
-      <Table dataSource={users} columns={columns} pagination={false} />
-      <Pagination className="absolute bottom-4" current={page} total={total} />
+
+      <div className="h-[calc(100%-180px)] mx-auto w-[1596px] mt-12 bg-white px-12 py-8 rounded-xl">
+        <div className="flex justify-between items-center h-10 mb-2">
+          <div className="text-xl">用户管理</div>
+          <Button
+            type="primary"
+            icon={<PlusOutlined />}
+            onClick={() => {
+              setUserModalState('add')
+            }}
+          >
+            添加用户
+          </Button>
+        </div>
+        <Table dataSource={users} columns={columns} pagination={false} />
+        <Pagination
+          className="absolute bottom-4"
+          current={page}
+          total={total}
+        />
+      </div>
       <UserModal
         state={userModalState}
         setState={setUserModalState}

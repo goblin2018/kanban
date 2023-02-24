@@ -77,13 +77,13 @@ func (d *TaskGroupDao) List(projectId uint) (tgs []*api.TaskGroup) {
 		return db.Order("serial ASC")
 	}).Order("serial ASC").Find(&tgs)
 
-	taskIds := []uint{}
 	for _, tg := range tgs {
 		for _, t := range tg.Tasks {
-			taskIds = append(taskIds, t.Id)
+			var count int64
+			d.Model(&models.Comment{}).Where("task_id = ?", t.Id).Count(&count)
+			t.CommentCount = count
 		}
 	}
 
-	d.Model(&models.Comment{}).Count()
 	return
 }

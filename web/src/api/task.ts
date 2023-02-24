@@ -10,6 +10,7 @@ export interface Task {
   startAt?: string
   endAt?: string
   desc?: string
+  commentCount?: number
 }
 
 const url = '/api/task'

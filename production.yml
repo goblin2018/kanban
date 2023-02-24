@@ -28,7 +28,7 @@ services:
     networks:
       - kanban-net
   server:
-    image: registry.cn-shenzhen.aliyuncs.com/uqi/kanban-server:v0.1.1
+    image: registry.cn-shenzhen.aliyuncs.com/uqi/kanban-server:v0.1.2
     networks:
       - kanban-net
     depends_on:
@@ -36,11 +36,11 @@ services:
       - redis
 
   web:
-    image: registry.cn-shenzhen.aliyuncs.com/uqi/kanban-web:v0.1.1
+    image: registry.cn-shenzhen.aliyuncs.com/uqi/kanban-web:v0.1.2
     networks:
       - kanban-net
     ports:
-      - "80:80"
+      - '80:80'
     depends_on:
       - server
 

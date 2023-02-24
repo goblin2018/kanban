@@ -1,51 +1,40 @@
 import { getWeekDay } from '../utils/date'
 import { ViewMode } from '../utils/types'
 
-import styles from './calendar.module.css'
-import TopPartOfCalendar from './calendar-top'
 import { ReactNode, useEffect, useMemo, useState } from 'react'
-import { headerHeight } from '../utils/conf'
 import { useAppSelector } from 'app/hooks'
+import { headerHeight } from '../utils/conf'
 
 const Calendar = () => {
-  const { columnWidth, dates, viewMode, totalWidth, scrollLeft } =
+  const { columnWidth, dates, viewMode, totalWidth, scrollLeft, scrollTop } =
     useAppSelector((s) => s.gantt)
 
   const [topValues, setTopValues] = useState<any[]>([])
   const [bottomValues, setBottomValues] = useState<any[]>([])
 
   const getCalendarValuesForDay = () => {
-    const topValues: ReactNode[] = []
+    const topValues: any[] = []
     const bottomValues: ReactNode[] = []
 
     let topValue = ''
     dates.map((d, i) => {
-      const bottomValue = `${d.date()} ${getWeekDay(d)}`
       bottomValues.push(
-        <text
-          key={d.unix()}
-          y={headerHeight * 0.8}
-          x={columnWidth * (i + 0.5)}
-          fontSize={12}
-          className={styles.calendarBottomText}
-        >
-          {bottomValue}
-        </text>
+        <>
+          <div>{d.date()}</div>
+          <div className="text-text-disabled ml-1">{getWeekDay(d)}</div>
+        </>
       )
 
       let tp = d.format('YYYY-MM')
       if (tp != topValue) {
         let endi = i + (d.endOf('M').date() - d.date()) + 1
         topValue = tp
-        topValues.push(
-          <TopPartOfCalendar
-            key={topValue + d.year()}
-            value={topValue}
-            x1Line={columnWidth * endi}
-            xText={columnWidth * i + 20}
-            maxXText={columnWidth * endi - 80}
-          />
-        )
+
+        topValues.push({
+          start: i * columnWidth,
+          end: endi * columnWidth,
+          info: tp,
+        })
       }
     })
 
@@ -56,36 +45,26 @@ const Calendar = () => {
   }
 
   const getCalendarValuesForWeek = () => {
-    const topValues: ReactNode[] = []
+    const topValues: any[] = []
     const bottomValues: ReactNode[] = []
     let topValue = ''
 
+    let lastEnd = 0
     dates.map((d, i) => {
-      const bottomValue = `${d.week()}`
-      bottomValues.push(
-        <text
-          key={d.unix()}
-          y={headerHeight * 0.8}
-          x={columnWidth * (i + 0.5)}
-          className={styles.calendarBottomText}
-        >
-          {bottomValue}
-        </text>
-      )
+      bottomValues.push(<div>{d.week()}</div>)
 
       let tp = d.format('YYYY-MM')
       if (tp != topValue) {
         let endi = i + (d.endOf('M').date() - d.date() + 1) / 7
         topValue = tp
-        topValues.push(
-          <TopPartOfCalendar
-            key={topValue + d.year()}
-            value={topValue}
-            x1Line={columnWidth * endi}
-            xText={columnWidth * i + 20}
-            maxXText={columnWidth * endi - 80}
-          />
-        )
+
+        topValues.push({
+          start: lastEnd * columnWidth,
+          end: endi * columnWidth,
+          info: tp,
+        })
+
+        lastEnd = endi
       }
     })
 
@@ -93,87 +72,45 @@ const Calendar = () => {
     setBottomValues(bottomValues)
   }
 
-  // const getCalendarValuesForMonth = () => {
-  //   const topValues: ReactNode[] = []
-  //   const bottomValues: ReactNode[] = []
-  //   const topDefaultHeight = headerHeight * 0.5
-  //   dates.map((d, i) => {
-  //     const bottomValue = `${d.week()}`
-  //     bottomValues.push(
-  //       <text
-  //         key={d.unix()}
-  //         y={headerHeight * 0.8}
-  //         x={columnWidth * (i + 0.5)}
-  //         className={styles.calendarBottomText}
-  //       >
-  //         {bottomValue}
-  //       </text>
-  //     )
+  const getCalendarValuesForMonth = () => {
+    const topValues: any[] = []
+    const bottomValues: ReactNode[] = []
+    let topValue = ''
 
-  //     if (i + 1 !== dates.length && d.month() !== dates[i + 1].month()) {
-  //       const topValue = d.format('YYYY-MM')
+    let lastEnd = 0
+    dates.map((d, i) => {
+      bottomValues.push(<div>{d.month() + 1}</div>)
 
-  //       topValues.push(
-  //         <TopPartOfCalendar
-  //           key={topValue + d.year()}
-  //           value={topValue}
-  //           x1Line={columnWidth * (i - 1)}
-  //           y1Line={0}
-  //           y2Line={topDefaultHeight}
-  //           xText={
-  //             columnWidth * (i - 1) - d.endOf('M').date() * columnWidth * 0.5
-  //           }
-  //           maxXText={0}
-  //           yText={topDefaultHeight * 0.9}
-  //         />
-  //       )
-  //     }
-  //   })
+      let tp = d.format('YYYY')
+      if (tp != topValue) {
+        let endi = i + 12
+        topValue = tp
 
-  //   setTopValues(topValues)
-  //   setBottomValues(bottomValues)
-  // }
+        topValues.push({
+          start: lastEnd * columnWidth,
+          end: endi * columnWidth,
+          info: tp,
+        })
 
-  // const getCalendarValuesForYear = () => {
-  //   const topValues: ReactNode[] = []
-  //   const bottomValues: ReactNode[] = []
-  //   const topDefaultHeight = headerHeight * 0.5
-  //   dates.map((d, i) => {
-  //     const bottomValue = `${d.week()}`
-  //     bottomValues.push(
-  //       <text
-  //         key={d.unix()}
-  //         y={headerHeight * 0.8}
-  //         x={columnWidth * (i + 0.5)}
-  //         className={styles.calendarBottomText}
-  //       >
-  //         {bottomValue}
-  //       </text>
-  //     )
+        lastEnd = endi
+      }
+    })
 
-  //     if (i + 1 < dates.length && d.month() !== dates[i + 1].month()) {
-  //       const topValue = d.format('YYYY-MM')
+    setTopValues(topValues)
+    setBottomValues(bottomValues)
+  }
 
-  //       topValues.push(
-  //         <TopPartOfCalendar
-  //           key={topValue + d.year()}
-  //           value={topValue}
-  //           x1Line={columnWidth * (i - 1)}
-  //           y1Line={0}
-  //           y2Line={topDefaultHeight}
-  //           xText={
-  //             columnWidth * (i - 1) - d.endOf('M').date() * columnWidth * 0.5
-  //           }
-  //           maxXText={t}
-  //           yText={topDefaultHeight * 0.9}
-  //         />
-  //       )
-  //     }
-  //   })
+  const getCalendarValuesForYear = () => {
+    const topValues: any[] = []
+    const bottomValues: ReactNode[] = []
 
-  //   setTopValues(topValues)
-  //   setBottomValues(bottomValues)
-  // }
+    dates.map((d, i) => {
+      bottomValues.push(<div>{d.year()}</div>)
+    })
+
+    setTopValues(topValues)
+    setBottomValues(bottomValues)
+  }
 
   useEffect(() => {
     switch (viewMode) {
@@ -183,36 +120,60 @@ const Calendar = () => {
       case ViewMode.Week:
         getCalendarValuesForWeek()
         break
-      // case ViewMode.Month:
-      //   getCalendarValuesForMonth()
-      //   break
-      // case ViewMode.Year:
-      //   getCalendarValuesForYear()
-      //   break
+      case ViewMode.Month:
+        getCalendarValuesForMonth()
+        break
+      case ViewMode.Year:
+        getCalendarValuesForYear()
+        break
 
       default:
         break
     }
   }, [viewMode, dates])
 
+  const calcIndent = (start: number, end: number) => {
+    if (scrollLeft < start) {
+      return 20
+    } else if (scrollLeft < end - 80) {
+      return scrollLeft - start + 20
+    } else {
+      return 20
+    }
+  }
+
   return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width={totalWidth}
-      height={headerHeight}
-      // fontFamily={barProps.fontFamily}
+    <div
+      className="absolute w-full bg-white"
+      style={{ top: scrollTop, zIndex: 999, height: headerHeight }}
     >
-      <g className="calendar">
-        <rect
-          x={0}
-          y={0}
-          width={totalWidth}
-          height={headerHeight}
-          className={styles.calendarHeader}
-        />
-        {bottomValues} {topValues}
-      </g>
-    </svg>
+      <div className="flex">
+        {topValues.map((t, i) => (
+          <div
+            className="flex-shrink-0"
+            key={`ct${i}`}
+            style={{
+              textIndent: calcIndent(t.start, t.end),
+              width: t.end - t.start,
+              borderRight: '1px solid #ababab',
+            }}
+          >
+            {t.info}
+          </div>
+        ))}
+      </div>
+      <div className="flex">
+        {bottomValues.map((b, i) => (
+          <div
+            key={`cb${i}`}
+            className="flex items-center justify-center text-xs flex-shrink-0"
+            style={{ width: columnWidth, borderRight: '1px solid #ababab' }}
+          >
+            {b}
+          </div>
+        ))}
+      </div>
+    </div>
   )
 }
 

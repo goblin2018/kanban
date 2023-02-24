@@ -22,7 +22,7 @@ export const strToDayjs = (t: string | undefined) => {
     return undefined
   }
 
-  return dayjs(t, 'YYYY-MM-DD')
+  return dayjs(t, 'YYYY-MM-DD').add(8, 'h')
 }
 
 export const dayjsToStr = (t: dayjs.Dayjs | undefined, split: string = '-') => {

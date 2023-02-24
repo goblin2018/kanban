@@ -29,7 +29,7 @@ export const isRun = (year: number) => {
   return (year % 100 != 0 && year % 4 == 0) || year % 400 == 0
 }
 
-const loadBarInfoImpl = (
+export const loadBarInfoImpl = (
   task: GanttTask,
   dates: Dayjs[],
   viewMode: ViewMode
@@ -41,10 +41,8 @@ const loadBarInfoImpl = (
       task.end = task.start
     }
     barInfo.x2 = taskXCoordinate(task.end, dates, viewMode)
-    barInfo.y = taskYCoordinate(task.index)
   }
   task.barInfo = barInfo
-
 }
 
 const taskXCoordinate = (d: Dayjs, dates: Dayjs[], viewMode: ViewMode) => {
@@ -92,6 +90,8 @@ export const convertToGanttTaks = (tgs: TaskGroup[]) => {
       previousIndex: i,
       index: groupIndex,
       hideChildren: false,
+      hide: false,
+      status: 0,
       type: 'project',
       barInfo: {
         color: tg.color!,
@@ -113,8 +113,10 @@ export const convertToGanttTaks = (tgs: TaskGroup[]) => {
           previousIndex: [i, j],
           parentIndex: groupIndex,
           index: index,
+          hide: false,
           type: 'task',
           start: start,
+          status: t.status!,
           end: end,
           barInfo: {
             color: tg.color || '#2196f3',
