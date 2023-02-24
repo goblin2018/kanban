@@ -82,7 +82,6 @@ const TaskTable = () => {
                               ts[j] = item
                             }
                           }
-                          console.log('ts ', ts[7].hide)
 
                           dispatch(setTasks([...ts]))
                         }}

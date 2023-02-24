@@ -107,3 +107,11 @@ func (s *TaskGroupService) List(c *ctx.Context, req *api.TaskGroup) (res *api.Li
 	res.Items = append(res.Items, items...)
 	return
 }
+
+func (s *TaskGroupService) Delete(c *ctx.Context, req *api.TaskGroup) (err error) {
+	// 管理员或
+	// s.dao.
+
+	s.dao.DelTaskGroup(req.Id)
+	return
+}

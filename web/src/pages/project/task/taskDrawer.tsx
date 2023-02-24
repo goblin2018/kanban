@@ -30,7 +30,7 @@ const TaskDrawer = () => {
     taskIdx,
     taskDrawerOpen: open,
   } = useAppSelector((s) => s.task)
-  const { taskGroups, page } = useAppSelector((s) => s.project)
+  const { taskGroups, page, canEdit } = useAppSelector((s) => s.project)
   const { tasks: ganttTasks, dates, viewMode } = useAppSelector((s) => s.gantt)
   const dispatch = useAppDispatch()
 
@@ -59,8 +59,8 @@ const TaskDrawer = () => {
 
     let newTask: Task = { id: task?.id }
     newTask.name = t.name == '' ? task?.name : t.name
-    newTask.startAt = toShortDate(t.startAt)
-    newTask.endAt = toShortDate(t.endAt)
+    newTask.startAt = dayjs(toShortDate(t.startAt)).add(8, 'h').format()
+    newTask.endAt = dayjs(toShortDate(t.endAt)).add(8, 'h').format()
     newTask.desc = t.desc == '' ? task?.desc : t.desc
     newTask.status = t.status
     if (
@@ -77,6 +77,8 @@ const TaskDrawer = () => {
 
     updateTask(newTask)
       .then((res) => {
+        console.log(res)
+
         let nt = { ...task, ...newTask }
         dispatch(setCurrentTask(nt))
 
@@ -99,12 +101,11 @@ const TaskDrawer = () => {
     }
     if (
       toShortDate(newTask.startAt) == toShortDate(task?.startAt) &&
-      toShortDate(newTask.endAt) == toShortDate(task?.endAt)
+      toShortDate(newTask.endAt) == toShortDate(task?.endAt) &&
+      newTask.status == task?.status
     ) {
       return
     }
-
-    console.log('change date')
 
     //
     let idx = ganttTasks.findIndex((t) => {
@@ -120,26 +121,30 @@ const TaskDrawer = () => {
     }
 
     let ot = ganttTasks[idx]
-    let gt = { ...ot, barInfo: { ...ot.barInfo! } }
-
-    gt.start = dayjs(toShortDate(newTask.startAt))
-    gt.end = dayjs(toShortDate(newTask.endAt))
-
-    loadBarInfoImpl(gt, dates, viewMode)
+    let gt = { ...ot, barInfo: { ...ot.barInfo! }, status: newTask.status! }
 
     let nts = [...ganttTasks]
-    nts[idx] = gt
-
     let of = ganttTasks[ot.parentIndex!]
     let f = { ...of, barInfo: { ...of.barInfo! } }
-    if (gt.start.isBefore(f.start)) {
-      f.start = gt.start
+
+    if (
+      toShortDate(newTask.startAt) != toShortDate(task?.startAt) ||
+      toShortDate(newTask.endAt) != toShortDate(task?.endAt)
+    ) {
+      gt.start = dayjs(toShortDate(newTask.startAt))
+      gt.end = dayjs(toShortDate(newTask.endAt))
+
+      loadBarInfoImpl(gt, dates, viewMode)
+      if (gt.start.isBefore(f.start)) {
+        f.start = gt.start
+      }
+
+      if (gt.end.isAfter(f.end)) {
+        f.end = gt.end
+      }
     }
 
-    if (gt.end.isAfter(f.end)) {
-      f.end = gt.end
-    }
-
+    nts[idx] = gt
     nts[ot.parentIndex!] = f
 
     dispatch(setTasks(nts))
@@ -174,6 +179,7 @@ const TaskDrawer = () => {
             form={tForm}
             layout="vertical"
             onValuesChange={(e) => setChanged(true)}
+            disabled={!canEdit}
           >
             <Item label={'任务名称'} name="name">
               <Input />
@@ -211,13 +217,15 @@ const TaskDrawer = () => {
               确认
             </Button>
           </div>
-          <Popconfirm
-            title="确定删除任务？"
-            onConfirm={submitDelete}
-            className="absolute bottom-0"
-          >
-            <Button danger icon={<DeleteOutlined />}></Button>
-          </Popconfirm>
+          {canEdit && (
+            <Popconfirm
+              title="确定删除任务？"
+              onConfirm={submitDelete}
+              className="absolute bottom-0"
+            >
+              <Button danger icon={<DeleteOutlined />}></Button>
+            </Popconfirm>
+          )}
         </div>
         <div className="bg-slate-200 w-px mx-2"></div>
         <div className="flex-1 relative">

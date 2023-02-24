@@ -21,7 +21,7 @@ const NewTaskItem: React.FC<Props> = ({
 }) => {
   const [title, setTitle] = useState('')
   const [showAdd, setShowAdd] = useState(false)
-  const taskGroups = useAppSelector((s) => s.project.taskGroups)
+  const { canEdit, taskGroups } = useAppSelector((s) => s.project)
   const dispatch = useAppDispatch()
   const cancel = () => {
     setShowAdd(false)
@@ -44,7 +44,7 @@ const NewTaskItem: React.FC<Props> = ({
 
       let groups = [...taskGroups]
       let g = { ...groups[groupIdx] }
-      let tasks = [...g.tasks!]
+      let tasks = [...(g.tasks || [])]
 
       tasks.push({
         id: nt.id,
@@ -104,15 +104,19 @@ const NewTaskItem: React.FC<Props> = ({
           </div>
         </div>
       ) : (
-        <Button
-          icon={<PlusOutlined />}
-          style={{ width: taskWidth, marginLeft: groupPadding }}
-          onClick={() => {
-            setShowAdd(true)
-          }}
-        >
-          添加任务
-        </Button>
+        <div>
+          {canEdit && (
+            <Button
+              icon={<PlusOutlined />}
+              style={{ width: taskWidth, marginLeft: groupPadding }}
+              onClick={() => {
+                setShowAdd(true)
+              }}
+            >
+              添加任务
+            </Button>
+          )}
+        </div>
       )}
     </div>
   )

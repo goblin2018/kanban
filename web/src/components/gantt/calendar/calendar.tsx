@@ -144,8 +144,13 @@ const Calendar = () => {
 
   return (
     <div
-      className="absolute w-full bg-white"
-      style={{ top: scrollTop, zIndex: 999, height: headerHeight }}
+      className="absolute bg-white overflow-hidden"
+      style={{
+        top: scrollTop,
+        zIndex: 999,
+        height: headerHeight,
+        width: totalWidth,
+      }}
     >
       <div className="flex">
         {topValues.map((t, i) => (

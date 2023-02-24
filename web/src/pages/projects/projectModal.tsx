@@ -50,6 +50,10 @@ const ProjectModal = () => {
   }, [user?.level])
 
   useEffect(() => {
+    console.log(users)
+  }, [users])
+
+  useEffect(() => {
     if (status == 'edit') {
       if (user?.level == UserLevel.Normal) {
         setUsers([{ ...project.owner }])
@@ -59,6 +63,9 @@ const ProjectModal = () => {
         pdate = [dayjs(project.startAt), dayjs(project.endAt)]
       }
       aForm.setFieldsValue({ ...project, pdate })
+      if (project.color) {
+        setColor(project.color)
+      }
     } else if (status == 'add') {
       aForm.resetFields()
       if (user?.level == UserLevel.Normal) {

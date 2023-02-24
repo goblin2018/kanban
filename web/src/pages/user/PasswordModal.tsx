@@ -57,30 +57,38 @@ const PasswordModal: React.FC<Props> = ({ show, setShow, user }) => {
 
   const [passwordForm] = Form.useForm()
   return (
-    <Modal open={show} onCancel={cancel} onOk={submit} title="修改密码">
-      <Form form={passwordForm} layout="vertical">
-        <Form.Item
-          label="旧密码"
-          name={'op'}
-          rules={[{ required: true, message: '请输入密码!' }]}
-        >
-          <Input.Password prefix={<Lock />} />
-        </Form.Item>
-        <Form.Item
-          label="新密码"
-          name={'np'}
-          rules={[{ required: true, message: '请输入新密码!' }]}
-        >
-          <Input.Password prefix={<Lock />} />
-        </Form.Item>
-        <Form.Item
-          label="重复新密码"
-          name={'rnp'}
-          rules={[{ required: true, message: '请输入相同的新密码!' }]}
-        >
-          <Input.Password prefix={<Lock />} />
-        </Form.Item>
-      </Form>
+    <Modal
+      open={show}
+      onCancel={cancel}
+      onOk={submit}
+      title="修改密码"
+      width={400}
+    >
+      <div className="pt-4 px-2">
+        <Form form={passwordForm} layout="vertical">
+          <Form.Item
+            label="旧密码"
+            name={'op'}
+            rules={[{ required: true, message: '请输入密码!' }]}
+          >
+            <Input.Password prefix={<Lock />} />
+          </Form.Item>
+          <Form.Item
+            label="新密码"
+            name={'np'}
+            rules={[{ required: true, message: '请输入新密码!' }]}
+          >
+            <Input.Password prefix={<Lock />} />
+          </Form.Item>
+          <Form.Item
+            label="重复新密码"
+            name={'rnp'}
+            rules={[{ required: true, message: '请输入相同的新密码!' }]}
+          >
+            <Input.Password prefix={<Lock />} />
+          </Form.Item>
+        </Form>
+      </div>
     </Modal>
   )
 }

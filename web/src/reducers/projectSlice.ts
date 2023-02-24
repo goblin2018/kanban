@@ -12,6 +12,7 @@ interface ProjectState {
   taskGroups: TaskGroup[]
   page: PageOption
   projectOption: ProjectOption
+  canEdit: boolean
 }
 
 export type PageOption = '' | 'gantt'
@@ -45,6 +46,7 @@ const initialState: ProjectState = {
   taskGroupModalState: 'close',
   projectOption: 'my',
   currentTaskGroup: {},
+  canEdit: false,
 }
 const projectSlice = createSlice({
   name: 'project',
@@ -56,6 +58,9 @@ const projectSlice = createSlice({
 
     setCurrentProject: (state, action: PayloadAction<Project>) => {
       state.currentProject = action.payload
+    },
+    setCanEditProject: (state, action: PayloadAction<boolean>) => {
+      state.canEdit = action.payload
     },
     setTaskGroups: (state, action: PayloadAction<TaskGroup[]>) => {
       state.taskGroups = action.payload
@@ -97,6 +102,7 @@ export const {
   setPage,
   setProjectOption,
   setCurrentTaskGroup,
+  setCanEditProject,
 } = projectSlice.actions
 
 export default projectSlice.reducer

@@ -13,7 +13,11 @@ import { toShortDate } from 'api/utils'
 import ViewModeSwither from 'components/gantt/viewmodeSwitcher'
 
 const ProjectDetailPage = () => {
-  const { currentProject: project, page } = useAppSelector((s) => s.project)
+  const {
+    currentProject: project,
+    page,
+    canEdit,
+  } = useAppSelector((s) => s.project)
 
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
@@ -54,15 +58,19 @@ const ProjectDetailPage = () => {
         </div>
 
         {page == '' ? (
-          <Button
-            type="primary"
-            icon={<PlusOutlined />}
-            onClick={() => {
-              dispatch(setTaskGroupModalState('add'))
-            }}
-          >
-            添加任务组
-          </Button>
+          <div>
+            {canEdit && (
+              <Button
+                type="primary"
+                icon={<PlusOutlined />}
+                onClick={() => {
+                  dispatch(setTaskGroupModalState('add'))
+                }}
+              >
+                添加任务组
+              </Button>
+            )}
+          </div>
         ) : (
           <ViewModeSwither />
         )}

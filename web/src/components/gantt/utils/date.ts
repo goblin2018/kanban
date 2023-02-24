@@ -5,7 +5,6 @@ import { GanttTask, ViewMode } from './types'
 import weekOfYear from 'dayjs/plugin/weekOfYear'
 dayjs.extend(weekOfYear)
 
-
 type DateHelperScales =
   | 'year'
   | 'month'
@@ -44,11 +43,11 @@ export const seedDates = (
   switch (viewMode) {
     case ViewMode.Year:
       startDate = startDate.subtract(1, 'y').startOf('y')
-      endDate = endDate.add(1, 'y').endOf('y')
+      endDate = endDate.add(2, 'y').endOf('y')
       break
     case ViewMode.Month:
       startDate = startDate.subtract(preStepsCount, 'M').startOf('M')
-      endDate = endDate.add(1, 'y').endOf('y')
+      endDate = endDate.add(2, 'M').endOf('M')
       break
     case ViewMode.Week:
       startDate = startDate.subtract(preStepsCount, 'w').startOf('w')
@@ -56,7 +55,7 @@ export const seedDates = (
       break
     case ViewMode.Day:
       startDate = startDate.subtract(preStepsCount, 'd').startOf('d')
-      endDate = endDate.add(7, 'd').endOf('d')
+      endDate = endDate.add(20, 'd').endOf('d')
       break
   }
 

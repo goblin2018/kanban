@@ -54,7 +54,7 @@ const Gantt: React.FC<Props> = ({}) => {
         <div
           className="flex-1 relative scrollbar-thin scrollbar-thumb-blue-200 
          scrollbar-thumb-rounded-full
-         scrollbar-track-blue-50"
+         scrollbar-track-blue-50 mr-6 pb-2"
           ref={ganttContainerRef}
           onScroll={(e) => {
             dispatch(setScrollTop(e.currentTarget.scrollTop))

@@ -16,6 +16,7 @@ interface Props {
 }
 const TaskgroupHeader: React.FC<Props> = ({ taskgroup, setDraggable }) => {
   const taskGroups = useAppSelector((s) => s.project.taskGroups)
+  const canEdit = useAppSelector((s) => s.project.canEdit)
   const dispatch = useAppDispatch()
 
   return (
@@ -40,41 +41,43 @@ const TaskgroupHeader: React.FC<Props> = ({ taskgroup, setDraggable }) => {
           {taskgroup.name}
         </div>
         <div className="w-6 h-6 flex-shrink-0 flex justify-center">
-          <Dropdown
-            // trigger={['click']}
-            dropdownRender={() => (
-              <div className="bg-white flex flex-col w-[100px]">
-                <Button
-                  type="text"
-                  onClick={() => {
-                    dispatch(setCurrentTaskGroup(taskgroup))
-                  }}
-                >
-                  编辑
-                </Button>
-                <Popconfirm
-                  title={'确认删除用户组？'}
-                  placement="bottomLeft"
-                  trigger={['click']}
-                  onConfirm={() => {
-                    // 删除
-                    delTaskGroup(taskgroup).then((res) => {
-                      let ts = [...taskGroups]
-                      let idx = ts.findIndex((g) => g.id == taskgroup.id)
-                      ts.splice(idx, 1)
-                      dispatch(setTaskGroups(ts))
-                    })
-                  }}
-                >
-                  <Button type="text" danger>
-                    删除
+          {canEdit && (
+            <Dropdown
+              // trigger={['click']}
+              dropdownRender={() => (
+                <div className="bg-white flex flex-col w-[100px]">
+                  <Button
+                    type="text"
+                    onClick={() => {
+                      dispatch(setCurrentTaskGroup(taskgroup))
+                    }}
+                  >
+                    编辑
                   </Button>
-                </Popconfirm>
-              </div>
-            )}
-          >
-            <MoreOutlined />
-          </Dropdown>
+                  <Popconfirm
+                    title={'确认删除用户组？'}
+                    placement="bottomLeft"
+                    trigger={['click']}
+                    onConfirm={() => {
+                      // 删除
+                      delTaskGroup(taskgroup).then((res) => {
+                        let ts = [...taskGroups]
+                        let idx = ts.findIndex((g) => g.id == taskgroup.id)
+                        ts.splice(idx, 1)
+                        dispatch(setTaskGroups(ts))
+                      })
+                    }}
+                  >
+                    <Button type="text" danger>
+                      删除
+                    </Button>
+                  </Popconfirm>
+                </div>
+              )}
+            >
+              <MoreOutlined className="hover:bg-slate-200 w-6 h-6 flex justify-center rounded" />
+            </Dropdown>
+          )}
         </div>
       </div>
     </div>

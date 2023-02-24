@@ -16,7 +16,7 @@ export default ({ mode }) => {
         '/api': {
           // target: 'http://120.78.83.29/api',
 
-          target: 'http://localhost/api',
+          target: 'http://localhost/api/v1',
           changeOrigin: true,
           rewrite: (path) => path.replace(/^\/api/, ''),
         },

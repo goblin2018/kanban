@@ -26,7 +26,7 @@ interface Props {
 const Bar: React.FC<Props> = ({ task, isSelected, rowIdx }) => {
   const { diffX, viewMode, dates, tasks } = useAppSelector((s) => s.gantt)
   const { position, index, reset } = useAppSelector((s) => s.gantt.hold)
-  const taskGroups = useAppSelector((s) => s.project.taskGroups)
+  const { taskGroups, canEdit } = useAppSelector((s) => s.project)
   const isHolding = useMemo(() => index == task.index, [index])
   const y = rowIdx * rowHeight + (rowHeight - taskHeight) / 2
   const dispatch = useAppDispatch()
@@ -244,20 +244,22 @@ const Bar: React.FC<Props> = ({ task, isSelected, rowIdx }) => {
         {task.name}
       </text>
 
-      <g className="hanldeGroup">
-        {/* left */}
-        <DateHandle
-          x={start + 1}
-          y={y + 1}
-          setHold={() => setHoldPoint('start')}
-        />
-        {/* right */}
-        <DateHandle
-          x={end - handleWidth - 1}
-          y={y + 1}
-          setHold={() => setHoldPoint('end')}
-        />
-      </g>
+      {canEdit && (
+        <g className="hanldeGroup">
+          {/* left */}
+          <DateHandle
+            x={start + 1}
+            y={y + 1}
+            setHold={() => setHoldPoint('start')}
+          />
+          {/* right */}
+          <DateHandle
+            x={end - handleWidth - 1}
+            y={y + 1}
+            setHold={() => setHoldPoint('end')}
+          />
+        </g>
+      )}
     </g>
   )
 }

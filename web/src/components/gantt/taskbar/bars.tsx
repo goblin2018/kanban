@@ -12,7 +12,7 @@ const Bars = () => {
     (s) => s.gantt
   )
 
-  const taskGroups = useAppSelector((s) => s.project.taskGroups)
+  const { taskGroups, canEdit } = useAppSelector((s) => s.project)
   const dispatch = useAppDispatch()
   const [startX, setStartX] = useState(0)
 
@@ -86,6 +86,10 @@ const Bars = () => {
                     onDoubleClick={(e) => {
                       // TODO 增加点击逻辑
                       console.log('click item ', task.name)
+
+                      if (!canEdit) {
+                        return
+                      }
 
                       if (task.type == 'project') {
                         return

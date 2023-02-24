@@ -1,7 +1,6 @@
 import { Button, Radio } from 'antd'
 import { useAppDispatch, useAppSelector } from 'app/hooks'
 import { useEffect, useMemo, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 import ProjectModal from './projectModal'
 import ProjectCard from './projectCard'
 import {
@@ -11,7 +10,6 @@ import {
 } from 'reducers/projectSlice'
 import Header from 'components/header/Header'
 import { PlusOutlined } from '@ant-design/icons'
-import { Project } from 'api/project'
 
 const ProjectPage = () => {
   const dispatch = useAppDispatch()

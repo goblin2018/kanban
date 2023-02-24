@@ -50,7 +50,8 @@ const ganttSlice = createSlice({
     },
     setTasks: (state, action: PayloadAction<GanttTask[]>) => {
       state.tasks = action.payload
-      state.rowCount = state.tasks.length
+      let min = 21
+      state.rowCount = state.tasks.length > min ? state.tasks.length : min
     },
     setDates: (state, action: PayloadAction<Dayjs[]>) => {
       state.dates = action.payload
