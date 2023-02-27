@@ -20,6 +20,8 @@ const Bars = () => {
 
   const onMove = useCallback(
     (e: MouseEvent) => {
+      console.log('changed startX ', startX)
+
       if (startX == 0) {
         return
       }
@@ -29,7 +31,9 @@ const Bars = () => {
     [startX]
   )
   useEffect(() => {
-    if (hold.index != -1) {
+    console.log('hold ', hold)
+
+    if (hold.index && hold.index != -1) {
       barContainerRef.current?.addEventListener('mousemove', onMove)
     } else {
       barContainerRef.current?.removeEventListener('mousemove', onMove)
@@ -59,8 +63,11 @@ const Bars = () => {
         }}
         onMouseLeave={(e) => {
           console.log('mouse leave')
-
-          onMoveDone()
+          let x = e.clientX
+          let rec = barContainerRef.current!.getBoundingClientRect()
+          if (x <= rec.left || x >= rec.right) {
+            onMoveDone()
+          }
         }}
       >
         <Grid />

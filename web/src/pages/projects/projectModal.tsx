@@ -23,6 +23,7 @@ import { toShortDate } from 'api/utils'
 import UserTag from 'components/userTag'
 
 import { CirclePicker, Color } from 'react-color'
+import ColorPicker from 'components/color-picker'
 
 const { Item } = Form
 const ProjectModal = () => {
@@ -166,7 +167,7 @@ const ProjectModal = () => {
             </Select>
           </Item>
           <Item label="当前状态" name={'status'} className="inline-block">
-            <Radio.Group>
+            <Radio.Group buttonStyle="solid">
               <Radio.Button value={ProjectStatus.NotStart}>
                 {ProjectStatusInfo[ProjectStatus.NotStart].info}
               </Radio.Button>
@@ -183,12 +184,7 @@ const ProjectModal = () => {
             <DatePicker.RangePicker />
           </Item>
           <Item label="选择主题色">
-            <CirclePicker
-              color={color}
-              onChange={(c, e) => {
-                setColor(c.hex)
-              }}
-            />
+            <ColorPicker color={color} setColor={setColor} />
           </Item>
 
           <Item label="项目描述" name="desc">

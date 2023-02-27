@@ -102,7 +102,8 @@ const TaskDrawer = () => {
     if (
       toShortDate(newTask.startAt) == toShortDate(task?.startAt) &&
       toShortDate(newTask.endAt) == toShortDate(task?.endAt) &&
-      newTask.status == task?.status
+      newTask.status == task?.status &&
+      newTask.name == task?.name
     ) {
       return
     }
@@ -121,7 +122,12 @@ const TaskDrawer = () => {
     }
 
     let ot = ganttTasks[idx]
-    let gt = { ...ot, barInfo: { ...ot.barInfo! }, status: newTask.status! }
+    let gt = {
+      ...ot,
+      barInfo: { ...ot.barInfo! },
+      status: newTask.status!,
+      name: newTask.name!,
+    }
 
     let nts = [...ganttTasks]
     let of = ganttTasks[ot.parentIndex!]
@@ -186,7 +192,7 @@ const TaskDrawer = () => {
             </Item>
 
             <Item label="当前状态" name={'status'} className="inline-block">
-              <Radio.Group>
+              <Radio.Group buttonStyle="solid">
                 <Radio.Button value={ProjectStatus.NotStart}>
                   {ProjectStatusInfo[ProjectStatus.NotStart].info}
                 </Radio.Button>

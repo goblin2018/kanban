@@ -3,12 +3,12 @@ import { ViewMode } from './types'
 export const tableWidth = 468
 
 export const preStepsCount = 1
-export const rowHeight = 36
-export const taskHeight = rowHeight * 0.6
+export const rowHeight = 40
+export const taskHeight = rowHeight * 0.8
 export const barCornerRadius = 4
 export const handleWidth = 8
 export const handleHeight = taskHeight - 2
-export const headerHeight = 45
+export const headerHeight = 60
 export const calendarTopHeight = headerHeight * 0.5
 
 export const barProgressColor = '#a3a3ff'

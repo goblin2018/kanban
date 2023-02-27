@@ -22,11 +22,11 @@ const TaskTable = () => {
         <div className={`flex-shrink-0 text-left`} style={{ width: wInfo }}>
           任务名称
         </div>
-        <div className={`flex-shrink-0`} style={{ width: wTag }}>
-          开始
-        </div>
         <div className={`flex-shrink-0`} style={{ width: wDate }}>
           状态
+        </div>
+        <div className={`flex-shrink-0`} style={{ width: wTag }}>
+          开始
         </div>
         <div className={`flex-shrink-0`} style={{ width: wDate }}>
           结束
@@ -47,52 +47,64 @@ const TaskTable = () => {
           }}
         >
           {tasks.map((t, i) => (
-            <div key={`taskname-${t.type == 'task' ? 't' : 'g'}-${t.id}`}>
+            <div key={`taskname-${t.type == 'task' ? 't' : 'g'}-${t.id}`} onMouseEnter={() => {
+              
+            }}>
               {t.hide ? (
                 <div></div>
               ) : (
                 <div
                   className="flex items-center justify-between rounded hover:bg-[#f5f7fa]"
                   style={{ height: rowHeight }}
+                  onClick={() => {
+                    if (t.type == 'task') {
+                      return
+                    }
+                    // 设置hideChildren
+
+                    let ts = [...tasks]
+                    let nt = { ...t }
+                    if (t.hideChildren) {
+                      nt.hideChildren = false
+                    } else {
+                      nt.hideChildren = true
+                    }
+
+                    ts[i] = nt
+                    for (let j = i + 1; j < ts.length; j++) {
+                      let item = { ...ts[j] }
+                      if (item.type == 'project') {
+                        break
+                      } else {
+                        item.hide = nt.hideChildren
+                        ts[j] = item
+                      }
+                    }
+
+                    dispatch(setTasks([...ts]))
+                  }}
                 >
                   <div
                     className={`flex-shrink-0 text-ellipsis flex items-center`}
                     style={{ width: wInfo }}
                   >
                     {t.type == 'project' ? (
-                      <DownArrow
-                        onClick={() => {
-                          // 设置hideChildren
-
-                          let ts = [...tasks]
-                          let nt = { ...t }
-                          if (t.hideChildren) {
-                            nt.hideChildren = false
-                          } else {
-                            nt.hideChildren = true
-                          }
-
-                          ts[i] = nt
-                          for (let j = i + 1; j < ts.length; j++) {
-                            let item = { ...ts[j] }
-                            if (item.type == 'project') {
-                              break
-                            } else {
-                              item.hide = nt.hideChildren
-                              ts[j] = item
-                            }
-                          }
-
-                          dispatch(setTasks([...ts]))
-                        }}
-                        className={`mx-1 hover:text-blue-500 ${
-                          t.hideChildren ? '-rotate-90' : ''
-                        } `}
-                      />
+                      <div className="flex items-center text-bold">
+                        <div
+                          className="w-2 h-6 absolute -left-4 rounded-full"
+                          style={{ background: t.barInfo?.color }}
+                        ></div>
+                        <DownArrow
+                          onClick={() => {}}
+                          className={`mx-1 hover:text-blue-500 ${
+                            t.hideChildren ? '-rotate-90' : ''
+                          } `}
+                        />
+                        {t.name}
+                      </div>
                     ) : (
-                      <div className="w-8"></div>
+                      <div className="ml-8">{t.name}</div>
                     )}
-                    {t.name}
                   </div>
                   <div className={`flex-shrink-0`} style={{ width: wTag }}>
                     {t.type == 'task' && <StatusTag status={t.status} />}

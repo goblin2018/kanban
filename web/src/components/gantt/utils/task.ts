@@ -45,7 +45,7 @@ export const loadBarInfoImpl = (
   task.barInfo = barInfo
 }
 
-const taskXCoordinate = (d: Dayjs, dates: Dayjs[], viewMode: ViewMode) => {
+export const taskXCoordinate = (d: Dayjs, dates: Dayjs[], viewMode: ViewMode) => {
   let start = dates[0]
   if (viewMode == ViewMode.Day || viewMode == ViewMode.Week) {
     let step = StepWidth[viewMode]

@@ -1,5 +1,4 @@
 import { Button, Card, Dropdown, Popconfirm, Typography } from 'antd'
-import { ProjectStatusInfo } from 'api/constatns'
 import { delProject, Project } from 'api/project'
 import { toShortDate } from 'api/utils'
 import { useAppDispatch, useAppSelector } from 'app/hooks'
@@ -35,7 +34,7 @@ const ProjectCard: React.FC<Props> = ({ project }) => {
   return (
     <div>
       <Card
-        className="mb-4 rounded-2xl mr-5 relative"
+        className="mb-5 rounded-2xl mr-5 relative border border-text-disabled"
         hoverable
         style={{ width: 360, height: 208 }}
       >
@@ -47,8 +46,15 @@ const ProjectCard: React.FC<Props> = ({ project }) => {
         <div className="px-6 py-4">
           <div className="text-xl">{project.name}</div>
 
-          <div className="mt-2">
+          <div className="mt-2 flex items-center">
             <StatusTag status={project.status!} />
+            <div>
+              {user!.id == project.ownerId && (
+                <div className="ml-2 bg-error rounded-full text-white px-3 text-xs py-1">
+                  我的项目
+                </div>
+              )}
+            </div>
           </div>
 
           <div className="absolute bottom-8">

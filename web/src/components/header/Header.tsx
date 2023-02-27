@@ -31,7 +31,7 @@ const Header = () => {
 
   const items = [
     {
-      label: '项目',
+      label: '项目管理',
       key: '/',
       icon: <ProjectSvg />,
     },

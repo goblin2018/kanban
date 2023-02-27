@@ -25,7 +25,7 @@ const Calendar = () => {
         </>
       )
 
-      let tp = d.format('YYYY-MM')
+      let tp = d.format('YYYY年 MM月')
       if (tp != topValue) {
         let endi = i + (d.endOf('M').date() - d.date()) + 1
         topValue = tp
@@ -51,9 +51,9 @@ const Calendar = () => {
 
     let lastEnd = 0
     dates.map((d, i) => {
-      bottomValues.push(<div>{d.week()}</div>)
+      bottomValues.push(<div>{d.week()} 周</div>)
 
-      let tp = d.format('YYYY-MM')
+      let tp = d.format('YYYY年 MM月')
       if (tp != topValue) {
         let endi = i + (d.endOf('M').date() - d.date() + 1) / 7
         topValue = tp
@@ -79,9 +79,9 @@ const Calendar = () => {
 
     let lastEnd = 0
     dates.map((d, i) => {
-      bottomValues.push(<div>{d.month() + 1}</div>)
+      bottomValues.push(<div>{d.month() + 1} 月</div>)
 
-      let tp = d.format('YYYY')
+      let tp = d.format('YYYY 年')
       if (tp != topValue) {
         let endi = i + 12
         topValue = tp
@@ -105,7 +105,7 @@ const Calendar = () => {
     const bottomValues: ReactNode[] = []
 
     dates.map((d, i) => {
-      bottomValues.push(<div>{d.year()}</div>)
+      bottomValues.push(<div>{d.year()} 年</div>)
     })
 
     setTopValues(topValues)
@@ -147,12 +147,16 @@ const Calendar = () => {
       className="absolute bg-white overflow-hidden"
       style={{
         top: scrollTop,
-        zIndex: 999,
+        zIndex: 10,
         height: headerHeight,
         width: totalWidth,
+        boxShadow: '0px 4px 8px rgba(17, 38, 82, 0.12)',
       }}
     >
-      <div className="flex">
+      <div
+        className="flex items-center"
+        style={{ borderBottom: '1px solid #ccc', height: headerHeight / 2 }}
+      >
         {topValues.map((t, i) => (
           <div
             className="flex-shrink-0"
@@ -167,7 +171,7 @@ const Calendar = () => {
           </div>
         ))}
       </div>
-      <div className="flex">
+      <div className="flex" style={{ height: headerHeight / 2 }}>
         {bottomValues.map((b, i) => (
           <div
             key={`cb${i}`}

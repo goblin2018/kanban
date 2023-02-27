@@ -14,6 +14,7 @@ import {
   setTasks,
 } from 'reducers/ganttSlice'
 import { tableWidth } from './utils/conf'
+import Today from './today'
 
 interface Props {}
 
@@ -47,7 +48,14 @@ const Gantt: React.FC<Props> = ({}) => {
   return (
     <div className="h-full">
       <div className="flex h-full w-full max-h-full  relative overflow-hidden">
-        <div className=" flex-shrink-0 h-full" style={{ width: tableWidth }}>
+        <div
+          className=" flex-shrink-0 h-full"
+          style={{
+            width: tableWidth,
+            boxShadow: '0px 4px 8px rgba(17, 38, 82, 0.12)',
+            zIndex: 20,
+          }}
+        >
           <TaskTable />
         </div>
 
@@ -78,6 +86,7 @@ const Gantt: React.FC<Props> = ({}) => {
         >
           <Calendar />
           <Bars />
+          <Today />
         </div>
       </div>
     </div>

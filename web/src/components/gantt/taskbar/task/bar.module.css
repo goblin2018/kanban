@@ -9,13 +9,8 @@
 }
 
 .barHandle {
-  fill: #ddd;
+  fill: #fff;
   cursor: ew-resize;
-  opacity: 0;
+  opacity: 0.3;
   visibility: hidden;
-}
-
-.barBackground {
-  user-select: none;
-  stroke-width: 0;
 }

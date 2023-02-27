@@ -21,6 +21,7 @@ module.exports = {
           800: '#16326c',
           900: '#112652',
         },
+        error: '#eb5757',
         text: {
           disabled: '#ababab',
         },

@@ -183,7 +183,7 @@ const Bar: React.FC<Props> = ({ task, isSelected, rowIdx }) => {
     }
     let t = textRef.current
 
-    return t.getBBox().width < end - start
+    return t.getBBox().width + 30 < end - start
   }, [textRef.current, end, start])
 
   const isHintTextInside = useMemo(() => {
@@ -203,20 +203,20 @@ const Bar: React.FC<Props> = ({ task, isSelected, rowIdx }) => {
             height={30}
             ry={barCornerRadius}
             rx={barCornerRadius}
-            fill={'green'}
+            fill={'#ffc107'}
             className={` flex`}
           ></rect>
           <text
             x={isHintTextInside ? start + 10 : end + 10}
             y={y - 15}
-            fill={isHintTextInside ? '#fff' : '#555'}
+            fill={'#000'}
           >
             {startDate.format('MM-DD')}
           </text>
           <text
             x={isHintTextInside ? end - 50 : end + 60}
             y={y - 15}
-            fill={isHintTextInside ? '#fff' : '#555'}
+            fill={'#000'}
           >
             {endDate.format('MM-DD')}
           </text>
@@ -231,17 +231,20 @@ const Bar: React.FC<Props> = ({ task, isSelected, rowIdx }) => {
         ry={barCornerRadius}
         rx={barCornerRadius}
         fill={getBarColor()}
-        className={styles.barBackground}
+        fillOpacity={0.4}
+        stroke={getBarColor()}
+        strokeWidth={1}
+        strokeOpacity={1}
       />
       <text
-        x={(isTextInside ? start : end) + 12}
-        y={y + taskHeight * 0.65}
+        x={(isTextInside ? start : end) + 14}
+        y={y + taskHeight * 0.68}
         style={{
-          fill: isTextInside ? '#fff' : '#555',
+          fill: isTextInside ? '#000' : '#555',
         }}
         ref={textRef}
       >
-        {task.name}
+        {task.name} - {task.end?.diff(task.start, 'day')} Days
       </text>
 
       {canEdit && (

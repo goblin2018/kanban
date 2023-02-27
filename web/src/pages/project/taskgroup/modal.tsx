@@ -7,7 +7,7 @@ import {
   setTaskGroups,
 } from 'reducers/projectSlice'
 import { useEffect, useState } from 'react'
-import { CirclePicker, Color } from 'react-color'
+import ColorPicker from 'components/color-picker'
 
 const TaskGroupModal = () => {
   const {
@@ -99,12 +99,7 @@ const TaskGroupModal = () => {
       />
 
       <div className="mt-6 mb-2">选择主题色</div>
-      <CirclePicker
-        color={color}
-        onChange={(c, e) => {
-          setColor(c.hex)
-        }}
-      />
+      <ColorPicker color={color} setColor={setColor} />
     </Modal>
   )
 }

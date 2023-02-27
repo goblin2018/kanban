@@ -16,8 +16,12 @@ const MenuItem: React.FC<Props> = ({
   return (
     <div
       className={`flex items-center justify-center h-full px-4 min-w-[110px] cursor-pointer
-       hover:bg-blue-400 hover:text-white
-      ${active ? 'text-blue-500 bg-white' : 'text-white bg-blue-500'}
+       
+      ${
+        active
+          ? 'text-blue-500 bg-[#f5f7fa]'
+          : 'text-white bg-blue-500 hover:bg-blue-400'
+      }
       `}
       onClick={onClick}
     >

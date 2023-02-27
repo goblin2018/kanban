@@ -285,6 +285,7 @@ const TaskItem: React.FC<Props> = ({ task, idx, groupIdx }) => {
         height: taskHeight,
         width: taskWidth,
         marginBottom: taskMargin,
+        boxShadow: '0px 4px 8px rgba(17, 38, 82, 0.12)',
       }}
       onDragStart={dragStart}
       onDrag={onDrag}

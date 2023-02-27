@@ -16,7 +16,7 @@ interface Props {
 const Project: React.FC<Props> = ({ task, isSeleceted, rowIdx }) => {
   const barColor = task.barInfo?.color
   const projectWidth = task.barInfo!.x2! - task.barInfo!.x1!
-  const y = rowIdx * rowHeight + (rowHeight - taskHeight) / 2 + 10
+  const y = rowIdx * rowHeight + (rowHeight - taskHeight) / 2 + 20
 
   return (
     <g tabIndex={0} className={styles.projectWrapper}>
@@ -30,6 +30,9 @@ const Project: React.FC<Props> = ({ task, isSeleceted, rowIdx }) => {
         ry={barCornerRadius}
         className={styles.projectBackground}
       />
+      <text x={task.barInfo!.x2! + 12} y={y + 10} fill={'#000'}>
+        {task.name} - {task.end?.diff(task.start, 'day')}天
+      </text>
     </g>
   )
 }

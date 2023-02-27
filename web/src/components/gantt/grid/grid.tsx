@@ -1,13 +1,14 @@
 import styles from './grid.module.css'
-import { rowHeight } from '../utils/conf'
+import { ColumnWidthConf, rowHeight } from '../utils/conf'
 import { useAppSelector } from 'app/hooks'
 import dayjs from 'dayjs'
+import { taskXCoordinate } from '../utils/task'
 
 interface Props {
   todayColor?: string
 }
 const Grid: React.FC<Props> = ({ todayColor = 'rgba(252, 248, 227, 0.5)' }) => {
-  const { totalWidth, rowCount, dates, columnWidth } = useAppSelector(
+  const { totalWidth, rowCount, dates, columnWidth, viewMode } = useAppSelector(
     (s) => s.gantt
   )
   let y = 0
@@ -47,10 +48,8 @@ const Grid: React.FC<Props> = ({ todayColor = 'rgba(252, 248, 227, 0.5)' }) => {
     y += rowHeight
   }
 
-  const now = dayjs()
   let tickX = 0
   let ticks = []
-  let today = <rect />
   for (let i = 0; i < dates.length; i++) {
     const date = dates[i]
     ticks.push(
@@ -64,34 +63,14 @@ const Grid: React.FC<Props> = ({ todayColor = 'rgba(252, 248, 227, 0.5)' }) => {
       />
     )
 
-    if (
-      (i + 1 !== dates.length &&
-        date.isBefore(now) &&
-        dates[i + 1].isAfter(now)) ||
-      // if current date is last
-      (i !== 0 &&
-        i + 1 === dates.length &&
-        date.isBefore(now) &&
-        date.add(date.unix() - dates[i - 1].unix(), 's').isAfter(now))
-    ) {
-      today = (
-        <rect
-          x={tickX}
-          y={0}
-          width={columnWidth}
-          height={y}
-          fill={todayColor}
-        />
-      )
-    }
     tickX += columnWidth
   }
+
   return (
     <g className="gridBody">
       <g className="rows">{gridRows}</g>
       <g className="rowLines">{rowLines}</g>
       <g className="ticks">{ticks}</g>
-      <g className="today">{today}</g>
     </g>
   )
 }

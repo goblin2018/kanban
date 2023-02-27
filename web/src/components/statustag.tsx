@@ -11,11 +11,11 @@ const l = [
   },
   {
     desc: '进行中',
-    color: '#1E90FF',
+    color: '#285ac4',
   },
   {
     desc: '已完成',
-    color: '#00FF7F',
+    color: '#34985e',
   },
 ]
 
