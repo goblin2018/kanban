@@ -23,6 +23,10 @@ services:
       - kanban-db:/var/lib/mysql
       - ./scripts/mysql/cmysql.cnf:/etc/mysql/conf.d/custom.cnf
       - ./scripts/mysql/:/docker-entrypoint-initdb.d/
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      timeout: 30s
+      retries: 10
 
     command: --max_connections=1000 --character-set-server=utf8mb4 --collation-server=utf8mb4_general_ci
   redis:
@@ -36,13 +40,20 @@ services:
       - kanban-redis:/data
     networks:
       - kanban-net
+    healthcheck:
+      test: [ "CMD-SHELL", "redis-cli ping | grep PONG" ]
+      interval: 1s
+      timeout: 3s
+      retries: 5
   server:
     build: ./server
     networks:
       - kanban-net
     depends_on:
-      - db
-      - redis
+      - db:
+          condition: service_healthy
+      - redis:
+          condition: service_healthy
   web:
     build:
       context: ./web
